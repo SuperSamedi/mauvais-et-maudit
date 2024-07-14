@@ -1,0 +1,28 @@
+[
+    {
+        "traitName": "Géant",
+        "hitPoints": 20
+    },
+    {
+        "traitName": "Puissant",
+        "strength": 20
+    },
+    {
+        "traitName": "Agile",
+        "speed": 20
+    },
+    {
+        "traitName": "Rusé",
+        "magic": 20
+    },
+    {
+        "traitName": "Immense",
+        "hitPoints": 30,
+        "speed": -10
+    },
+    {
+        "traitName": "Costaud",
+        "hitPoints": 10,
+        "strength": 10
+    }
+]

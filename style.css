@@ -1,0 +1,36 @@
+.section-header {
+    margin: 5px;
+    font-weight: bold;
+    font-size: large;
+}
+
+#inventory {
+    display: grid;
+    border: 2px solid black;
+    grid-template-columns: 30px auto;
+    gap: 3px;
+    width: 400px;
+    padding: 3px;
+    margin: 5px;
+}
+
+#inventory>.section-header {
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
+.inventory-grid-item {
+    background-color: lightgray;
+    height: 30px;
+    vertical-align: middle;
+    line-height: 30px;
+    font-weight: bold;
+}
+
+.equipped-checkmark {
+    text-align: center;
+}
+
+.item {
+    padding: 0 5px;
+}

@@ -1,0 +1,45 @@
+[
+    {
+        "raceName": "Humain",
+        "hitPoints": 100,
+        "strength": 50,
+        "speed": 50,
+        "magic": 50
+    },
+    {
+        "raceName": "Elfe",
+        "hitPoints": 80,
+        "strength": 40,
+        "speed": 70,
+        "magic": 60
+    },
+    {
+        "raceName": "Ogre",
+        "hitPoints": 160,
+        "strength": 80,
+        "speed": 10,
+        "magic": 0
+    },
+    {
+        "raceName": "Vampire",
+        "hitPoints": 60,
+        "strength": 60,
+        "speed": 60,
+        "magic": 70
+    },
+    {
+        "raceName": "Gnome",
+        "hitPoints": 70,
+        "strength": 30,
+        "speed": 60,
+        "magic": 90
+    },
+    {
+        "raceName": "Centaure",
+        "hitPoints": 110,
+        "strength": 60,
+        "speed": 60,
+        "magic": 20
+    }
+
+]
