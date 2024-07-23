@@ -1,17 +1,22 @@
+section {
+    border: 2px solid black;
+    margin: 5px;
+    padding: 3px;
+    width: 400px;
+}
+
 .section-header {
     margin: 5px;
     font-weight: bold;
     font-size: large;
+    grid-column-start: 1;
+    grid-column-end: 3;
 }
 
 #inventory {
     display: grid;
-    border: 2px solid black;
     grid-template-columns: 30px auto;
     gap: 3px;
-    width: 400px;
-    padding: 3px;
-    margin: 5px;
 }
 
 #inventory>.section-header {
@@ -33,4 +38,20 @@
 
 .item {
     padding: 0 5px;
+}
+
+#player-resources {
+    display: grid;
+    grid-template-columns: 30px auto;
+    gap: 3px;
+}
+
+#player-stats {
+    display: grid;
+    grid-template-columns: 100px auto;
+    gap: 3px;
+}
+
+.align-right {
+    text-align: end;
 }

@@ -14,7 +14,7 @@ const txtPlayerGoldCoins = document.getElementById("gold-pieces");
 const txtPlayerActionPoints = document.getElementById("action-points");
 const imgLastDrawnCard = document.getElementById("last-drawn-card");
 const inventorySlots = Array.from(document.getElementsByClassName("item"));
-const btnInventoryCheckmarks = Array.from(document.getElementsByClassName("equiped-checkmark"));
+const btnInventoryCheckmarks = Array.from(document.getElementsByClassName("equipped-checkmark"));
 
 let scopaDeck = [];
 let inventory = [];
