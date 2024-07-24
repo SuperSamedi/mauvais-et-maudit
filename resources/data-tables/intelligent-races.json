@@ -40,6 +40,9 @@
         "strength": 60,
         "speed": 60,
         "magic": 20
+    },
+    {
+        "raceName": "Non-Être"
     }
 
 ]

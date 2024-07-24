@@ -8,30 +8,32 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="dungeon-master-text">xx</div>
+
+    <button type="button" id="btn1">1</button>
     <button type="button" id="btn-race-roll">Lance le dé pour la race de ton personnage</button>
     <button type="button" id="btn-trait-roll">Lance le dé pour le trait de ton personnage</button>
     <button type="button" id="btn-card-draw">Pioche une carte</button>
 
     <img id="last-drawn-card" src="" alt="">
-
-    <div id="dice-result">xx</div>
+    
     <br>
-    <span>Race : </span><span id="player-race">playerRace</span></body><br>
-    <span>Trait : </span><span id="player-trait">playerTrait</span>
+    <span>Race : </span><strong><span id="player-race">aucune</span></strong><br>
+    <span>Trait : </span><strong><span id="player-trait">aucun</span></strong>
     <br>
     <br>
     <section id="player-stats">
         <h3 class="section-header">Caractéristiques</h3>
-        <div class="align-right">Points de Vie : </div><div id="player-hit-points">playerHitPoints</div>
-        <div class="align-right">Force : </div><div id="player-strength">playerStrength</div>
-        <div class="align-right">Vitesse : </div><div id="player-speed">playerSpeed</div>
-        <div class="align-right">Magie : </div><div id="player-magic">playerMagic</div>
+        <div class="align-right">Points de Vie : </div><strong><div id="player-hit-points">100/100</div></strong>
+        <div class="align-right">Force : </div><strong><div id="player-strength">0</div></strong>
+        <div class="align-right">Vitesse : </div><strong><div id="player-speed">0</div></strong>
+        <div class="align-right">Magie : </div><strong><div id="player-magic">0</div></strong>
     </section>
 
     <section id="player-resources">
         <h3 class="section-header">Ressources</h3>
-        <div>PO : </div><div id="gold-pieces">0</div>
-        <div>PA : </div><div id="action-points">0</div>
+        <div>PO : </div><strong><div id="gold-pieces">0</div></strong>
+        <div>PA : </div><strong><div id="action-points">0</div></strong>
     </section>
 
     <section id="inventory">

@@ -1,8 +1,11 @@
+//#region DOM links
+
+const txtDungeonMaster = document.getElementById("dungeon-master-text");
+
+const btn1 = document.getElementById("btn1");
 const btnRaceRoll = document.getElementById("btn-race-roll");
 const btnTraitRoll = document.getElementById("btn-trait-roll");
 const btnCardDraw = document.getElementById("btn-card-draw");
-
-const txtDiceResult = document.getElementById("dice-result");
 
 const txtPlayerRace = document.getElementById("player-race");
 const txtPlayerTrait = document.getElementById("player-trait");
@@ -15,6 +18,9 @@ const txtPlayerActionPoints = document.getElementById("action-points");
 const imgLastDrawnCard = document.getElementById("last-drawn-card");
 const inventorySlots = Array.from(document.getElementsByClassName("item"));
 const btnInventoryCheckmarks = Array.from(document.getElementsByClassName("equipped-checkmark"));
+
+//#endregion
+
 
 let scopaDeck = [];
 let inventory = [];
@@ -103,63 +109,9 @@ function getPlayerMagic() {
     return magic;
 }
 
-btnRaceRoll.addEventListener("click", e => {
-    const roll = getRandomInt(intelligentRacesTable.length) + 1;
-
-    playerRace = intelligentRacesTable[roll - 1];
-    playerHitPoints = getPlayerMaxHitPoints();
-
-    gameMessage(`${roll} ! - ${playerRace.raceName}`);
-    updatePlayerStats();
-});
-
-btnTraitRoll.addEventListener("click", e => {
-    const roll = getRandomInt(strongTraitsTable.length) + 1;
-
-    playerTrait = strongTraitsTable[roll - 1];
-    playerHitPoints = getPlayerMaxHitPoints();
-
-    gameMessage(`${roll} ! - ${playerTrait.traitName}`);
-    updatePlayerStats();
-});
-
-btnCardDraw.addEventListener("click", e => {
-    if (scopaDeck.length <= 0) {
-        gameMessage("La pioche est vide...");
-        return;
-    }
-
-    let feedbackMessage = "";
-    lastDrawnCard = scopaDeck[0];
-    scopaDeck.shift();
-    //console.log(scopaDeck);
-    updateLastDrawnCard(lastDrawnCard);
-    feedbackMessage += `${lastDrawnCard.description} !`;
-
-    if (lastDrawnCard.suit == "coins") {
-        let reward = coinsItemsTable[lastDrawnCard.value - 1];
-        playerGoldCoins += reward.goldCoins;
-        feedbackMessage += ` Tu reçois ${reward.goldCoins} pièces d'or`;
-        updatePlayerGoldCoins();
-
-        if (reward.actionPoints) {
-            playerActionPoint += reward.actionPoints;
-            feedbackMessage += ` et ${reward.actionPoints} point d'action`;
-            updatePlayerActionPoints();
-        }
-    }
-    
-    if (lastDrawnCard.suit == "swords") {
-        let reward = swordsItemsTable[lastDrawnCard.value - 1];
-        reward.equipped = false;
-        addToInventory(reward);
-        feedbackMessage += ` Tu reçois ${reward.preposition}${reward.name} (${reward.description})`;
-        //console.log(inventory);
-    }
-
-    feedbackMessage += `.`;
-    gameMessage(feedbackMessage);
-});
+btnRaceRoll.onclick = choosePlayerRace;
+btnTraitRoll.onclick = choosePlayerTrait;
+btnCardDraw.onclick = draw;
 
 btnInventoryCheckmarks.forEach(checkmark => {
     checkmark.addEventListener("click", e => {
@@ -171,7 +123,9 @@ btnInventoryCheckmarks.forEach(checkmark => {
     });
 });
 
-// Extract data from jsons
+
+// #region Extract data from jsons
+
 fetch("resources/data-tables/intelligent-races.json")
     .then(response => {
         return response.json();
@@ -238,18 +192,177 @@ fetch("resources/data-tables/swords-items.json")
         console.error(error);
     });
 
+// #endregion
+
+function choosePlayerRace() {
+    const roll = getRandomInt(intelligentRacesTable.length) + 1;
+
+    playerRace = structuredClone(intelligentRacesTable[roll - 1]);
+    console.log(intelligentRacesTable);
+
+    if (playerRace.raceName == "Non-Être") {
+        gameMessage(`${roll} ! - ${playerRace.raceName}.
+        Les Non-Êtres sont des créatures instables. tu vas devoir tirer tes stats au hasard.
+        Lance un D100 pour tes points de vie.`);
+        restorePlayerHealth();
+        updatePlayerStats();
+        generateNonBeingPlayer();
+        return;
+    }
+    gameMessage(`${roll} ! - ${playerRace.raceName}`);
+
+    restorePlayerHealth();
+    updatePlayerStats();
+}
+
+function choosePlayerTrait() {
+    const roll = getRandomInt(strongTraitsTable.length) + 1;
+
+    playerTrait = structuredClone(strongTraitsTable[roll - 1]);
+
+    gameMessage(`${roll} ! - ${playerTrait.traitName}`);
+    restorePlayerHealth();
+    updatePlayerStats();
+}
+
+//#region Non-Being Generation
+function generateNonBeingPlayer() {
+    btn1.innerText = "Lancer un D100";
+    btn1.onclick = generateNonBeingHitPoints;
+}
+
+function generateNonBeingHitPoints() {
+    const roll = getRandomInt(100) + 1;
+    
+    playerRace.hitPoints = roll;
+
+    restorePlayerHealth();
+    updatePlayerStats();
+    gameMessage(`${roll} !
+    Maintenant lance à nouveau un D100 pour ta stat de force.`);
+
+    btn1.onclick = generateNonBeingStrength;
+}
+
+function generateNonBeingStrength() {
+    const roll = getRandomInt(100) + 1;
+    
+    playerRace.strength = roll;
+
+    updatePlayerStats();
+    gameMessage(`${roll} !
+    Maintenant lance encore un D100 pour ta stat de vitesse.`);
+
+    btn1.onclick = generateNonBeingSpeed;
+}
+
+function generateNonBeingSpeed() {
+    const roll = getRandomInt(100) + 1;
+    
+    playerRace.speed = roll;
+
+    updatePlayerStats();
+    gameMessage(`${roll} !
+    Et enfin, lance un D100 pour ta stat de magie.`);
+
+    btn1.onclick = generateNonBeingMagic;
+}
+
+function generateNonBeingMagic() {
+    const roll = getRandomInt(100) + 1;
+    
+    playerRace.magic = roll;
+
+    updatePlayerStats();
+    gameMessage(`${roll} !
+    Ça y est ! Voyons maintenant si ton état de Non-Être est suffisamment stable.`);
+    btn1.innerText = "Vérifier"
+    btn1.onclick = checkNonBeingStability;
+}
+
+function checkNonBeingStability() {
+    const totalStats = playerRace.hitPoints + playerRace.strength + playerRace.speed + playerRace.magic; 
+    
+    if (totalStats < 200) {
+        const pointsToAdd = 200 - totalStats;
+        let message = `Ton état de Non-Être est trop fragile. Tu vas devoir rajouter ${pointsToAdd} point`;
+
+        if (pointsToAdd == 1) {
+            message += ` à la caractéristique de ton choix.`;
+        }
+
+        message += `s répartis comme tu le souhaites parmi tes caractéristiques.`;
+
+        gameMessage(message);
+        return;
+    }
+
+    if (totalStats > 300) {
+        gameMessage(`Ton état de Non-Être est trop instable. Tu vas devoir enlever 50 points répartis de la façon dont tu le désire parmi tes caractéristiques.`);
+        return;
+    }
+
+    gameMessage(`C'est bon ! Ton état de Non-Être est suffisamment stable.`);
+}
+//#endregion
+
+function draw() {
+    if (scopaDeck.length <= 0) {
+        gameMessage("La pioche est vide...");
+        return;
+    }
+
+    let feedbackMessage = "";
+    lastDrawnCard = structuredClone(scopaDeck[0]);
+    scopaDeck.shift();
+    //console.log(scopaDeck);
+    updateLastDrawnCard(lastDrawnCard);
+    feedbackMessage += `${lastDrawnCard.description} !`;
+
+    if (lastDrawnCard.suit == "coins") {
+        let reward = structuredClone(coinsItemsTable[lastDrawnCard.value - 1]);
+        playerGoldCoins += reward.goldCoins;
+        feedbackMessage += ` Tu reçois ${reward.goldCoins} pièces d'or`;
+        updatePlayerGoldCoins();
+
+        if (reward.actionPoints) {
+            playerActionPoint += reward.actionPoints;
+            feedbackMessage += ` et ${reward.actionPoints} point d'action`;
+            updatePlayerActionPoints();
+        }
+    }
+    
+    if (lastDrawnCard.suit == "swords") {
+        let reward = structuredClone(swordsItemsTable[lastDrawnCard.value - 1]);
+        reward.equipped = false;
+        addToInventory(reward);
+        feedbackMessage += ` Tu reçois ${reward.preposition}${reward.name} (${reward.description})`;
+        //console.log(inventory);
+    }
+
+    feedbackMessage += `.`;
+    gameMessage(feedbackMessage);
+}
+
+function restorePlayerHealth() {
+    playerHitPoints = getPlayerMaxHitPoints();
+}
 
 function generateIntelligentRace() {
-    return intelligentRacesTable[getRandomInt(intelligentRacesTable.length)];
+    return structuredClone(intelligentRacesTable[getRandomInt(intelligentRacesTable.length)]);
 }
 
 function gameMessage(text) {
-    txtDiceResult.innerText = text;
+    txtDungeonMaster.innerText = text;
 }
 
 function updatePlayerStats() {
     txtPlayerRace.innerText = playerRace.raceName;
-    txtPlayerTrait.innerText = playerTrait.traitName;
+
+    if (playerTrait.traitName) {
+        txtPlayerTrait.innerText = playerTrait.traitName;
+    }
+
     txtPlayerHitPoints.innerText = `${playerHitPoints}/${getPlayerMaxHitPoints()}`;
     txtPlayerStrength.innerText = getPlayerStrength();
     txtPlayerSpeed.innerText = getPlayerSpeed();
@@ -279,24 +392,6 @@ function updateInventory() {
     //console.log(inventory);
 }
 
-function getRandomInt(max) {
-    return Math.floor(Math.random() * max);
-}
-
-function shuffle(array) {
-    let currentIndex = array.length;
-
-    while (currentIndex > 0) {
-        let randomIndex = getRandomInt(currentIndex);
-        currentIndex--;
-
-        // Swap the 2 objects;
-        const temp = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temp;
-    }
-}
-
 function addToInventory(item) {
     for (let i = 0; i < 8; i++) {
         if (inventory[i] == undefined) {
@@ -306,7 +401,7 @@ function addToInventory(item) {
         }
     }
 
-    gameMessage("Plus de place dans l'inventaire.");
+    gameMessage("Votre inventaire est plein.");
 }
 
 function equip(item) {
@@ -352,3 +447,23 @@ function unequip(item) {
     //console.log(inventory);
     updatePlayerStats();
 }
+
+//#region Utilities
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
+
+function shuffle(array) {
+    let currentIndex = array.length;
+
+    while (currentIndex > 0) {
+        let randomIndex = getRandomInt(currentIndex);
+        currentIndex--;
+
+        // Swap the 2 objects;
+        const temp = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temp;
+    }
+}
+//#endregion
