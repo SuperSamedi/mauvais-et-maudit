@@ -14,48 +14,93 @@
     <button type="button" id="btn-race-roll">Lance le dé pour la race de ton personnage</button>
     <button type="button" id="btn-trait-roll">Lance le dé pour le trait de ton personnage</button>
     <button type="button" id="btn-card-draw">Pioche une carte</button>
+    <button type="button" id="btn-fight-monster">Combat</button>
+    
+    <!-- stat adjustment panel -->
+     <div id="stats-adjustment-panel">
+        <div>
+            <span>PV : </span>
+            <button type="button" id="btn-remove-hit-point">-</button>
+            <strong><span id="stats-adjustment-hit-points">0</span></strong>
+            <button type="button" id="btn-add-hit-point">+</button>
+        </div>
+        <div>
+            <span>FO : </span>
+            <button type="button" id="btn-remove-strength">-</button>
+            <strong><span id="stats-adjustment-strength">0</span></strong>
+            <button type="button" id="btn-add-strength">+</button>
+        </div>
+        <div>
+            <span>VI : </span>
+            <button type="button" id="btn-remove-speed">-</button>
+            <strong><span id="stats-adjustment-speed">0</span></strong>
+            <button type="button" id="btn-add-speed">+</button>
+        </div>
+        <div>
+            <span>MA : </span>
+            <button type="button" id="btn-remove-magic">-</button>
+            <strong><span id="stats-adjustment-magic">0</span></strong>
+            <button type="button" id="btn-add-magic">+</button>
+        </div>
+        <br>
+         <button type="button" id="btn-confirm-stats-adjustment" disabled>Confirmer</button>
+     </div>
+
 
     <img id="last-drawn-card" src="" alt="">
-    
-    <br>
-    <span>Race : </span><strong><span id="player-race">aucune</span></strong><br>
-    <span>Trait : </span><strong><span id="player-trait">aucun</span></strong>
-    <br>
-    <br>
-    <section id="player-stats">
-        <h3 class="section-header">Caractéristiques</h3>
-        <div class="align-right">Points de Vie : </div><strong><div id="player-hit-points">100/100</div></strong>
-        <div class="align-right">Force : </div><strong><div id="player-strength">0</div></strong>
-        <div class="align-right">Vitesse : </div><strong><div id="player-speed">0</div></strong>
-        <div class="align-right">Magie : </div><strong><div id="player-magic">0</div></strong>
-    </section>
 
-    <section id="player-resources">
-        <h3 class="section-header">Ressources</h3>
-        <div>PO : </div><strong><div id="gold-pieces">0</div></strong>
-        <div>PA : </div><strong><div id="action-points">0</div></strong>
-    </section>
 
-    <section id="inventory">
-        <h3 class="section-header">Inventaire</h3>
-        <div class="inventory-grid-item equipped-checkmark" data-number="0"></div>
-        <div class="inventory-grid-item item" data-number="0"></div>
-        <div class="inventory-grid-item equipped-checkmark" data-number="1"></div>
-        <div class="inventory-grid-item item" data-number="1"></div>
-        <div class="inventory-grid-item equipped-checkmark" data-number="2"></div>
-        <div class="inventory-grid-item item" data-number="2"></div>
-        <div class="inventory-grid-item equipped-checkmark" data-number="3"></div>
-        <div class="inventory-grid-item item" data-number="3"></div>
-        <div class="inventory-grid-item equipped-checkmark" data-number="4"></div>
-        <div class="inventory-grid-item item" data-number="4"></div>
-        <div class="inventory-grid-item equipped-checkmark" data-number="5"></div>
-        <div class="inventory-grid-item item" data-number="5"></div>
-        <div class="inventory-grid-item equipped-checkmark" data-number="6"></div>
-        <div class="inventory-grid-item item" data-number="6"></div>
-        <div class="inventory-grid-item equipped-checkmark" data-number="7"></div>
-        <div class="inventory-grid-item item" data-number="7"></div>  
-    </section>
+    <div id="character-sheet">
+        <h2>Fiche de Personnage</h2>
+        <section>
+            <span>Nom : </span><strong><input id="player-name" type="text"></strong>
+        </section>
+
+        <section>
+            <span>Race : </span><strong><span id="player-race">aucune</span></strong><br>
+            <span>Trait : </span><strong><span id="player-trait">aucun</span></strong>
+        </section>
+
+        <section id="player-stats">
+            <h3 class="section-header">Caractéristiques</h3>
+            <div class="align-right">Points de Vie : </div><strong><div id="player-hit-points">0/0</div></strong>
+            <div class="align-right">Force : </div><strong><div id="player-strength">0</div></strong>
+            <div class="align-right">Vitesse : </div><strong><div id="player-speed">0</div></strong>
+            <div class="align-right">Magie : </div><strong><div id="player-magic">0</div></strong>
+        </section>
     
+        <section id="player-resources">
+            <h3 class="section-header">Ressources</h3>
+            <div>PO : </div><strong><div id="gold-pieces">0</div></strong>
+            <div>PA : </div><strong><div id="action-points">0</div></strong>
+        </section>
+    
+        <section id="inventory">
+            <h3 class="section-header">Inventaire</h3>
+            <div class="inventory-grid-item equipped-checkmark" data-number="0"></div>
+            <div class="inventory-grid-item item" data-number="0"></div>
+            <div class="inventory-grid-item equipped-checkmark" data-number="1"></div>
+            <div class="inventory-grid-item item" data-number="1"></div>
+            <div class="inventory-grid-item equipped-checkmark" data-number="2"></div>
+            <div class="inventory-grid-item item" data-number="2"></div>
+            <div class="inventory-grid-item equipped-checkmark" data-number="3"></div>
+            <div class="inventory-grid-item item" data-number="3"></div>
+            <div class="inventory-grid-item equipped-checkmark" data-number="4"></div>
+            <div class="inventory-grid-item item" data-number="4"></div>
+            <div class="inventory-grid-item equipped-checkmark" data-number="5"></div>
+            <div class="inventory-grid-item item" data-number="5"></div>
+            <div class="inventory-grid-item equipped-checkmark" data-number="6"></div>
+            <div class="inventory-grid-item item" data-number="6"></div>
+            <div class="inventory-grid-item equipped-checkmark" data-number="7"></div>
+            <div class="inventory-grid-item item" data-number="7"></div>  
+        </section>
+    </div>
+    
+    <script src="utilities.js"></script>
+    <script src="Dice.js"></script>
+    <script src="Inventory.js"></script>
+    <script src="Being.js"></script>
+    <script src="Player.js"></script>
     <script src="game.js"></script>
 </body>
 </html>

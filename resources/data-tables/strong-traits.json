@@ -1,27 +1,27 @@
 [
     {
-        "traitName": "Géant",
+        "name": "Géant",
         "hitPoints": 20
     },
     {
-        "traitName": "Puissant",
+        "name": "Puissant",
         "strength": 20
     },
     {
-        "traitName": "Agile",
+        "name": "Agile",
         "speed": 20
     },
     {
-        "traitName": "Rusé",
+        "name": "Rusé",
         "magic": 20
     },
     {
-        "traitName": "Immense",
+        "name": "Immense",
         "hitPoints": 30,
         "speed": -10
     },
     {
-        "traitName": "Costaud",
+        "name": "Costaud",
         "hitPoints": 10,
         "strength": 10
     }

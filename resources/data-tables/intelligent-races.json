@@ -1,48 +1,135 @@
 [
     {
-        "raceName": "Humain",
+        "name": "Humain",
         "hitPoints": 100,
         "strength": 50,
         "speed": 50,
         "magic": 50
     },
     {
-        "raceName": "Elfe",
+        "name": "Elfe",
         "hitPoints": 80,
         "strength": 40,
         "speed": 70,
         "magic": 60
     },
     {
-        "raceName": "Ogre",
+        "name": "Ogre",
         "hitPoints": 160,
         "strength": 80,
         "speed": 10,
         "magic": 0
     },
     {
-        "raceName": "Vampire",
+        "name": "Vampire",
         "hitPoints": 60,
         "strength": 60,
         "speed": 60,
         "magic": 70
     },
     {
-        "raceName": "Gnome",
+        "name": "Gnome",
         "hitPoints": 70,
         "strength": 30,
         "speed": 60,
         "magic": 90
     },
     {
-        "raceName": "Centaure",
+        "name": "Centaure",
         "hitPoints": 110,
         "strength": 60,
         "speed": 60,
         "magic": 20
     },
     {
-        "raceName": "Non-Être"
+        "name": "Momie",
+        "hitPoints": 100,
+        "strength": 40,
+        "speed": 40,
+        "magic": 7
+    },
+    {
+        "name": "Fantôme",
+        "hitPoints": 50,
+        "strength": 10,
+        "speed": 80,
+        "magic": 110
+    },
+    {
+        "name": "Saurien",
+        "hitPoints": 120,
+        "strength": 60,
+        "speed": 40,
+        "magic": 30
+    },
+    {
+        "name": "Squelette",
+        "hitPoints": 60,
+        "strength": 70,
+        "speed": 70,
+        "magic": 50
+    },
+    {
+        "name": "Ondin",
+        "hitPoints": 110,
+        "strength": 40,
+        "speed": 40,
+        "magic": 60
+    },
+    {
+        "name": "Démon",
+        "hitPoints": 90,
+        "strength": 50,
+        "speed": 50,
+        "magic": 60
+    },
+    {
+        "name": "Golem",
+        "hitPoints": 140,
+        "strength": 70,
+        "speed": 20,
+        "magic": 2
+    },
+    {
+        "name": "Orc",
+        "hitPoints": 120,
+        "strength": 70,
+        "speed": 50,
+        "magic": 10
+    },
+    {
+        "name": "Insectoïde",
+        "hitPoints": 90,
+        "strength": 50,
+        "speed": 70,
+        "magic": 40
+    },
+    {
+        "name": "Loup-garou",
+        "hitPoints": 110,
+        "strength": 70,
+        "speed": 50,
+        "magic": 20
+    },
+    {
+        "name": "E.T.",
+        "hitPoints": 60,
+        "strength": 30,
+        "speed": 40,
+        "magic": 120
+    },
+    {
+        "name": "Plantiforme",
+        "hitPoints": 140,
+        "strength": 10,
+        "speed": 10,
+        "magic": 90
+    },
+    {
+        "name": "Non-Être"
+    },
+    {
+        "name": "Hybride"
     }
 
 ]

@@ -1,0 +1,135 @@
+[
+    {
+        "name": "Sphynx",
+        "hitPoints": 150,
+        "strength": 30,
+        "speed": 10,
+        "magic": 60
+    },
+    {
+        "name": "Licorne",
+        "hitPoints": 110,
+        "strength": 30,
+        "speed": 60,
+        "magic": 50
+    },
+    {
+        "name": "Cyclope",
+        "hitPoints": 160,
+        "strength": 80,
+        "speed": 10,
+        "magic": 0
+    },
+    {
+        "name": "Loup",
+        "hitPoints": 110,
+        "strength": 60,
+        "speed": 70,
+        "magic": 10
+    },
+    {
+        "name": "Hydre",
+        "hitPoints": 130,
+        "strength": 50,
+        "speed": 40,
+        "magic": 30
+    },
+    {
+        "name": "Araignée",
+        "hitPoints": 80,
+        "strength": 80,
+        "speed": 80,
+        "magic": 10
+    },
+    {
+        "name": "Griffon",
+        "hitPoints": 130,
+        "strength": 40,
+        "speed": 60,
+        "magic": 20
+    },
+    {
+        "name": "Goule",
+        "hitPoints": 80,
+        "strength": 50,
+        "speed": 50,
+        "magic": 70
+    },
+    {
+        "name": "Dragon",
+        "hitPoints": 140,
+        "strength": 40,
+        "speed": 20,
+        "magic": 50
+    },
+    {
+        "name": "Visqueux",
+        "hitPoints": 160,
+        "strength": 40,
+        "speed": 40,
+        "magic": 10
+    },
+    {
+        "name": "Pégase",
+        "hitPoints": 100,
+        "strength": 30,
+        "speed": 70,
+        "magic": 50
+    },
+    {
+        "name": "Harpie",
+        "hitPoints": 90,
+        "strength": 60,
+        "speed": 70,
+        "magic": 30
+    },
+    {
+        "name": "Ours",
+        "hitPoints": 120,
+        "strength": 80,
+        "speed": 40,
+        "magic": 10
+    },
+    {
+        "name": "Abomination",
+        "hitPoints": 90,
+        "strength": 90,
+        "speed": 60,
+        "magic": 10
+    },
+    {
+        "name": "Coquatrix",
+        "hitPoints": 110,
+        "strength": 70,
+        "speed": 50,
+        "magic": 20
+    },
+    {
+        "name": "Chimère",
+        "hitPoints": 110,
+        "strength": 50,
+        "speed": 40,
+        "magic": 50
+    },
+    {
+        "name": "Génie",
+        "hitPoints": 90,
+        "strength": 30,
+        "speed": 40,
+        "magic": 90
+    },
+    {
+        "name": "Gargouille",
+        "hitPoints": 110,
+        "strength": 60,
+        "speed": 20,
+        "magic": 60
+    },
+    {
+        "name": "Parasite"
+    },
+    {
+        "name": "Métamorphe"
+    }
+
+]
