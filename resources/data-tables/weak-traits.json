@@ -1,0 +1,18 @@
+[
+  {
+    "name": "Chétif",
+    "hitPoints": -30
+  },
+  {
+    "name": "Faible",
+    "strength": -15
+  },
+  {
+    "name": "Lent",
+    "speed": -15
+  },
+  {
+    "name": "Idiot",
+    "magic": -20
+  }
+]

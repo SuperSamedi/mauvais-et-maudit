@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,95 +8,114 @@
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <div id="dungeon-master-text">xx</div>
+    <div id="game">
+        <div id="character-sheet">
+            <h2>Fiche de Personnage</h2>
+            <section>
+                <span>Nom : </span><strong><input id="player-name" type="text"></strong>
+            </section>
 
-    <button type="button" id="btn1">1</button>
-    <button type="button" id="btn-race-roll">Lance le dé pour la race de ton personnage</button>
-    <button type="button" id="btn-trait-roll">Lance le dé pour le trait de ton personnage</button>
-    <button type="button" id="btn-card-draw">Pioche une carte</button>
-    <button type="button" id="btn-fight-monster">Combat</button>
-    
-    <!-- stat adjustment panel -->
-     <div id="stats-adjustment-panel">
-        <div>
-            <span>PV : </span>
-            <button type="button" id="btn-remove-hit-point">-</button>
-            <strong><span id="stats-adjustment-hit-points">0</span></strong>
-            <button type="button" id="btn-add-hit-point">+</button>
+            <section>
+                <span>Race : </span><strong><span id="player-race">playerRace</span></strong><br>
+                <span>Trait : </span><strong><span id="player-trait">playerTrait</span></strong>
+            </section>
+
+            <section id="player-stats">
+                <h3 class="section-header">Caractéristiques</h3>
+                <div class="align-right">Points de Vie : </div><strong>
+                    <div id="player-hit-points">playerHitPoints/playerMaxHitPoints</div>
+                </strong>
+                <div class="align-right">Force : </div><strong>
+                    <div id="player-strength">playerStrength</div>
+                </strong>
+                <div class="align-right">Vitesse : </div><strong>
+                    <div id="player-speed">playerSpeed</div>
+                </strong>
+                <div class="align-right">Magie : </div><strong>
+                    <div id="player-magic">playerMagic</div>
+                </strong>
+            </section>
+
+            <section id="player-resources">
+                <h3 class="section-header">Ressources</h3>
+                <div>PO : </div><strong>
+                    <div id="gold-pieces">playerGoldCoins</div>
+                </strong>
+                <div>PA : </div><strong>
+                    <div id="action-points">playerActionPoints</div>
+                </strong>
+                <div>XP : </div><strong>
+                    <div id="experience-points">playerExperiencePoints</div>
+                </strong>
+            </section>
+
+            <section id="inventory">
+                <h3 class="section-header">Inventaire</h3>
+                <div class="inventory-grid-item equipped-checkmark" data-number="0"></div>
+                <div class="inventory-grid-item item" data-number="0"></div>
+                <div class="inventory-grid-item equipped-checkmark" data-number="1"></div>
+                <div class="inventory-grid-item item" data-number="1"></div>
+                <div class="inventory-grid-item equipped-checkmark" data-number="2"></div>
+                <div class="inventory-grid-item item" data-number="2"></div>
+                <div class="inventory-grid-item equipped-checkmark" data-number="3"></div>
+                <div class="inventory-grid-item item" data-number="3"></div>
+                <div class="inventory-grid-item equipped-checkmark" data-number="4"></div>
+                <div class="inventory-grid-item item" data-number="4"></div>
+                <div class="inventory-grid-item equipped-checkmark" data-number="5"></div>
+                <div class="inventory-grid-item item" data-number="5"></div>
+                <div class="inventory-grid-item equipped-checkmark" data-number="6"></div>
+                <div class="inventory-grid-item item" data-number="6"></div>
+                <div class="inventory-grid-item equipped-checkmark" data-number="7"></div>
+                <div class="inventory-grid-item item" data-number="7"></div>
+            </section>
         </div>
-        <div>
-            <span>FO : </span>
-            <button type="button" id="btn-remove-strength">-</button>
-            <strong><span id="stats-adjustment-strength">0</span></strong>
-            <button type="button" id="btn-add-strength">+</button>
+
+        <div id="main">
+            <div id="dungeon-master-text">xx</div>
+
+            <div id="controls">
+
+                <div>
+                    <img id="deck" class="card" src="assets/card-back-1.png" alt="Card Back">
+                </div>
+
+                <div id="buttons">
+                    <button type="button" id="btn1">1</button>
+                    <button type="button" id="btn2">2</button>
+                    <button type="button" id="btn-race-roll">Lance le dé pour la race de ton personnage</button>
+                    <button type="button" id="btn-trait-roll">Lance le dé pour le trait de ton personnage</button>
+                    <button type="button" id="btn-card-draw">Pioche une carte</button>
+                    <button type="button" id="btn-fight-monster">Combat</button>
+
+                    <!-- stats adjustment panel -->
+                    <div id="stats-adjustment-panel">
+                        <div class="align-right bold">PV : </div>
+                        <button type="button" id="btn-remove-hit-point">-</button>
+                        <div id="stats-adjustment-hit-points" class="align-center bold">playerHitPints</div>
+                        <button type="button" id="btn-add-hit-point">+</button>
+                        <div class="align-right bold">FO : </div>
+                        <button type="button" id="btn-remove-strength">-</button>
+                        <div id="stats-adjustment-strength" class="align-center bold">playerStrength</div>
+                        <button type="button" id="btn-add-strength">+</button>
+                        <div class="align-right bold">VI : </div>
+                        <button type="button" id="btn-remove-speed">-</button>
+                        <div id="stats-adjustment-speed" class="align-center bold">playerSpeed</div>
+                        <button type="button" id="btn-add-speed">+</button>
+                        <div class="align-right bold">MA : </div>
+                        <button type="button" id="btn-remove-magic">-</button>
+                        <div id="stats-adjustment-magic" class="align-center bold">playerMagic</div>
+                        <button type="button" id="btn-add-magic">+</button>
+                    </div>
+                    <button type="button" id="btn-confirm-stats-adjustment" disabled>Confirmer</button>
+                </div>
+
+
+            </div>
         </div>
-        <div>
-            <span>VI : </span>
-            <button type="button" id="btn-remove-speed">-</button>
-            <strong><span id="stats-adjustment-speed">0</span></strong>
-            <button type="button" id="btn-add-speed">+</button>
-        </div>
-        <div>
-            <span>MA : </span>
-            <button type="button" id="btn-remove-magic">-</button>
-            <strong><span id="stats-adjustment-magic">0</span></strong>
-            <button type="button" id="btn-add-magic">+</button>
-        </div>
-        <br>
-         <button type="button" id="btn-confirm-stats-adjustment" disabled>Confirmer</button>
-     </div>
-
-
-    <img id="last-drawn-card" src="" alt="">
-
-
-    <div id="character-sheet">
-        <h2>Fiche de Personnage</h2>
-        <section>
-            <span>Nom : </span><strong><input id="player-name" type="text"></strong>
-        </section>
-
-        <section>
-            <span>Race : </span><strong><span id="player-race">aucune</span></strong><br>
-            <span>Trait : </span><strong><span id="player-trait">aucun</span></strong>
-        </section>
-
-        <section id="player-stats">
-            <h3 class="section-header">Caractéristiques</h3>
-            <div class="align-right">Points de Vie : </div><strong><div id="player-hit-points">0/0</div></strong>
-            <div class="align-right">Force : </div><strong><div id="player-strength">0</div></strong>
-            <div class="align-right">Vitesse : </div><strong><div id="player-speed">0</div></strong>
-            <div class="align-right">Magie : </div><strong><div id="player-magic">0</div></strong>
-        </section>
-    
-        <section id="player-resources">
-            <h3 class="section-header">Ressources</h3>
-            <div>PO : </div><strong><div id="gold-pieces">0</div></strong>
-            <div>PA : </div><strong><div id="action-points">0</div></strong>
-        </section>
-    
-        <section id="inventory">
-            <h3 class="section-header">Inventaire</h3>
-            <div class="inventory-grid-item equipped-checkmark" data-number="0"></div>
-            <div class="inventory-grid-item item" data-number="0"></div>
-            <div class="inventory-grid-item equipped-checkmark" data-number="1"></div>
-            <div class="inventory-grid-item item" data-number="1"></div>
-            <div class="inventory-grid-item equipped-checkmark" data-number="2"></div>
-            <div class="inventory-grid-item item" data-number="2"></div>
-            <div class="inventory-grid-item equipped-checkmark" data-number="3"></div>
-            <div class="inventory-grid-item item" data-number="3"></div>
-            <div class="inventory-grid-item equipped-checkmark" data-number="4"></div>
-            <div class="inventory-grid-item item" data-number="4"></div>
-            <div class="inventory-grid-item equipped-checkmark" data-number="5"></div>
-            <div class="inventory-grid-item item" data-number="5"></div>
-            <div class="inventory-grid-item equipped-checkmark" data-number="6"></div>
-            <div class="inventory-grid-item item" data-number="6"></div>
-            <div class="inventory-grid-item equipped-checkmark" data-number="7"></div>
-            <div class="inventory-grid-item item" data-number="7"></div>  
-        </section>
     </div>
-    
+
     <script src="utilities.js"></script>
     <script src="Dice.js"></script>
     <script src="Inventory.js"></script>
@@ -103,4 +123,5 @@
     <script src="Player.js"></script>
     <script src="game.js"></script>
 </body>
+
 </html>

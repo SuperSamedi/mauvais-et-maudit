@@ -1,28 +1,28 @@
 [
-    {
-        "name": "Géant",
-        "hitPoints": 20
-    },
-    {
-        "name": "Puissant",
-        "strength": 20
-    },
-    {
-        "name": "Agile",
-        "speed": 20
-    },
-    {
-        "name": "Rusé",
-        "magic": 20
-    },
-    {
-        "name": "Immense",
-        "hitPoints": 30,
-        "speed": -10
-    },
-    {
-        "name": "Costaud",
-        "hitPoints": 10,
-        "strength": 10
-    }
+  {
+    "name": "Géant",
+    "hitPoints": 20
+  },
+  {
+    "name": "Puissant",
+    "strength": 20
+  },
+  {
+    "name": "Agile",
+    "speed": 20
+  },
+  {
+    "name": "Rusé",
+    "magic": 20
+  },
+  {
+    "name": "Immense",
+    "hitPoints": 30,
+    "speed": -10
+  },
+  {
+    "name": "Costaud",
+    "hitPoints": 10,
+    "strength": 10
+  }
 ]

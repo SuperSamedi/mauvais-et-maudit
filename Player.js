@@ -8,131 +8,220 @@ const txtPlayerMagic = document.getElementById("player-magic");
 
 const txtPlayerGoldCoins = document.getElementById("gold-pieces");
 const txtPlayerActionPoints = document.getElementById("action-points");
+const txtPlayerExperiencePoints = document.getElementById("experience-points")
 
+class Player {
+  #hitPoints;
+  #goldCoins;
+  #actionPoints;
+  #experiencePoints;
 
-class Player extends Being {
-    #goldCoins;
-    #actionPoints;
+  constructor() {
+    this.inventory = new Inventory();
+    this.race = { name: "aucune" };
+    this.traits = new Array({ name: "aucun" });
+    this.#hitPoints = 0;
+    this.#goldCoins = 0;
+    this.#actionPoints = 2;
+    this.#experiencePoints = 0;
+    this.updateAllVisuals();
+  }
 
-    constructor() {
-        super();
-        this.inventory = new Inventory();
-        this.#goldCoins = 0;
-        this.#actionPoints = 2;
+  get hitPoints() {
+    return this.#hitPoints;
+  }
+
+  set hitPoints(value) {
+    this.#hitPoints = clamp(value, 0, this.maxHitPoints);
+    this.updateHitPointsVisuals();
+  }
+
+  get maxHitPoints() {
+    let stat = 0;
+
+    if (this.race.hitPoints) {
+      stat += this.race.hitPoints;
     }
 
-
-    get maxHitPoints() {
-        let stat = 0;
-
-        if (this.race.hitPoints) {
-            stat += this.race.hitPoints;
+    if (this.traits) {
+      this.traits.forEach((trait) => {
+        if (trait.hitPoints) {
+          stat += trait.hitPoints;
         }
+      });
+    }
 
-        if (this.trait.hitPoints) {
-            stat += this.trait.hitPoints;
+    return stat;
+  }
+
+  get strength() {
+    let stat = 0;
+
+    if (this.race.strength) {
+      stat += this.race.strength;
+    }
+
+    if (this.traits) {
+      this.traits.forEach((trait) => {
+        if (trait.strength) {
+          stat += trait.strength;
         }
-
-        return stat;
+      });
     }
 
-    get strength() {
-        let stat = 0;
+    this.inventory.slots.forEach((item) => {
+      if (item.equipped == true && item.strength) {
+        stat += item.strength;
+      }
+    });
 
-        if (this.race.strength) {
-            stat += this.race.strength;
+    return stat;
+  }
+
+  get speed() {
+    let stat = 0;
+
+    if (this.race.speed) {
+      stat += this.race.speed;
+    }
+
+    if (this.traits) {
+      this.traits.forEach((trait) => {
+        if (trait.speed) {
+          stat += trait.speed;
         }
+      });
+    }
 
-        if (this.trait.strength) {
-            stat += this.trait.strength;
+    this.inventory.slots.forEach((item) => {
+      if (item.equipped && item.speed) {
+        stat += item.speed;
+      }
+    });
+
+    return stat;
+  }
+
+  get magic() {
+    let stat = 0;
+
+    if (this.race.magic) {
+      stat += this.race.magic;
+    }
+
+    if (this.traits) {
+      this.traits.forEach((trait) => {
+        if (trait.magic) {
+          stat += trait.magic;
         }
-
-        this.inventory.slots.forEach(item => {
-            if (item.equipped == true && item.strength) {
-                stat += item.strength;
-            }
-        });
-
-        return stat;
+      });
     }
 
-    get speed() {
-        let stat = 0;
+    this.inventory.slots.forEach((item) => {
+      if (item.equipped && item.magic) {
+        stat += item.magic;
+      }
+    });
 
-        if (this.race.speed) {
-            stat += this.race.speed;
-        }
+    return stat;
+  }
 
-        if (this.trait.speed) {
-            stat += this.trait.speed;
-        }
+  get goldCoins() {
+    return this.#goldCoins;
+  }
 
-        this.inventory.slots.forEach(item => {
-            if (item.equipped && item.speed) {
-                stat += item.speed;
-            }
-        });
+  set goldCoins(value) {
+    if (value <= 0) {
+      this.#goldCoins = 0;
+      this.updateGoldCoinsVisuals();
+      return;
+    }
+    this.#goldCoins = value;
+    this.updateGoldCoinsVisuals();
+  }
 
-        return stat;
+  get actionPoints() {
+    return this.#actionPoints;
+  }
+
+  set actionPoints(value) {
+    if (value <= 0) {
+      this.#actionPoints = 0;
+      this.updateActionPointsVisuals();
+      return;
+    }
+    this.#actionPoints = value;
+    this.updateActionPointsVisuals()
+  }
+
+  get experiencePoints() {
+    return this.#experiencePoints;
+  }
+
+  set experiencePoints(value) {
+    if (value <= 0) {
+      this.#experiencePoints = 0;
+      this.updateExperiencePointsVisuals();
+      return
     }
 
-    get magic() {
-        let stat = 0;
+    this.#experiencePoints = value;
+    this.updateExperiencePointsVisuals();
+  }
 
-        if (this.race.magic) {
-            stat += this.race.magic;
-        }
+  restoreHitPoints() {
+    this.hitPoints = this.maxHitPoints;
+    this.updateHitPointsVisuals();
+  }
 
-        if (this.trait.magic) {
-            stat += this.trait.magic;
-        }
+  updateAllVisuals() {
+    this.updateRaceVisuals()
+    this.updateTraitVisuals()
+    this.updateHitPointsVisuals()
+    this.updateStrengthVisuals()
+    this.updateSpeedVisuals()
+    this.updateMagicVisuals()
+    this.updateGoldCoinsVisuals()
+    this.updateActionPointsVisuals()
+    this.updateExperiencePointsVisuals()
+  }
 
-        this.inventory.slots.forEach(item => {
-            if (item.equipped && item.magic) {
-                stat += item.magic;
-            }
-        })
+  //Race et Trait
+  updateRaceVisuals() {
+    txtPlayerRace.innerText = this.race.name;
+  }
+  updateTraitVisuals() {
+    txtPlayerTrait.innerText = this.traits[0].name;
+  }
 
-        return stat;
-    }
+  //Stats
+  updateStatsVisuals() {
+    this.updateHitPointsVisuals()
+    this.updateStrengthVisuals()
+    this.updateSpeedVisuals()
+    this.updateMagicVisuals()
+  }
+  updateHitPointsVisuals() {
+    txtPlayerHitPoints.innerText = `${this.hitPoints}/${this.maxHitPoints}`;
+  }
+  updateStrengthVisuals() {
+    txtPlayerStrength.innerText = this.strength;
+  }
+  updateSpeedVisuals() {
+    txtPlayerSpeed.innerText = this.speed;
+  }
+  updateMagicVisuals() {
+    txtPlayerMagic.innerText = this.magic;
+  }
 
-    get goldCoins() {
-        return this.#goldCoins;
-    }
-
-    set goldCoins(value) {
-        this.#goldCoins = value;
-        this.updateVisuals();
-    }
-
-    get actionPoints() {
-        return this.#actionPoints;
-    }
-
-    set actionPoints(value) {
-        this.#actionPoints = value;
-        this.updateVisuals();
-    }
-
-    restoreHealth() {
-        this.hitPoints = this.maxHitPoints;
-        this.updateVisuals();
-    }
-
-    updateVisuals() {
-        //Race et Trait
-        txtPlayerRace.innerText = this.race.name;
-        txtPlayerTrait.innerText = this.trait.name;
-
-        //Stats
-        txtPlayerHitPoints.innerText = `${this.hitPoints}/${this.maxHitPoints}`;
-        txtPlayerStrength.innerText = this.strength;
-        txtPlayerSpeed.innerText = this.speed;
-        txtPlayerMagic.innerText = this.magic;
-
-        //Ressources
-        txtPlayerGoldCoins.innerText = this.goldCoins;
-        txtPlayerActionPoints.innerText = this.actionPoints;
-    }
-
+  //Ressources
+  updateGoldCoinsVisuals() {
+    txtPlayerGoldCoins.innerText = this.goldCoins;
+  }
+  updateActionPointsVisuals() {
+    txtPlayerActionPoints.innerText = this.actionPoints;
+  }
+  updateExperiencePointsVisuals() {
+    txtPlayerExperiencePoints.innerText = this.experiencePoints;
+  }
 }

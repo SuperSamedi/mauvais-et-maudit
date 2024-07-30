@@ -1,35 +1,35 @@
 [
-    {
-        "goldCoins": 400
-    },
-    {
-        "goldCoins": 100
-    },
-    {
-        "goldCoins": 150
-    },
-    {
-        "goldCoins": 200
-    },
-    {
-        "goldCoins": 250
-    },
-    {
-        "goldCoins": 300
-    },
-    {
-        "goldCoins": 350
-    },
-    {
-        "goldCoins": 100,
-        "actionPoints": 1
-    },
-    {
-        "goldCoins": 200,
-        "actionPoints": 1
-    },
-    {
-        "goldCoins": 250,
-        "actionPoints": 1
-    }
+  {
+    "goldCoins": 400
+  },
+  {
+    "goldCoins": 100
+  },
+  {
+    "goldCoins": 150
+  },
+  {
+    "goldCoins": 200
+  },
+  {
+    "goldCoins": 250
+  },
+  {
+    "goldCoins": 300
+  },
+  {
+    "goldCoins": 350
+  },
+  {
+    "goldCoins": 100,
+    "actionPoints": 1
+  },
+  {
+    "goldCoins": 200,
+    "actionPoints": 1
+  },
+  {
+    "goldCoins": 250,
+    "actionPoints": 1
+  }
 ]

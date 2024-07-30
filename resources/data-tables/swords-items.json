@@ -1,109 +1,109 @@
 [
-    {
-        "type": "weapon",
-        "name": "Dague",
-        "preposition": "une ",
-        "description": "Force +5, Vitesse +5",
-        "strength": 5,
-        "speed": 5,
-        "buyValue": 250,
-        "sellValue": 100,
-        "equippable": true
-    },
-    {
-        "type": "weapon",
-        "name": "Masse",
-        "preposition": "une ",
-        "description": "Force +10",
-        "strength": 10,
-        "buyValue": 250,
-        "sellValue": 100,
-        "equippable": true
-    },
-    {
-        "type": "weapon",
-        "name": "Hache",
-        "preposition": "une ",
-        "description": "Force +15",
-        "strength": 15,
-        "buyValue": 350,
-        "sellValue": 150,
-        "equippable": true
-    },
-    {
-        "type": "weapon",
-        "name": "Lance",
-        "preposition": "une ",
-        "description": "Force +10, Vitesse +5",
-        "strength": 10,
-        "speed": 5,
-        "buyValue": 350,
-        "sellValue": 150,
-        "equippable": true
-    },
-    {
-        "type": "weapon",
-        "name": "Épée",
-        "preposition": "une ",
-        "description": "Force +15, Vitesse +5",
-        "strength": 15,
-        "speed": 5,
-        "buyValue": 420,
-        "sellValue": 200,
-        "equippable": true
-    },
-    {
-        "type": "weapon",
-        "name": "Bâton Magique",
-        "preposition": "un ",
-        "description": "Magie +15",
-        "magic": 15,
-        "buyValue": 450,
-        "sellValue": 200,
-        "equippable": true
-    },
-    {
-        "type": "weapon",
-        "name": "Espadon",
-        "preposition": "un ",
-        "description": "Force +25, Vitesse -5",
-        "strength": 25,
-        "speed": -5,
-        "buyValue": 500,
-        "sellValue": 250,
-        "equippable": true
-    },
-    {
-        "type": "weapon",
-        "name": "Sabre Stellaire",
-        "preposition": "le ",
-        "description": "Force +25, Vitesse +5",
-        "strength": 25,
-        "speed": 5,
-        "buyValue": 750,
-        "sellValue": 350,
-        "equippable": true
-    },
-    {
-        "type": "weapon",
-        "name": "Arc Spectral",
-        "preposition": "l'",
-        "description": "Force +10, Vitesse +25",
-        "strength": 10,
-        "speed": 25,
-        "buyValue": 750,
-        "sellValue": 350,
-        "equippable": true
-    },
-    {
-        "type": "weapon",
-        "name": "Sceptre de la Nuit",
-        "preposition": "le ",
-        "description": "Vitesse +10, Magie +25",
-        "speed": 10,
-        "magic": 25,
-        "buyValue": 800,
-        "sellValue": 350,
-        "equippable": true
-    }
+  {
+    "type": "weapon",
+    "name": "Dague",
+    "preposition": "une ",
+    "description": "Force +5, Vitesse +5",
+    "strength": 5,
+    "speed": 5,
+    "buyValue": 250,
+    "sellValue": 100,
+    "equippable": true
+  },
+  {
+    "type": "weapon",
+    "name": "Masse",
+    "preposition": "une ",
+    "description": "Force +10",
+    "strength": 10,
+    "buyValue": 250,
+    "sellValue": 100,
+    "equippable": true
+  },
+  {
+    "type": "weapon",
+    "name": "Hache",
+    "preposition": "une ",
+    "description": "Force +15",
+    "strength": 15,
+    "buyValue": 350,
+    "sellValue": 150,
+    "equippable": true
+  },
+  {
+    "type": "weapon",
+    "name": "Lance",
+    "preposition": "une ",
+    "description": "Force +10, Vitesse +5",
+    "strength": 10,
+    "speed": 5,
+    "buyValue": 350,
+    "sellValue": 150,
+    "equippable": true
+  },
+  {
+    "type": "weapon",
+    "name": "Épée",
+    "preposition": "une ",
+    "description": "Force +15, Vitesse +5",
+    "strength": 15,
+    "speed": 5,
+    "buyValue": 420,
+    "sellValue": 200,
+    "equippable": true
+  },
+  {
+    "type": "weapon",
+    "name": "Bâton Magique",
+    "preposition": "un ",
+    "description": "Magie +15",
+    "magic": 15,
+    "buyValue": 450,
+    "sellValue": 200,
+    "equippable": true
+  },
+  {
+    "type": "weapon",
+    "name": "Espadon",
+    "preposition": "un ",
+    "description": "Force +25, Vitesse -5",
+    "strength": 25,
+    "speed": -5,
+    "buyValue": 500,
+    "sellValue": 250,
+    "equippable": true
+  },
+  {
+    "type": "weapon",
+    "name": "Sabre Stellaire",
+    "preposition": "le ",
+    "description": "Force +25, Vitesse +5",
+    "strength": 25,
+    "speed": 5,
+    "buyValue": 750,
+    "sellValue": 350,
+    "equippable": true
+  },
+  {
+    "type": "weapon",
+    "name": "Arc Spectral",
+    "preposition": "l'",
+    "description": "Force +10, Vitesse +25",
+    "strength": 10,
+    "speed": 25,
+    "buyValue": 750,
+    "sellValue": 350,
+    "equippable": true
+  },
+  {
+    "type": "weapon",
+    "name": "Sceptre de la Nuit",
+    "preposition": "le ",
+    "description": "Vitesse +10, Magie +25",
+    "speed": 10,
+    "magic": 25,
+    "buyValue": 800,
+    "sellValue": 350,
+    "equippable": true
+  }
 ]

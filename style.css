@@ -1,57 +1,122 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+#game {
+  display: flex;
+  flex-direction: row;
+  padding: 15px;
+  gap: 15px;
+}
+
+#character-sheet {
+  background-color: white;
+  padding: 10px;
+}
+
+#main {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#dungeon-master-text {
+  width: 1000px;
+  height: 200px;
+  border: 2px solid black;
+  background-color: rgb(100, 100, 100);
+  padding: 10px;
+  color: rgb(243, 243, 243);
+  font-weight: bold;
+  font-size: large;
+}
+
+#controls {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
 section {
-    border: 2px solid black;
-    margin: 5px;
-    padding: 3px;
-    width: 400px;
+  border: 2px solid black;
+  margin: 5px;
+  padding: 3px;
+  width: 400px;
 }
 
 .section-header {
-    margin: 5px;
-    font-weight: bold;
-    font-size: large;
-    grid-column-start: 1;
-    grid-column-end: 3;
+  margin: 5px;
+  font-weight: bold;
+  font-size: large;
+  grid-column-start: 1;
+  grid-column-end: 3;
 }
 
 #inventory {
-    display: grid;
-    grid-template-columns: 30px auto;
-    gap: 3px;
+  display: grid;
+  grid-template-columns: 30px auto;
+  gap: 3px;
 }
 
-#inventory>.section-header {
-    grid-column-start: 1;
-    grid-column-end: 3;
+#inventory > .section-header {
+  grid-column-start: 1;
+  grid-column-end: 3;
 }
 
 .inventory-grid-item {
-    background-color: lightgray;
-    height: 30px;
-    vertical-align: middle;
-    line-height: 30px;
-    font-weight: bold;
+  background-color: lightgray;
+  height: 30px;
+  vertical-align: middle;
+  line-height: 30px;
+  font-weight: bold;
 }
 
 .equipped-checkmark {
-    text-align: center;
+  text-align: center;
 }
 
 .item {
-    padding: 0 5px;
+  padding: 0 5px;
 }
 
 #player-resources {
-    display: grid;
-    grid-template-columns: 30px auto;
-    gap: 3px;
+  display: grid;
+  grid-template-columns: 30px auto;
+  gap: 3px;
 }
 
 #player-stats {
-    display: grid;
-    grid-template-columns: 100px auto;
-    gap: 3px;
+  display: grid;
+  grid-template-columns: 100px auto;
+  gap: 3px;
 }
 
 .align-right {
-    text-align: end;
+  text-align: end;
+}
+
+.align-center {
+  text-align: center;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+#stats-adjustment-panel {
+  display: grid;
+  grid-template-columns: 40px 30px 30px 30px;
+  align-items: center;
+}
+
+.card {
+  aspect-ratio: 256 / 427;
+  width: 150px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.753);
+  border-radius: 10px;
+}
+
+.hidden {
+  display: none;
 }
