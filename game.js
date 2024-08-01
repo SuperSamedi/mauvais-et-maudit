@@ -8,7 +8,7 @@ const btnTraitRoll = document.getElementById("btn-trait-roll");
 const btnCardDraw = document.getElementById("btn-card-draw");
 
 const imgLastDrawnCard = document.getElementById("deck");
-const btnInventoryCheckmarks = Array.from(document.getElementsByClassName("equipped-checkmark"));
+const btnInventoryCheckMarks = Array.from(document.getElementsByClassName("equipped-check-mark"));
 
 // Stats adjustments Panel
 const txtStatsAdjustmentHitPoints = document.getElementById("stats-adjustment-hit-points");
@@ -30,7 +30,6 @@ const btnFightMonster = document.getElementById("btn-fight-monster");
 
 const player = new Player();
 console.log(player);
-const d4 = new Dice(4);
 const d20 = new Dice(20);
 const d100 = new Dice(100);
 
@@ -42,11 +41,12 @@ let monstersTable = [];
 let scopaDeck = [];
 let coinsItemsTable = [];
 let swordsItemsTable = [];
-let clubsItemsTable = [];
-let cupsItemsTable = [];
+// let clubsItemsTable = [];
+// let cupsItemsTable = [];
 
 let lastDrawnCard = {};
 let allowedToDraw = true;
+let allCardsCountAsCoins = false;
 
 btnRaceRoll.onclick = choosePlayerRace;
 btnTraitRoll.onclick = choosePlayerTrait;
@@ -54,13 +54,13 @@ btnCardDraw.onclick = () => {
     allowedToDraw = true;
 };
 
-btnInventoryCheckmarks.forEach((checkmark) => {
-    checkmark.addEventListener("click", (e) => {
+btnInventoryCheckMarks.forEach((checkMark) => {
+    checkMark.addEventListener("click", (e) => {
         if (equip(player.inventory.slots[e.target.dataset["number"]])) {
-            checkmark.innerText = "X";
+            checkMark.innerText = "X";
             return;
         }
-        checkmark.innerText = "";
+        checkMark.innerText = "";
     });
 });
 
@@ -71,6 +71,49 @@ imgLastDrawnCard.onclick = () => {
         draw();
     }
 };
+
+//#region TESTS
+// let roll = 1
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 2
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 3
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 4
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 5
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 6
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 7
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 8
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 9
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 10
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 11
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 12
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 13
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 14
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 15
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 16
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 17
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 18
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 19
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 20
+// console.log(d20.reducedRoll(roll, 4));
+//#endregion
 
 // #region Extract data from jsons
 
@@ -656,7 +699,7 @@ function draw() {
     updateLastDrawnCard(lastDrawnCard);
     feedbackMessage += `${lastDrawnCard.description} !`;
 
-    if (lastDrawnCard.suit == "coins") {
+    if (lastDrawnCard.suit == "coins" || allCardsCountAsCoins) {
         let reward = structuredClone(coinsItemsTable[lastDrawnCard.value - 1]);
         player.goldCoins += reward.goldCoins;
         feedbackMessage += ` 
@@ -668,11 +711,10 @@ function draw() {
         }
     }
 
-    if (lastDrawnCard.suit == "swords") {
+    if (lastDrawnCard.suit == "swords" && !allCardsCountAsCoins) {
         let reward = structuredClone(swordsItemsTable[lastDrawnCard.value - 1]);
         reward.equipped = false;
         player.inventory.add(reward);
-        //addToInventory(reward);
         feedbackMessage += ` 
         Tu reçois ${reward.preposition}${reward.name} (${reward.description})`;
         //console.log(inventory);
@@ -680,6 +722,7 @@ function draw() {
 
     feedbackMessage += `.`;
     gameMessage(feedbackMessage);
+    allCardsCountAsCoins = false
 }
 
 function generateIntelligentBeing(roll) {
@@ -872,8 +915,8 @@ function generateMonster(roll) {
     let monster = new Being(structuredClone(monstersTable[roll - 1]));
 
     if (monster.race.name == "Parasite") {
-        monster.race = generateIntelligentBeing(d20.roll());
-        monster.race.name += " parasité";
+        monster = generateIntelligentBeing(d20.roll());
+        monster.race.name += ` ${monster.race.sex == "F" ? "parasitée" : "parasité"}`;
     }
 
     if (monster.race.name == "Métamorphe") {
@@ -885,7 +928,7 @@ function generateMonster(roll) {
 
     monster.restoreHitPoints();
 
-    console.log(`Monstre généré : ` + roll);
+    console.log(`Monstre généré - id : ` + roll);
     console.log(monster);
     return monster;
 }
@@ -943,56 +986,67 @@ function unequip(item) {
     player.updateStatsVisuals();
 }
 
+//#region Combat vs Monster
 function fightMonster(roll) {
     const monster = generateMonster(roll);
-    console.log(monster);
+    console.log(`Fighting : Monster}`);
 
     gameMessage(
-        `${monster.race.sex == "F" ? "Une" : "Un"} ${monster.race.name
-        } vous barre la route. Le combat est inévitable.`
+        `${monster.race.sex == "F" ? "Une" : "Un"} ${monster.race.name} vous barre la route. Le combat est inévitable.`
     );
 
     btn1.innerText = "Commencer le combat";
     btn1.onclick = phaseInitiative;
 
     function phaseInitiative() {
-        if (hasInitiative()) {
-            gameMessage(`Tu es plus rapide que ${monster.race.sex == "F" ? "la" : "le"} ${monster.race.name}. C'est ton tour d'attaquer.
-                Veux-tu faire une attaque physique ou une attaque Magique ?`)
+        if (playerHasInitiative()) {
+            gameMessage(`Tu es plus rapide que ${beingNameWithDeterminantDefini(monster, true)}. C'est à ton tour d'attaquer.`)
 
-            btn1.innerText = "Attaque physique"
-            btn1.onclick = () => { playerAttack(true) }
-
-            btn2.innerText = "Attaque magique"
-            btn2.onclick = () => { playerAttack(false) }
+            btn1.innerText = "Attaquer"
+            btn1.onclick = () => { playerAttack() }
 
             return
         }
 
-        gameMessage(`${monster.race.sex == "F" ? "La" : "Le"} ${monster.race.name} est plus rapide que toi, il attaque en premier.`)
+        gameMessage(`${beingNameWithDeterminantDefini(monster, false)} est plus rapide que toi, ${monster.race.sex == "F" ? "elle" : "il"} attaque en premier.`)
 
         btn1.innerText = "Continuer"
         btn1.onclick = () => { monsterAttack(); }
     }
 
-    function playerAttack(isPhysical) {
+    function playerAttack() {
         let damage = 0;
 
-        if (player.actionPoints > 0) {
-            gameMessage(`Veux-tu utiliser un point d'action pour effectuer une attaque puissante ? (Tu pourras lancer deux D100 à la place de un seul.)`)
+        gameMessage(`C'est à ton tour d'attaquer. Veux-tu faire une attaque physique ou une attaque magique ?`)
 
-            btn1.innerText = "Oui"
-            btn1.onclick = () => { powerfulAttack(isPhysical) }
+        btn1.innerText = "Attaque physique"
+        btn1.onclick = () => { decideIfPowerful(true) }
 
-            btn2.classList.remove("hidden")
-            btn2.innerText = "Non"
-            btn2.onclick = () => { normalAttack(isPhysical) }
+        btn2.classList.remove("hidden")
+        btn2.innerText = "Attaque magique"
+        btn2.onclick = () => { decideIfPowerful(false) }
+
+        function decideIfPowerful(isPhysical) {
+            if (player.actionPoints > 0) {
+                gameMessage(`Voulez-vous utiliser un point d'action pour effectuer une attaque puissante ? (Vous pourrez lancer deux D100 à la place de un seul.)`)
+
+                btn1.innerText = "Oui"
+                btn1.onclick = () => { powerfulAttack(isPhysical) }
+
+                btn2.classList.remove("hidden")
+                btn2.innerText = "Non"
+                btn2.onclick = () => { normalAttack(isPhysical) }
+
+                return
+            }
+
+            normalAttack(isPhysical)
         }
 
         function powerfulAttack(isPhysical) {
             player.actionPoints -= 1
 
-            gameMessage(`Très bien, tu utilises un point d'action pour effectuer une attaque puissante.
+            gameMessage(`Très bien, Tu utilises un point d'action pour effectuer une attaque puissante.
                 Lance un premier D100 pour voir combien de dégâts tu vas infliger.`)
 
             btn2.classList.add("hidden")
@@ -1010,7 +1064,7 @@ function fightMonster(roll) {
                 btn1.onclick = () => {
                     const secondRoll = d100.roll()
                     damage += secondRoll
-                    attack(isPhysical, secondRoll)
+                    inflictDamage(isPhysical, secondRoll)
                 }
             }
         }
@@ -1023,39 +1077,47 @@ function fightMonster(roll) {
             btn1.onclick = () => {
                 const roll = d100.roll()
                 damage += roll;
-                attack(isPhysical, roll)
+                inflictDamage(isPhysical, roll)
             }
         }
 
-        function attack(isPhysical, finalRoll) {
+        function inflictDamage(isPhysical, finalRoll) {
             let message = `${finalRoll} !`
 
             btn1.innerText = "Continuer"
             btn1.onclick = () => {
-                if (hasInitiative) {
+                if (isBeingDead(monster)) {
+                    fightIsWon()
+                    return
+                }
+
+                // If we attacked first , it's the monster's turn
+                if (playerHasInitiative()) {
                     monsterAttack()
                     return
                 }
 
-                //TODO : Check if dead + Next combat step
+                newTurn();
             }
 
-            if (isPhysical) {
-                damage = clamp(damage + player.strength - monster.speed, 0, Infinity)
+            // Magical Hit
+            if (!isPhysical) {
+                damage = clamp(damage + player.magic - monster.magic, 0, Infinity)
                 monster.hitPoints -= damage
 
                 message += `
-                Tu infliges un total de ${damage} ${damage <= 1 ? "dégât physique" : "dégâts physiques"} ${monster.race.sex == "F" ? "à la" : "au"} ${monster.race.name}.`
+                Tu infliges un total de ${damage} ${damage <= 1 ? "dégât magique" : "dégâts magiques"} ${beingNameWithDeterminantDefiniContracte(monster, 'à')}.`
                 gameMessage(message)
 
                 return
             }
 
-            damage += clamp(damage + player.magic - monster.magic, 0, Infinity)
+            // Physical Hit
+            damage = clamp(damage + player.strength - monster.speed, 0, Infinity)
             monster.hitPoints -= damage
 
             message += `
-            Tu infliges un total de ${damage} ${damage <= 1 ? "dégât magique" : "dégâts magiques"} ${monster.race.sex == "F" ? "à la" : "au"} ${monster.race.name}.`
+            Tu infliges un total de ${damage} ${damage <= 1 ? "dégât physique" : "dégâts physiques"} ${beingNameWithDeterminantDefiniContracte(monster, 'à')}.`
 
             gameMessage(message)
         }
@@ -1063,68 +1125,150 @@ function fightMonster(roll) {
     }
 
     function monsterAttack() {
+        console.log("Phase : Monster Attack");
         let damage = 0
 
-        // If both stats are equal we choose the version with the most damaging potential
-        if (monster.strength == monster.magic) {
-            const potentialPhysicalDamage = monster.strength - player.speed
-            const potentialMagicalDamage = monster.magic - player.magic
+        gameMessage(`C'est au tour ${beingNameWithDeterminantDefiniContracte(monster, "de")} d'attaquer.`)
 
-            if (potentialMagicalDamage > potentialPhysicalDamage) {
-                magicalAttack();
+        btn1.innerText = "Continuer"
+        btn1.onclick = () => { selectAttackType() }
+
+        function selectAttackType() {
+            // If both stats are equal we choose the version with the most damaging potential
+            if (monster.strength == monster.magic) {
+                const potentialPhysicalDamage = monster.strength - player.speed
+                const potentialMagicalDamage = monster.magic - player.magic
+
+                if (potentialMagicalDamage > potentialPhysicalDamage) {
+                    inflictDamage(false);
+                    return
+                }
+
+                inflictDamage(true);
                 return
             }
 
-            physicalAttack();
-            return
+            if (monster.magic > monster.strength) {
+                inflictDamage(false);
+                return;
+            }
+
+            inflictDamage(true);
         }
 
-        if (monster.magic > monster.strength) {
-            magicalAttack();
-            return;
-        }
-
-        physicalAttack();
-
-
-        function magicalAttack() {
-            damage = clamp(monster.magic + d100.roll() - player.magic, 0, Infinity)
-            player.hitPoints -= damage
-
-            gameMessage(`${monster.race.sex == "F" ? "La" : "Le"} ${monster.race.name} attaque et t'inflige ${damage} ${damage <= 1 ? "dégât magique" : "dégâts magiques"}.`)
-
+        function inflictDamage(isPhysical) {
             btn1.innerText = "Continuer"
             btn1.onclick = () => {
-                if (hasInitiative) {
-                    //TODO : Next combat step
+                if (isBeingDead(player)) {
+                    gameOver()
                     return
                 }
+
+                // If we attacked first it's time for a new turn
+                if (playerHasInitiative()) {
+                    newTurn();
+                    return
+                }
+
                 playerAttack()
             }
-        }
 
-        function physicalAttack() {
-            damage = clamp(monster.strength + d100.roll() - player.speed, 0, Infinity)
+            // Magical Hit
+            if (!isPhysical) {
+                const roll = d100.roll()
+                console.log(`The monster rolls a ${roll} - Magical`);
+                damage = clamp(monster.magic + roll - player.magic, 0, Infinity)
+                player.hitPoints -= damage
+
+                gameMessage(`${beingNameWithDeterminantDefini(monster, false)} attaque et t'inflige ${damage} ${damage <= 1 ? "dégât magique" : "dégâts magiques"}.`)
+                return
+            }
+
+            // Physical Hit
+            const roll = d100.roll()
+            console.log(`The monster rolls a ${roll} - Physical`);
+            damage = clamp(monster.strength + roll - player.speed, 0, Infinity)
             player.hitPoints -= damage
 
-            gameMessage(`${monster.race.sex == "F" ? "La" : "Le"} ${monster.race.name} attaque et t'inflige ${damage} ${damage <= 1 ? "dégât physique" : "dégâts physiques"}.`)
-
-            btn1.innerText = "Continuer"
-            btn1.onclick = () => {
-                if (hasInitiative) {
-                    //TODO : Check if dead + Next combat step
-                    return
-                }
-                playerAttack()
-            }
+            gameMessage(`${beingNameWithDeterminantDefini(monster, false)} attaque et t'inflige ${damage} ${damage <= 1 ? "dégât physique" : "dégâts physiques"}.`)
         }
     }
 
-    function hasInitiative() {
+    function playerHasInitiative() {
         if (monster.speed > player.speed) {
+            // console.log("Player does not have the initiative.");
             return false
         }
 
+        // console.log("Player has the initiative.");
         return true
     }
+
+    function newTurn() {
+        gameMessage(`Tu as résisté à l'assault de ${beingNameWithDeterminantDefini(monster, true)} mais ${monster.race.sex == "F" ? "cette dernière" : "ce dernier"} est toujours debout et prêt${monster.race.sex == "F" ? "e" : ""} à en découdre.
+            Un nouveau tour de combat commence.`)
+
+        btn1.innerText = "Commencer"
+        btn1.onclick = () => { phaseInitiative() }
+    }
+
+    function fightIsWon() {
+        player.restoreHitPoints()
+        player.experiencePoints++
+
+        gameMessage(`Bravo ! ${beingNameWithDeterminantDefini(monster, false)} est terrassé${monster.race.sex == "F" ? "e" : ""} !
+            Tu te soigne et gagne 1 point d'expérience.
+            Tu peux aussi lancer un D20 pour acquérir une récompense potentielle.`)
+
+        btn1.innerText = "Lancer un D20"
+        btn1.onclick = () => {
+            const roll = d20.roll();
+            fightReward(roll)
+        }
+    }
+
+    function fightReward(roll) {
+        const reducedRoll = d20.reducedRoll(roll, 4)
+        let message = `${roll} !
+        `;
+
+        switch (reducedRoll) {
+            case 2:
+                message += `Tu gagnes 1 point d'action.`
+                player.actionPoints++
+                break;
+
+            case 3:
+                message += `Tu peux tirer une carte du deck mais toutes les cartes comptent comme des cartes 'Pièces'.`
+                allowedToDraw = true;
+                allCardsCountAsCoins = true;
+                break;
+
+            case 4:
+                message += `Tu peux tirer une carte du deck. Tu gagnes immédiatement l'objet ou l'or correspondant.`
+                allowedToDraw = true;
+                break;
+
+            default:
+                message += `Aucune récompense. Déso...`
+                break;
+        }
+        gameMessage(message)
+    }
 }
+//#endregion
+
+function isBeingDead(being) {
+    if (being.hitPoints <= 0) {
+        return true
+    }
+
+    return false
+}
+
+function gameOver() {
+    gameMessage(`Tu es mort·e, ton aventure s'achève ici.
+            Merci d'avoir joué.
+            Recharge la page si tu souhaites recommencer une partie.`)
+}
+

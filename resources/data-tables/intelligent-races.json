@@ -4,131 +4,151 @@
     "hitPoints": 100,
     "strength": 50,
     "speed": 50,
-    "magic": 50
+    "magic": 50,
+    "sex": "M"
   },
   {
     "name": "Elfe",
     "hitPoints": 80,
     "strength": 40,
     "speed": 70,
-    "magic": 60
+    "magic": 60,
+    "sex": "M"
   },
   {
     "name": "Ogre",
     "hitPoints": 160,
     "strength": 80,
     "speed": 10,
-    "magic": 0
+    "magic": 0,
+    "sex": "M"
   },
   {
     "name": "Vampire",
     "hitPoints": 60,
     "strength": 60,
     "speed": 60,
-    "magic": 70
+    "magic": 70,
+    "sex": "M"
   },
   {
     "name": "Gnome",
     "hitPoints": 70,
     "strength": 30,
     "speed": 60,
-    "magic": 90
+    "magic": 90,
+    "sex": "M"
   },
   {
     "name": "Centaure",
     "hitPoints": 110,
     "strength": 60,
     "speed": 60,
-    "magic": 20
+    "magic": 20,
+    "sex": "M"
   },
   {
     "name": "Momie",
     "hitPoints": 100,
     "strength": 40,
     "speed": 40,
-    "magic": 7
+    "magic": 7,
+    "sex": "F"
   },
   {
     "name": "Fantôme",
     "hitPoints": 50,
     "strength": 10,
     "speed": 80,
-    "magic": 110
+    "magic": 110,
+    "sex": "M"
   },
   {
     "name": "Saurien",
     "hitPoints": 120,
     "strength": 60,
     "speed": 40,
-    "magic": 30
+    "magic": 30,
+    "sex": "M"
   },
   {
     "name": "Squelette",
     "hitPoints": 60,
     "strength": 70,
     "speed": 70,
-    "magic": 50
+    "magic": 50,
+    "sex": "M"
   },
   {
     "name": "Ondin",
     "hitPoints": 110,
     "strength": 40,
     "speed": 40,
-    "magic": 60
+    "magic": 60,
+    "sex": "M"
   },
   {
     "name": "Démon",
     "hitPoints": 90,
     "strength": 50,
     "speed": 50,
-    "magic": 60
+    "magic": 60,
+    "sex": "M"
   },
   {
     "name": "Golem",
     "hitPoints": 140,
     "strength": 70,
     "speed": 20,
-    "magic": 2
+    "magic": 2,
+    "sex": "M"
   },
   {
     "name": "Orc",
     "hitPoints": 120,
     "strength": 70,
     "speed": 50,
-    "magic": 10
+    "magic": 10,
+    "sex": "M"
   },
   {
     "name": "Insectoïde",
     "hitPoints": 90,
     "strength": 50,
     "speed": 70,
-    "magic": 40
+    "magic": 40,
+    "sex": "M"
   },
   {
     "name": "Loup-garou",
     "hitPoints": 110,
     "strength": 70,
     "speed": 50,
-    "magic": 20
+    "magic": 20,
+    "sex": "M"
   },
   {
     "name": "E.T.",
     "hitPoints": 60,
     "strength": 30,
     "speed": 40,
-    "magic": 120
+    "magic": 120,
+    "sex": "M"
   },
   {
     "name": "Plantiforme",
     "hitPoints": 140,
     "strength": 10,
     "speed": 10,
-    "magic": 90
+    "magic": 90,
+    "sex": "M"
   },
   {
-    "name": "Non-Être"
+    "name": "Non-Être",
+    "sex": "M"
   },
   {
-    "name": "Hybride"
+    "name": "Hybride",
+    "sex": "M"
   }
 ]

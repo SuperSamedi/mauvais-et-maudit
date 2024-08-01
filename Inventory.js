@@ -1,5 +1,20 @@
 const inventorySlots = Array.from(document.getElementsByClassName("item"));
 
+// Hover items in slots for details/description
+inventorySlots.forEach((slot) => {
+    slot.addEventListener("mouseover", (e) => {
+        if (player.inventory.slots[e.target.dataset["number"]]) {
+            slot.innerText = `${player.inventory.slots[e.target.dataset["number"]].name} (${player.inventory.slots[e.target.dataset["number"]].description})`;
+        }
+    });
+    slot.addEventListener("mouseleave", (e) => {
+        if (player.inventory.slots[e.target.dataset["number"]]) {
+            slot.innerText = `${player.inventory.slots[e.target.dataset["number"]].name}`
+        }
+    });
+});
+
+
 class Inventory {
     constructor() {
         this.slots = [];
@@ -15,7 +30,7 @@ class Inventory {
                 return true;
             }
         }
-    
+
         return false;
     }
 

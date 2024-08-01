@@ -10,6 +10,19 @@ const txtPlayerGoldCoins = document.getElementById("gold-pieces");
 const txtPlayerActionPoints = document.getElementById("action-points");
 const txtPlayerExperiencePoints = document.getElementById("experience-points")
 
+// Hover Trait for details/description
+txtPlayerTrait.addEventListener("mouseover", (e) => {
+  if (player.traits[0].description) {
+    txtPlayerTrait.innerText = `${player.traits[0].name} (${player.traits[0].description})`;
+  }
+});
+txtPlayerTrait.addEventListener("mouseleave", (e) => {
+  if (player.traits[0].description) {
+    txtPlayerTrait.innerText = `${player.traits[0].name}`;
+  }
+});
+
+
 class Player {
   #hitPoints;
   #goldCoins;
