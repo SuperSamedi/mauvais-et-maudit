@@ -85,3 +85,7 @@ function beingNameWithDeterminantDefiniContracte(being, preposition) {
     return `du ${being.race.name}`
   }
 }
+
+function currentGameMessage() {
+  return txtDungeonMaster.innerText;
+}

@@ -2,12 +2,14 @@
 const txtDungeonMaster = document.getElementById("dungeon-master-text");
 
 const btn1 = document.getElementById("btn1");
-const btn2 = document.getElementById("btn2")
+const btn2 = document.getElementById("btn2");
 const btnRaceRoll = document.getElementById("btn-race-roll");
 const btnTraitRoll = document.getElementById("btn-trait-roll");
 const btnCardDraw = document.getElementById("btn-card-draw");
 
-const imgLastDrawnCard = document.getElementById("deck");
+const imgDeck = document.getElementById("deck");
+const zoneCardsDrawn = document.getElementById("cards-drawn")
+
 const btnInventoryCheckMarks = Array.from(document.getElementsByClassName("equipped-check-mark"));
 
 // Stats adjustments Panel
@@ -26,10 +28,12 @@ const btnRemoveMagic = document.getElementById("btn-remove-magic");
 const btnConfirmStatsAdjustment = document.getElementById("btn-confirm-stats-adjustment");
 
 const btnFightMonster = document.getElementById("btn-fight-monster");
+
+const btnVisitShop = document.getElementById("btn-visit-shop");
 //#endregion
 
 const player = new Player();
-console.log(player);
+// console.log(player);
 const d20 = new Dice(20);
 const d100 = new Dice(100);
 
@@ -56,7 +60,7 @@ btnCardDraw.onclick = () => {
 
 btnInventoryCheckMarks.forEach((checkMark) => {
     checkMark.addEventListener("click", (e) => {
-        if (equip(player.inventory.slots[e.target.dataset["number"]])) {
+        if (player.inventory.slots[e.target.dataset["number"]].equip()) {
             checkMark.innerText = "X";
             return;
         }
@@ -65,58 +69,16 @@ btnInventoryCheckMarks.forEach((checkMark) => {
 });
 
 btnFightMonster.onclick = () => { fightMonster(d20.roll()) }
+btnVisitShop.onclick = () => { visitShop() }
 
-imgLastDrawnCard.onclick = () => {
+imgDeck.onclick = () => {
     if (allowedToDraw) {
         draw();
     }
 };
 
-//#region TESTS
-// let roll = 1
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 2
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 3
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 4
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 5
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 6
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 7
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 8
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 9
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 10
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 11
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 12
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 13
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 14
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 15
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 16
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 17
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 18
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 19
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 20
-// console.log(d20.reducedRoll(roll, 4));
-//#endregion
 
 // #region Extract data from jsons
-
 fetch("resources/data-tables/intelligent-races.json")
     .then((response) => {
         return response.json();
@@ -210,6 +172,49 @@ fetch("resources/data-tables/weak-traits.json")
     });
 
 // #endregion
+
+//#region TESTS
+// let roll = 1
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 2
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 3
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 4
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 5
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 6
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 7
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 8
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 9
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 10
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 11
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 12
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 13
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 14
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 15
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 16
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 17
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 18
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 19
+// console.log(d20.reducedRoll(roll, 4));
+// roll = 20
+// console.log(d20.reducedRoll(roll, 4));
+//#endregion
 
 function choosePlayerRace() {
     const roll = d20.roll();
@@ -693,8 +698,7 @@ function draw() {
     }
 
     let feedbackMessage = "";
-    lastDrawnCard = structuredClone(scopaDeck[0]);
-    scopaDeck.shift();
+    lastDrawnCard = structuredClone(scopaDeck.shift());
     //console.log(scopaDeck);
     updateLastDrawnCard(lastDrawnCard);
     feedbackMessage += `${lastDrawnCard.description} !`;
@@ -712,8 +716,7 @@ function draw() {
     }
 
     if (lastDrawnCard.suit == "swords" && !allCardsCountAsCoins) {
-        let reward = structuredClone(swordsItemsTable[lastDrawnCard.value - 1]);
-        reward.equipped = false;
+        let reward = new SwordsItem(structuredClone(swordsItemsTable[lastDrawnCard.value - 1]));
         player.inventory.add(reward);
         feedbackMessage += ` 
         Tu reçois ${reward.preposition}${reward.name} (${reward.description})`;
@@ -938,53 +941,53 @@ function gameMessage(text) {
 }
 
 function updateLastDrawnCard(card) {
-    imgLastDrawnCard.setAttribute("src", card.imageURL);
-    imgLastDrawnCard.setAttribute("alt", card.description);
+    imgDeck.setAttribute("src", card.imageURL);
+    imgDeck.setAttribute("alt", card.description);
 }
 
-function equip(item) {
-    if (item == undefined) return false;
+// function equip(item) {
+//     if (item == undefined) return false;
 
-    if (!item.equippable) return false;
+//     if (!item.equippable) return false;
 
-    if (item.equipped === true) {
-        unequip(item);
-        return false;
-    }
+//     if (item.equipped === true) {
+//         unequip(item);
+//         return false;
+//     }
 
-    if (item.type == "weapon") {
-        let otherWeaponAlreadyEquipped = false;
-        // console.log("Is Weapon !");
-        player.inventory.slots.forEach((inventoryItem) => {
-            if (inventoryItem.type == "weapon" && inventoryItem.equipped == true) {
-                console.log("Found another weapon already equipped.");
-                otherWeaponAlreadyEquipped = true;
-                return;
-            }
-        });
+//     if (item.type == "weapon") {
+//         let otherWeaponAlreadyEquipped = false;
+//         // console.log("Is Weapon !");
+//         player.inventory.slots.forEach((inventoryItem) => {
+//             if (inventoryItem.type == "weapon" && inventoryItem.equipped == true) {
+//                 console.log("Found another weapon already equipped.");
+//                 otherWeaponAlreadyEquipped = true;
+//                 return;
+//             }
+//         });
 
-        if (otherWeaponAlreadyEquipped == true) return false;
-    }
+//         if (otherWeaponAlreadyEquipped == true) return false;
+//     }
 
-    item.equipped = true;
-    //console.log(inventory);
-    player.updateStatsVisuals();
-    return true;
-}
+//     item.equipped = true;
+//     //console.log(inventory);
+//     player.updateStatsVisuals();
+//     return true;
+// }
 
-function unequip(item) {
-    if (item == undefined) {
-        return;
-    }
+// function unequip(item) {
+//     if (item == undefined) {
+//         return;
+//     }
 
-    if (!item.equippable) {
-        return;
-    }
+//     if (!item.equippable) {
+//         return;
+//     }
 
-    item.equipped = false;
-    //console.log(inventory);
-    player.updateStatsVisuals();
-}
+//     item.equipped = false;
+//     //console.log(inventory);
+//     player.updateStatsVisuals();
+// }
 
 //#region Combat vs Monster
 function fightMonster(roll) {
@@ -1258,6 +1261,159 @@ function fightMonster(roll) {
 }
 //#endregion
 
+function visitShop() {
+    if (scopaDeck.length <= 0) {
+        gameMessage("Vous arrivez devant le magasin mais réalisez avec déception que celui-ci est fermé (il n'y a plus de carte dans la pioche).");
+        btn1.innerText = "Partir"
+        // Next adventure roll
+        btn1.onclick = () => { }
+        return;
+    }
+
+    gameMessage(`Vous entrez dans le magasin.
+        Tirez 4 cartes pour voir quels objets sont en vente (les cartes 'Pièces' ne correspondent à aucun objet achetable).`);
+
+    let cardsDrawn = []
+    let items = []
+
+    imgDeck.onclick = () => {
+        if (allowedToDraw) {
+            initialShopDraw(scopaDeck);
+        }
+    };
+
+    allowedToDraw = true
+
+    function initialShopDraw(deck) {
+        allowedToDraw = false
+
+        if (deck.length <= 0) {
+            gameMessage("La pioche est vide.");
+            return;
+        }
+
+        const cardDrawn = structuredClone(deck.shift())
+        cardsDrawn.push(cardDrawn)
+        addCardToDisplayZone(cardDrawn)
+
+        if (isAllowedToDrawMore()) {
+            gameMessage(`${cardDrawn.description}.
+                Tirez encore ${4 - cardsDrawn.length} ${cardsDrawn.length == 3 ? "carte" : "cartes"}.`)
+            allowedToDraw = true
+            return
+        }
+
+        // check if all cards are coins
+        let isAllCoins = true
+        cardsDrawn.forEach(card => {
+            if (card.suit == "coins") {
+                return
+            }
+            isAllCoins = false
+        });
+
+        if (isAllCoins) {
+            gameMessage(`${cardDrawn.description}.
+                Toutes les cartes sont de la suite 'Pièces'.
+                Tirez des cartes jusqu'à tomber sur une carte d'une autre suite.`)
+
+            allowedToDraw = true
+            cardsDrawn = []
+
+            imgDeck.onclick = () => {
+                zoneCardsDrawn.innerHTML = ``;
+                additionalShopDraw(scopaDeck)
+            }
+            return
+        }
+
+        // Deploy shop
+        gameMessage(`${cardDrawn.description}.
+            C'est bon. Appuyez sur continuer pour voir l'objet, ou les objets, disponible(s) dans le magasin.`)
+
+        btn1.innerText = "Continuer"
+        btn1.onclick = () => { deployShop() }
+
+        function isAllowedToDrawMore() {
+            if (cardsDrawn.length >= 4) {
+                return false
+            }
+
+            return true
+        }
+    }
+
+    function additionalShopDraw(deck) {
+        allowedToDraw = false
+
+        if (deck.length <= 0) {
+            gameMessage("La pioche est vide.");
+            return;
+        }
+
+        const cardDrawn = structuredClone(deck.shift())
+        addCardToDisplayZone(cardDrawn)
+
+        if (cardDrawn.suit == "coins") {
+            gameMessage(`${cardsDrawn.description}.
+                Tirez à nouveau une carte.`)
+            allowedToDraw = true
+            return
+        }
+
+        cardsDrawn.push(cardDrawn)
+        gameMessage(`${cardDrawn.description}.
+            C'est bon. Appuyez sur continuer pour voir l'objet, ou les objets, disponible(s) dans le magasin.`)
+
+        btn1.innerText = "Continuer"
+        btn1.onclick = () => { deployShop() }
+    }
+
+    function deployShop() {
+        btn1.innerText = "Partir"
+        btn1.onclick = () => { }
+
+        let message = `Magasin
+        Objets disponibles : 
+            `;
+
+        cardsDrawn.forEach(card => {
+            let item = {}
+
+            switch (card.suit) {
+                case "coins":
+                    return
+                    break;
+                case "clubs":
+                    return
+                    break;
+                case "cups":
+                    return
+                    break;
+                case "swords":
+                    item = new SwordsItem(structuredClone(swordsItemsTable[card.value - 1]));
+                    break;
+                default:
+                    console.error("Card suit unknown")
+                    break;
+            }
+
+            message += `- ${item.name} (${item.description}) - ${item.buyValue}PO
+                `;
+        });
+
+        gameMessage(message)
+    }
+
+    function addCardToDisplayZone(card) {
+        const cardElement = document.createElement("img")
+        cardElement.setAttribute("src", card.imageURL)
+        cardElement.setAttribute("alt", card.description)
+        cardElement.classList.add("card")
+        zoneCardsDrawn.appendChild(cardElement)
+    }
+}
+
 function isBeingDead(being) {
     if (being.hitPoints <= 0) {
         return true
@@ -1268,7 +1424,7 @@ function isBeingDead(being) {
 
 function gameOver() {
     gameMessage(`Tu es mort·e, ton aventure s'achève ici.
-            Merci d'avoir joué.
+            Merci d'avoir joué ! On espère que tu t'es quand même bien amusé·e.
             Recharge la page si tu souhaites recommencer une partie.`)
 }
 

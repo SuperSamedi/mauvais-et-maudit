@@ -111,12 +111,19 @@ section {
 }
 
 .card {
-  aspect-ratio: 256 / 427;
+  /* aspect-ratio: 256 / 427; */
   width: 150px;
+  height: 250px;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.753);
   border-radius: 10px;
 }
 
 .hidden {
   display: none;
+}
+
+#cards-drawn {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 }
