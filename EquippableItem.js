@@ -1,12 +1,13 @@
 class EquippableItem extends Item {
     constructor(data) {
         super(data)
-        this.equipped = false
+        this.isEquipped = false
     }
 
 
+    // Toggle equip-unequip
     equip() {
-        if (this.equipped == true) {
+        if (this.isEquipped == true) {
             this.unequip();
             return false;
         }
@@ -26,13 +27,15 @@ class EquippableItem extends Item {
             if (otherWeaponAlreadyEquipped == true) return false;
         }
 
-        this.equipped = true
+        this.isEquipped = true
         player.updateStatsVisuals();
+        player.inventory.updateVisuals();
         return true
     }
 
     unequip() {
-        this.equipped = false
+        this.isEquipped = false
         player.updateStatsVisuals();
+        player.inventory.updateVisuals();
     }
 }

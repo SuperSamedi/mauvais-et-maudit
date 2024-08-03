@@ -10,7 +10,6 @@ const btnCardDraw = document.getElementById("btn-card-draw");
 const imgDeck = document.getElementById("deck");
 const zoneCardsDrawn = document.getElementById("cards-drawn")
 
-const btnInventoryCheckMarks = Array.from(document.getElementsByClassName("equipped-check-mark"));
 
 // Stats adjustments Panel
 const txtStatsAdjustmentHitPoints = document.getElementById("stats-adjustment-hit-points");
@@ -36,6 +35,7 @@ const player = new Player();
 // console.log(player);
 const d20 = new Dice(20);
 const d100 = new Dice(100);
+let shop = new Shop();
 
 let intelligentRacesTable = [];
 let weakTraitsTable = []
@@ -48,9 +48,9 @@ let swordsItemsTable = [];
 // let clubsItemsTable = [];
 // let cupsItemsTable = [];
 
-let lastDrawnCard = {};
 let allowedToDraw = true;
-let allCardsCountAsCoins = false;
+let allowedToSellItems = false;
+
 
 btnRaceRoll.onclick = choosePlayerRace;
 btnTraitRoll.onclick = choosePlayerTrait;
@@ -58,22 +58,14 @@ btnCardDraw.onclick = () => {
     allowedToDraw = true;
 };
 
-btnInventoryCheckMarks.forEach((checkMark) => {
-    checkMark.addEventListener("click", (e) => {
-        if (player.inventory.slots[e.target.dataset["number"]].equip()) {
-            checkMark.innerText = "X";
-            return;
-        }
-        checkMark.innerText = "";
-    });
-});
 
 btnFightMonster.onclick = () => { fightMonster(d20.roll()) }
 btnVisitShop.onclick = () => { visitShop() }
 
 imgDeck.onclick = () => {
     if (allowedToDraw) {
-        draw();
+        clearCardsDisplayZone();
+        drawReward(scopaDeck, false);
     }
 };
 
@@ -689,22 +681,23 @@ function choosePlayerTrait() {
     player.updateStatsVisuals();
 }
 
-function draw() {
+function drawReward(deck, allCardsCountAsCoins) {
     allowedToDraw = false;
 
-    if (scopaDeck.length <= 0) {
+    if (deck.length <= 0) {
         gameMessage("La pioche est vide...");
         return;
     }
 
     let feedbackMessage = "";
-    lastDrawnCard = structuredClone(scopaDeck.shift());
-    //console.log(scopaDeck);
-    updateLastDrawnCard(lastDrawnCard);
-    feedbackMessage += `${lastDrawnCard.description} !`;
 
-    if (lastDrawnCard.suit == "coins" || allCardsCountAsCoins) {
-        let reward = structuredClone(coinsItemsTable[lastDrawnCard.value - 1]);
+    const cardDrawn = structuredClone(deck.shift());
+    //console.log(scopaDeck);
+    addCardToDisplayZone(cardDrawn)
+    feedbackMessage += `${cardDrawn.description} !`;
+
+    if (cardDrawn.suit == "coins" || allCardsCountAsCoins === true) {
+        const reward = structuredClone(coinsItemsTable[cardDrawn.value - 1]);
         player.goldCoins += reward.goldCoins;
         feedbackMessage += ` 
         Tu reçois ${reward.goldCoins} pièces d'or`;
@@ -715,8 +708,8 @@ function draw() {
         }
     }
 
-    if (lastDrawnCard.suit == "swords" && !allCardsCountAsCoins) {
-        let reward = new SwordsItem(structuredClone(swordsItemsTable[lastDrawnCard.value - 1]));
+    if (cardDrawn.suit == "swords" && allCardsCountAsCoins === false) {
+        let reward = new SwordsItem(structuredClone(swordsItemsTable[cardDrawn.value - 1]));
         player.inventory.add(reward);
         feedbackMessage += ` 
         Tu reçois ${reward.preposition}${reward.name} (${reward.description})`;
@@ -725,7 +718,6 @@ function draw() {
 
     feedbackMessage += `.`;
     gameMessage(feedbackMessage);
-    allCardsCountAsCoins = false
 }
 
 function generateIntelligentBeing(roll) {
@@ -939,55 +931,6 @@ function generateMonster(roll) {
 function gameMessage(text) {
     txtDungeonMaster.innerText = text;
 }
-
-function updateLastDrawnCard(card) {
-    imgDeck.setAttribute("src", card.imageURL);
-    imgDeck.setAttribute("alt", card.description);
-}
-
-// function equip(item) {
-//     if (item == undefined) return false;
-
-//     if (!item.equippable) return false;
-
-//     if (item.equipped === true) {
-//         unequip(item);
-//         return false;
-//     }
-
-//     if (item.type == "weapon") {
-//         let otherWeaponAlreadyEquipped = false;
-//         // console.log("Is Weapon !");
-//         player.inventory.slots.forEach((inventoryItem) => {
-//             if (inventoryItem.type == "weapon" && inventoryItem.equipped == true) {
-//                 console.log("Found another weapon already equipped.");
-//                 otherWeaponAlreadyEquipped = true;
-//                 return;
-//             }
-//         });
-
-//         if (otherWeaponAlreadyEquipped == true) return false;
-//     }
-
-//     item.equipped = true;
-//     //console.log(inventory);
-//     player.updateStatsVisuals();
-//     return true;
-// }
-
-// function unequip(item) {
-//     if (item == undefined) {
-//         return;
-//     }
-
-//     if (!item.equippable) {
-//         return;
-//     }
-
-//     item.equipped = false;
-//     //console.log(inventory);
-//     player.updateStatsVisuals();
-// }
 
 //#region Combat vs Monster
 function fightMonster(roll) {
@@ -1244,12 +1187,19 @@ function fightMonster(roll) {
             case 3:
                 message += `Tu peux tirer une carte du deck mais toutes les cartes comptent comme des cartes 'Pièces'.`
                 allowedToDraw = true;
-                allCardsCountAsCoins = true;
+                imgDeck.onclick = () => {
+                    clearCardsDisplayZone()
+                    drawReward(scopaDeck, true)
+                }
                 break;
 
             case 4:
                 message += `Tu peux tirer une carte du deck. Tu gagnes immédiatement l'objet ou l'or correspondant.`
                 allowedToDraw = true;
+                imgDeck.onclick = () => {
+                    clearCardsDisplayZone()
+                    drawReward(scopaDeck, false)
+                }
                 break;
 
             default:
@@ -1321,7 +1271,7 @@ function visitShop() {
             cardsDrawn = []
 
             imgDeck.onclick = () => {
-                zoneCardsDrawn.innerHTML = ``;
+                clearCardsDisplayZone();
                 additionalShopDraw(scopaDeck)
             }
             return
@@ -1370,16 +1320,14 @@ function visitShop() {
     }
 
     function deployShop() {
-        btn1.innerText = "Partir"
-        btn1.onclick = () => { }
+        shop = new Shop();
 
-        let message = `Magasin
-        Objets disponibles : 
-            `;
+        btn1.innerText = "Partir"
+        btn1.onclick = () => {
+            allowedToSellItems = false
+        }
 
         cardsDrawn.forEach(card => {
-            let item = {}
-
             switch (card.suit) {
                 case "coins":
                     return
@@ -1391,27 +1339,30 @@ function visitShop() {
                     return
                     break;
                 case "swords":
-                    item = new SwordsItem(structuredClone(swordsItemsTable[card.value - 1]));
+                    shop.add(new SwordsItem(structuredClone(swordsItemsTable[card.value - 1])));
                     break;
                 default:
                     console.error("Card suit unknown")
                     break;
             }
+        })
 
-            message += `- ${item.name} (${item.description}) - ${item.buyValue}PO
-                `;
-        });
-
-        gameMessage(message)
+        shop.updateDisplay()
+        allowedToSellItems = true
     }
 
-    function addCardToDisplayZone(card) {
-        const cardElement = document.createElement("img")
-        cardElement.setAttribute("src", card.imageURL)
-        cardElement.setAttribute("alt", card.description)
-        cardElement.classList.add("card")
-        zoneCardsDrawn.appendChild(cardElement)
-    }
+}
+
+function addCardToDisplayZone(card) {
+    const cardElement = document.createElement("img")
+    cardElement.setAttribute("src", card.imageURL)
+    cardElement.setAttribute("alt", card.description)
+    cardElement.classList.add("card")
+    zoneCardsDrawn.appendChild(cardElement)
+}
+
+function clearCardsDisplayZone() {
+    zoneCardsDrawn.innerHTML = ``;
 }
 
 function isBeingDead(being) {

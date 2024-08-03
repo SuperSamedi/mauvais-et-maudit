@@ -64,6 +64,14 @@ class Player {
       });
     }
 
+    this.inventory.slots.forEach((item) => {
+      if (item
+        && item.isEquipped
+        && item.hitPoints) {
+        stat += item.hitPoints;
+      }
+    });
+
     return stat;
   }
 
@@ -83,7 +91,9 @@ class Player {
     }
 
     this.inventory.slots.forEach((item) => {
-      if (item.equipped == true && item.strength) {
+      if (item
+        && item.isEquipped
+        && item.strength) {
         stat += item.strength;
       }
     });
@@ -107,7 +117,9 @@ class Player {
     }
 
     this.inventory.slots.forEach((item) => {
-      if (item.equipped && item.speed) {
+      if (item
+        && item.isEquipped
+        && item.speed) {
         stat += item.speed;
       }
     });
@@ -131,7 +143,9 @@ class Player {
     }
 
     this.inventory.slots.forEach((item) => {
-      if (item.equipped && item.magic) {
+      if (item
+        && item.isEquipped
+        && item.magic) {
         stat += item.magic;
       }
     });

@@ -11,6 +11,17 @@
 
 <body>
     <div id="game">
+        <div id="item-details-view-background">
+            <div id="item-details-view">
+                <div id="item-details-view-name">épée</div>
+                <hr>
+                <div id="item-details-view-description">Force +15, Vitesse +5</div>
+                <div id="item-details-view-sell-value">valeur : 100PO</div>
+                <button type="button" id="item-details-view-btn-sell">Vendre</button>
+                <button type="button" id="item-details-view-btn-drop">Jeter</button>
+            </div>
+        </div>
+
         <div id="character-sheet">
             <h2>Fiche de Personnage</h2>
             <section>
@@ -69,6 +80,7 @@
                 <div class="inventory-grid-item item" data-number="6"></div>
                 <div class="inventory-grid-item equipped-check-mark" data-number="7"></div>
                 <div class="inventory-grid-item item" data-number="7"></div>
+
             </section>
         </div>
 
@@ -82,6 +94,10 @@
                 </div>
 
                 <div id="cards-drawn">
+
+                </div>
+
+                <div id="shop-buttons">
 
                 </div>
 
@@ -127,6 +143,7 @@
     <script src="Item.js"></script>
     <script src="EquippableItem.js"></script>
     <script src="SwordsItem.js"></script>
+    <script src="Shop.js"></script>
     <script src="Being.js"></script>
     <script src="Player.js"></script>
     <script src="game.js"></script>

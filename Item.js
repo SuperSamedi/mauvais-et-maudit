@@ -34,16 +34,27 @@ class Item {
     }
 
     buy() {
-        if (player.goldCoins < this.buyValue) {
-            return
-        }
+        if (player.goldCoins < this.buyValue) return
+        if (player.inventory.isFull() === true) return
 
         player.goldCoins -= this.buyValue
+        shop.remove(this)
         player.inventory.add(this)
+        shop.updateDisplay()
     }
 
     sell() {
+        if (!allowedToSellItems) return
+        player.inventory.remove(this)
+        player.updateStatsVisuals()
+        player.goldCoins += this.sellValue
+        shop.add(this)
+        shop.updateDisplay()
+    }
 
+    drop() {
+        player.inventory.remove(this)
+        player.updateStatsVisuals()
     }
 
 }
