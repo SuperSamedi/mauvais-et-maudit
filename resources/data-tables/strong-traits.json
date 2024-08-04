@@ -1,32 +1,50 @@
 [
   {
-    "name": "Géant",
+    "name": {
+      "accordFeminin": "Géante",
+      "accordMasculin": "Géant"
+    },
     "hitPoints": 20,
     "description": "PV +20"
   },
   {
-    "name": "Puissant",
+    "name": {
+      "accordFeminin": "Puissante",
+      "accordMasculin": "Puissant"
+    },
     "strength": 20,
     "description": "FO +20"
   },
   {
-    "name": "Agile",
+    "name": {
+      "accordFeminin": "Agile",
+      "accordMasculin": "Agile"
+    },
     "speed": 20,
     "description": "VI +20"
   },
   {
-    "name": "Rusé",
+    "name": {
+      "accordFeminin": "Rusée",
+      "accordMasculin": "Rusé"
+    },
     "magic": 20,
     "description": "MA +20"
   },
   {
-    "name": "Immense",
+    "name": {
+      "accordFeminin": "Immense",
+      "accordMasculin": "Immense"
+    },
     "hitPoints": 30,
     "speed": -10,
     "description": "PV +30, VI -10"
   },
   {
-    "name": "Costaud",
+    "name": {
+      "accordFeminin": "Costaude",
+      "accordMasculin": "Costaud"
+    },
     "hitPoints": 10,
     "strength": 10,
     "description": "PV +10, FO +10"

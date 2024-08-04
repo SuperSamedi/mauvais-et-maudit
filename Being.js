@@ -1,9 +1,41 @@
 class Being {
     #hitPoints;
 
-    constructor(race) {
+    constructor(race, gender) {
         this.race = race ? race : { name: "aucune" };
+        this.traits = []
+        this.gender = race.gender
+        if (gender) {
+            this.gender = gender
+        }
         this.#hitPoints = 0;
+    }
+
+    get name() {
+        let name = this.race.name.male
+        if (this.gender == "F") {
+            name = this.race.name.female
+        }
+
+        for (let i = 0; i < this.traits.length; i++) {
+            // Check if first trait
+            if (i == 0) {
+                name += ` `
+            }
+            // check if it's not the first trait and there are still more
+            if (i > 0 && i + 1 < this.traits.length) {
+                name += `, `
+            }
+            // check if it's not the first but is the last
+            if (i > 0 && i + 1 == this.traits.length) {
+                name += ` et `
+            }
+
+            name += `${this.gender == "F" ? this.traits[i].name.accordFeminin.toLowerCase() : this.traits[i].name.accordMasculin.toLowerCase()
+                } `
+        }
+
+        return name
     }
 
     get hitPoints() {
@@ -88,6 +120,10 @@ class Being {
 
     restoreHitPoints() {
         this.hitPoints = this.maxHitPoints;
+    }
+
+    addWeakTrait(roll) {
+        this.traits.push(getWeakTrait(roll))
     }
 
 }

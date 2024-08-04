@@ -1,18 +1,30 @@
 [
   {
-    "name": "Chétif",
+    "name": {
+      "accordFeminin": "Chétive",
+      "accordMasculin": "Chétif"
+    },
     "hitPoints": -30
   },
   {
-    "name": "Faible",
+    "name": {
+      "accordFeminin": "Faible",
+      "accordMasculin": "Faible"
+    },
     "strength": -15
   },
   {
-    "name": "Lent",
+    "name": {
+      "accordFeminin": "Lente",
+      "accordMasculin": "Lent"
+    },
     "speed": -15
   },
   {
-    "name": "Idiot",
+    "name": {
+      "accordFeminin": "Idiote",
+      "accordMasculin": "Idiot"
+    },
     "magic": -20
   }
 ]

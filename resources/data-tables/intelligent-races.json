@@ -1,154 +1,194 @@
 [
   {
-    "name": "Humain",
+    "name": {
+      "female": "Humaine",
+      "male": "Humain"
+    },
     "hitPoints": 100,
     "strength": 50,
     "speed": 50,
-    "magic": 50,
-    "sex": "M"
+    "magic": 50
   },
   {
-    "name": "Elfe",
+    "name": {
+      "female": "Elfe",
+      "male": "Elfe"
+    },
     "hitPoints": 80,
     "strength": 40,
     "speed": 70,
-    "magic": 60,
-    "sex": "M"
+    "magic": 60
   },
   {
-    "name": "Ogre",
+    "name": {
+      "female": "Ogresse",
+      "male": "Ogre"
+    },
     "hitPoints": 160,
     "strength": 80,
     "speed": 10,
-    "magic": 0,
-    "sex": "M"
+    "magic": 0
   },
   {
-    "name": "Vampire",
+    "name": {
+      "female": "Vampire",
+      "male": "Vampire"
+    },
     "hitPoints": 60,
     "strength": 60,
     "speed": 60,
-    "magic": 70,
-    "sex": "M"
+    "magic": 70
   },
   {
-    "name": "Gnome",
+    "name": {
+      "female": "Gnome",
+      "male": "Gnome"
+    },
     "hitPoints": 70,
     "strength": 30,
     "speed": 60,
-    "magic": 90,
-    "sex": "M"
+    "magic": 90
   },
   {
-    "name": "Centaure",
+    "name": {
+      "female": "Centaure",
+      "male": "Centaure"
+    },
     "hitPoints": 110,
     "strength": 60,
     "speed": 60,
-    "magic": 20,
-    "sex": "M"
+    "magic": 20
   },
   {
-    "name": "Momie",
+    "name": {
+      "female": "Momie",
+      "male": "Momie"
+    },
     "hitPoints": 100,
     "strength": 40,
     "speed": 40,
-    "magic": 7,
-    "sex": "F"
+    "magic": 7
   },
   {
-    "name": "Fantôme",
+    "name": {
+      "female": "Fantôme",
+      "male": "Fantôme"
+    },
     "hitPoints": 50,
     "strength": 10,
     "speed": 80,
-    "magic": 110,
-    "sex": "M"
+    "magic": 110
   },
   {
-    "name": "Saurien",
+    "name": {
+      "female": "Saurienne",
+      "male": "Saurien"
+    },
     "hitPoints": 120,
     "strength": 60,
     "speed": 40,
-    "magic": 30,
-    "sex": "M"
+    "magic": 30
   },
   {
-    "name": "Squelette",
+    "name": {
+      "female": "Squelette",
+      "male": "Squelette"
+    },
     "hitPoints": 60,
     "strength": 70,
     "speed": 70,
-    "magic": 50,
-    "sex": "M"
+    "magic": 50
   },
   {
-    "name": "Ondin",
+    "name": {
+      "female": "Ondine",
+      "male": "Ondin"
+    },
     "hitPoints": 110,
     "strength": 40,
     "speed": 40,
-    "magic": 60,
-    "sex": "M"
+    "magic": 60
   },
   {
-    "name": "Démon",
+    "name": {
+      "female": "Démone",
+      "male": "Démon"
+    },
     "hitPoints": 90,
     "strength": 50,
     "speed": 50,
-    "magic": 60,
-    "sex": "M"
+    "magic": 60
   },
   {
-    "name": "Golem",
+    "name": {
+      "female": "Golem",
+      "male": "Golem"
+    },
     "hitPoints": 140,
     "strength": 70,
     "speed": 20,
-    "magic": 2,
-    "sex": "M"
+    "magic": 2
   },
   {
-    "name": "Orc",
+    "name": {
+      "female": "Orque",
+      "male": "Orque"
+    },
     "hitPoints": 120,
     "strength": 70,
     "speed": 50,
-    "magic": 10,
-    "sex": "M"
+    "magic": 10
   },
   {
-    "name": "Insectoïde",
+    "name": {
+      "female": "Insectoïde",
+      "male": "Insectoïde"
+    },
     "hitPoints": 90,
     "strength": 50,
     "speed": 70,
-    "magic": 40,
-    "sex": "M"
+    "magic": 40
   },
   {
-    "name": "Loup-garou",
+    "name": {
+      "female": "Louve-garou",
+      "male": "Loup-garou"
+    },
     "hitPoints": 110,
     "strength": 70,
     "speed": 50,
-    "magic": 20,
-    "sex": "M"
+    "magic": 20
   },
   {
-    "name": "E.T.",
+    "name": {
+      "female": "E.T.",
+      "male": "E.T."
+    },
     "hitPoints": 60,
     "strength": 30,
     "speed": 40,
-    "magic": 120,
-    "sex": "M"
+    "magic": 120
   },
   {
-    "name": "Plantiforme",
+    "name": {
+      "female": "Plantiforme",
+      "male": "Plantiforme"
+    },
     "hitPoints": 140,
     "strength": 10,
     "speed": 10,
-    "magic": 90,
-    "sex": "M"
+    "magic": 90
   },
   {
-    "name": "Non-Être",
-    "sex": "M"
+    "name": {
+      "female": "Non-Être",
+      "male": "Non-Être"
+    }
   },
   {
-    "name": "Hybride",
-    "sex": "M"
+    "name": {
+      "female": "Hybride",
+      "male": "Hybride"
+    }
   }
 ]

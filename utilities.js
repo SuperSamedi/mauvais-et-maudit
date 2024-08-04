@@ -29,7 +29,7 @@ function clamp(number, min, max) {
 
 
 function beingNameWithDeterminantDefini(being, toLowerCase) {
-  let name = being.race.name.toLowerCase()
+  let name = being.name.toLowerCase()
 
   if (
     name[0] == 'a' ||
@@ -42,29 +42,29 @@ function beingNameWithDeterminantDefini(being, toLowerCase) {
     name.slice(0, 2) == "hu"
   ) {
     if (toLowerCase == true) {
-      return `l'${being.race.name}`
+      return `l'${being.name}`
     }
-    return `L'${being.race.name}`
+    return `L'${being.name}`
   }
 
-  if (being.race.sex == "F") {
+  if (being.gender == "F") {
     if (toLowerCase == true) {
-      return `la ${being.race.name}`
+      return `la ${being.name}`
     }
-    return `La ${being.race.name}`
+    return `La ${being.name}`
   }
 
   if (toLowerCase == true) {
-    return `le ${being.race.name}`
+    return `le ${being.name}`
   }
-  return `Le ${being.race.name}`
+  return `Le ${being.name}`
 }
 
 function beingNameWithDeterminantDefiniContracte(being, preposition) {
-  let name = being.race.name.toLowerCase()
+  let name = being.name.toLowerCase()
 
   if (
-    being.race.sex == "F" ||
+    being.gender == "F" ||
     name[0] == 'a' ||
     name[0] == 'e' ||
     name[0] == 'i' ||
@@ -78,14 +78,18 @@ function beingNameWithDeterminantDefiniContracte(being, preposition) {
   }
 
   if (preposition == 'à') {
-    return `au ${being.race.name}`
+    return `au ${being.name}`
   }
 
   if (preposition == "de") {
-    return `du ${being.race.name}`
+    return `du ${being.name}`
   }
 }
 
 function currentGameMessage() {
   return txtDungeonMaster.innerText;
+}
+
+function getWeakTrait(roll) {
+  return weakTraitsTable[d20.reducedRoll(roll, 4) - 1]
 }

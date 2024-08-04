@@ -1,154 +1,194 @@
 [
   {
-    "name": "Sphynx",
+    "name": {
+      "male": "Sphynx"
+    },
     "hitPoints": 150,
     "strength": 30,
     "speed": 10,
     "magic": 60,
-    "sex": "M"
+    "gender": "M"
   },
   {
-    "name": "Licorne",
+    "name": {
+      "female": "Licorne"
+    },
     "hitPoints": 110,
     "strength": 30,
     "speed": 60,
     "magic": 50,
-    "sex": "F"
+    "gender": "F"
   },
   {
-    "name": "Cyclope",
+    "name": {
+      "male": "Cyclope"
+    },
     "hitPoints": 160,
     "strength": 80,
     "speed": 10,
     "magic": 0,
-    "sex": "M"
+    "gender": "M"
   },
   {
-    "name": "Loup",
+    "name": {
+      "male": "Loup"
+    },
     "hitPoints": 110,
     "strength": 60,
     "speed": 70,
     "magic": 10,
-    "sex": "M"
+    "gender": "M"
   },
   {
-    "name": "Hydre",
+    "name": {
+      "female": "Hydre"
+    },
     "hitPoints": 130,
     "strength": 50,
     "speed": 40,
     "magic": 30,
-    "sex": "F"
+    "gender": "F"
   },
   {
-    "name": "Araignée",
+    "name": {
+      "female": "Araignée"
+    },
     "hitPoints": 80,
     "strength": 80,
     "speed": 80,
     "magic": 10,
-    "sex": "F"
+    "gender": "F"
   },
   {
-    "name": "Griffon",
+    "name": {
+      "male": "Griffon"
+    },
     "hitPoints": 130,
     "strength": 40,
     "speed": 60,
     "magic": 20,
-    "sex": "M"
+    "gender": "M"
   },
   {
-    "name": "Goule",
+    "name": {
+      "female": "Goule"
+    },
     "hitPoints": 80,
     "strength": 50,
     "speed": 50,
     "magic": 70,
-    "sex": "F"
+    "gender": "F"
   },
   {
-    "name": "Dragon",
+    "name": {
+      "male": "Dragon"
+    },
     "hitPoints": 140,
     "strength": 40,
     "speed": 20,
     "magic": 50,
-    "sex": "M"
+    "gender": "M"
   },
   {
-    "name": "Visqueux",
+    "name": {
+      "male": "Visqueux"
+    },
     "hitPoints": 160,
     "strength": 40,
     "speed": 40,
     "magic": 10,
-    "sex": "M"
+    "gender": "M"
   },
   {
-    "name": "Pégase",
+    "name": {
+      "male": "Pégase"
+    },
     "hitPoints": 100,
     "strength": 30,
     "speed": 70,
     "magic": 50,
-    "sex": "M"
+    "gender": "M"
   },
   {
-    "name": "Harpie",
+    "name": {
+      "female": "Harpie"
+    },
     "hitPoints": 90,
     "strength": 60,
     "speed": 70,
     "magic": 30,
-    "sex": "F"
+    "gender": "F"
   },
   {
-    "name": "Ours",
+    "name": {
+      "male": "Ours"
+    },
     "hitPoints": 120,
     "strength": 80,
     "speed": 40,
     "magic": 10,
-    "sex": "M"
+    "gender": "M"
   },
   {
-    "name": "Abomination",
+    "name": {
+      "female": "Abomination"
+    },
     "hitPoints": 90,
     "strength": 90,
     "speed": 60,
     "magic": 10,
-    "sex": "F"
+    "gender": "F"
   },
   {
-    "name": "Coquatrix",
+    "name": {
+      "female": "Coquatrix"
+    },
     "hitPoints": 110,
     "strength": 70,
     "speed": 50,
     "magic": 20,
-    "sex": "F"
+    "gender": "F"
   },
   {
-    "name": "Chimère",
+    "name": {
+      "female": "Chimère"
+    },
     "hitPoints": 110,
     "strength": 50,
     "speed": 40,
     "magic": 50,
-    "sex": "F"
+    "gender": "F"
   },
   {
-    "name": "Génie",
+    "name": {
+      "male": "Génie"
+    },
     "hitPoints": 90,
     "strength": 30,
     "speed": 40,
     "magic": 90,
-    "sex": "M"
+    "gender": "M"
   },
   {
-    "name": "Gargouille",
+    "name": {
+      "female": "Gargouille"
+    },
     "hitPoints": 110,
     "strength": 60,
     "speed": 20,
     "magic": 60,
-    "sex": "F"
+    "gender": "F"
   },
   {
-    "name": "Parasite",
-    "sex": "M"
+    "name": {
+      "male": "Parasite"
+    },
+    "gender": "M"
   },
   {
-    "name": "Métamorphe",
-    "sex": "M"
+    "name": {
+      "male": "Métamorphe"
+    },
+    "gender": "M"
   }
 ]

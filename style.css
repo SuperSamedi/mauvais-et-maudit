@@ -3,6 +3,10 @@
   padding: 0;
 }
 
+.hidden {
+  display: none;
+}
+
 #game {
   display: flex;
   flex-direction: row;
@@ -110,6 +114,10 @@ section {
   align-items: center;
 }
 
+#deck {
+  width: 150px;
+  height: 250px;
+}
 .card {
   /* aspect-ratio: 256 / 427; */
   width: 150px;
@@ -118,14 +126,10 @@ section {
   border-radius: 10px;
 }
 
-.hidden {
-  display: none;
-}
-
 #cards-drawn {
   display: flex;
   flex-direction: row;
-  gap: -50px;
+  gap: 5px;
 }
 
 /* Overlay Item Details */

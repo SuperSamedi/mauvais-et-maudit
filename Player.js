@@ -31,8 +31,8 @@ class Player {
 
   constructor() {
     this.inventory = new Inventory();
-    this.race = { name: "aucune" };
-    this.traits = new Array({ name: "aucun" });
+    this.race = { name: { male: "aucune" } };
+    this.traits = new Array({ name: { accordMasculin: "aucun" } });
     this.#hitPoints = 0;
     this.#goldCoins = 0;
     this.#actionPoints = 2;
@@ -215,10 +215,10 @@ class Player {
 
   //Race et Trait
   updateRaceVisuals() {
-    txtPlayerRace.innerText = this.race.name;
+    txtPlayerRace.innerText = this.race.name.male;
   }
   updateTraitVisuals() {
-    txtPlayerTrait.innerText = this.traits[0].name;
+    txtPlayerTrait.innerText = this.traits[0].name.accordMasculin;
   }
 
   //Stats

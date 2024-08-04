@@ -3,13 +3,13 @@ const txtDungeonMaster = document.getElementById("dungeon-master-text");
 
 const btn1 = document.getElementById("btn1");
 const btn2 = document.getElementById("btn2");
+const btn3 = document.getElementById("btn3");
 const btnRaceRoll = document.getElementById("btn-race-roll");
 const btnTraitRoll = document.getElementById("btn-trait-roll");
 const btnCardDraw = document.getElementById("btn-card-draw");
 
 const imgDeck = document.getElementById("deck");
 const zoneCardsDrawn = document.getElementById("cards-drawn")
-
 
 // Stats adjustments Panel
 const txtStatsAdjustmentHitPoints = document.getElementById("stats-adjustment-hit-points");
@@ -27,8 +27,8 @@ const btnRemoveMagic = document.getElementById("btn-remove-magic");
 const btnConfirmStatsAdjustment = document.getElementById("btn-confirm-stats-adjustment");
 
 const btnFightMonster = document.getElementById("btn-fight-monster");
-
 const btnVisitShop = document.getElementById("btn-visit-shop");
+const btnNextAdventure = document.getElementById("btn-next-adventure");
 //#endregion
 
 const player = new Player();
@@ -37,6 +37,7 @@ const d20 = new Dice(20);
 const d100 = new Dice(100);
 let shop = new Shop();
 
+let adventureTable = [];
 let intelligentRacesTable = [];
 let weakTraitsTable = []
 let strongTraitsTable = [];
@@ -61,6 +62,7 @@ btnCardDraw.onclick = () => {
 
 btnFightMonster.onclick = () => { fightMonster(d20.roll()) }
 btnVisitShop.onclick = () => { visitShop() }
+btnNextAdventure.onclick = () => { nextAdventure() }
 
 imgDeck.onclick = () => {
     if (allowedToDraw) {
@@ -163,6 +165,19 @@ fetch("resources/data-tables/weak-traits.json")
         console.error(error);
     });
 
+fetch("resources/data-tables/adventures.json")
+    .then((response) => {
+        return response.json();
+    })
+    .then((loadedData) => {
+        adventureTable = loadedData;
+        // console.log(adventureTable);
+    })
+    .catch((error) => {
+        // TODO: create a 500 code page
+        console.error(error);
+    });
+
 // #endregion
 
 //#region TESTS
@@ -219,7 +234,7 @@ function choosePlayerRace() {
     //console.log(intelligentRacesTable);
 
     // Non-Being special rule
-    if (player.race.name == "Non-Être") {
+    if (player.race.name.male == "Non-Être") {
         player.restoreHitPoints();
         player.updateAllVisuals();
         generateNonBeingPlayer(player.race, false);
@@ -227,13 +242,13 @@ function choosePlayerRace() {
     }
 
     // Hybrid special rule
-    if (player.race.name == "Hybride") {
+    if (player.race.name.male == "Hybride") {
         player.updateAllVisuals();
         generateHybridPlayer();
         return;
     }
 
-    gameMessage(`${roll} ! - ${player.race.name}`);
+    gameMessage(`${roll} ! - ${player.race.name.male}`);
 
     player.restoreHitPoints();
     player.updateRaceVisuals();
@@ -243,8 +258,8 @@ function choosePlayerRace() {
     function generateNonBeingPlayer(being, isGeneratingHybrid) {
         gameMessage(`19 ! - Non-Être.
         Les Non-Êtres sont des créatures instables. Tu vas devoir tirer tes stats au hasard.
-        Lance un D100 pour tes points de vie.`);
-        btn1.innerText = "Lancer un D100";
+        Lance le D100 pour tes points de vie.`);
+        btn1.innerText = "Lancer le D100";
         btn1.onclick = generateNonBeingHitPoints;
 
         function generateNonBeingHitPoints() {
@@ -257,7 +272,7 @@ function choosePlayerRace() {
             }
 
             gameMessage(`${roll} !
-        Maintenant lance à nouveau un D100 pour ta stat de force.`);
+        Maintenant lance à nouveau le D100 pour ta stat de force.`);
 
             btn1.onclick = generateNonBeingStrength;
         }
@@ -272,7 +287,7 @@ function choosePlayerRace() {
             }
 
             gameMessage(`${roll} !
-        Maintenant lance encore un D100 pour ta stat de vitesse.`);
+        Maintenant lance encore le D100 pour ta stat de vitesse.`);
 
             btn1.onclick = generateNonBeingSpeed;
         }
@@ -287,7 +302,7 @@ function choosePlayerRace() {
             }
 
             gameMessage(`${roll} !
-        Et enfin, lance un D100 pour ta stat de magie.`);
+        Et enfin, lance le D100 pour ta stat de magie.`);
 
             btn1.onclick = generateNonBeingMagic;
         }
@@ -315,16 +330,16 @@ function choosePlayerRace() {
 
             if (totalStats < 200) {
                 const pointsToAdd = 200 - totalStats;
-                let message = `Ton état de Non-Être est trop fragile. Tu vas devoir rajouter ${pointsToAdd} point`;
+                let message = `Ton état de Non-Être est trop fragile. Tu va devoir rajouter ${pointsToAdd} point`;
 
                 if (pointsToAdd == 1) {
-                    message += ` à la caractéristique de ton choix.`;
+                    message += ` à la caractéristique de votre choix.`;
                     gameMessage(message);
                     adjustStats(being, pointsToAdd, true);
                     return;
                 }
 
-                message += `s répartis comme tu le souhaites parmi tes caractéristiques.`;
+                message += `s répartis comme tu le souhaite parmi tes caractéristiques.`;
 
                 gameMessage(message);
                 adjustStats(being, pointsToAdd, true);
@@ -548,7 +563,6 @@ function choosePlayerRace() {
             }
 
             function confirmStatsAdjustment(being, isGeneratingHybrid) {
-                being.name = "Non-Être";
                 being.hitPoints = hitPoints.value;
                 (being.strength = strength.value),
                     (being.speed = speed.value),
@@ -582,7 +596,7 @@ function choosePlayerRace() {
             btn1.onclick = generateHybridPlayerFirstHalf;
             return;
         }
-        // Second come around (after 1st half non-being)
+        // Second come around (after 1st half hybride)
         if (!hybridRaceB.name) {
             gameMessage(`Lance maintenant un D20 pour ta deuxième race.`);
             btn1.onclick = generateHybridPlayerSecondHalf;
@@ -590,7 +604,7 @@ function choosePlayerRace() {
         }
 
         // Final
-        player.race.name = `Hybride ${hybridRaceA.name}-${hybridRaceB.name}`;
+        player.race.name.male = `Hybride ${hybridRaceA.name.male}-${hybridRaceB.name.male}`;
         player.race.hitPoints = Math.round(
             (hybridRaceA.hitPoints + hybridRaceB.hitPoints) * 0.5
         );
@@ -615,26 +629,26 @@ function choosePlayerRace() {
             hybridRaceA = structuredClone(intelligentRacesTable[roll - 1]);
 
             // Hybrid exception
-            if (hybridRaceA.name == "Hybride") {
-                gameMessage(`${roll} ! ${hybridRaceA.name} à nouveau. Relance.`);
+            if (hybridRaceA.name.male == "Hybride") {
+                gameMessage(`${roll} ! ${hybridRaceA.name.male} à nouveau. Relance.`);
                 btn1.innerText = "Relancer un D20";
                 return;
             }
 
             // Non-Being special rule
-            if (hybridRaceA.name == "Non-Être") {
-                player.race.name += ` ${hybridRaceA.name}`;
+            if (hybridRaceA.name.male == "Non-Être") {
+                player.race.name.male += ` ${hybridRaceA.name.male}`;
                 player.updateAllVisuals();
                 generateNonBeingPlayer(hybridRaceA, true); // Sends us back to generateHybridPlayer at the end
                 return;
             }
 
             gameMessage(
-                `${roll} ! ${hybridRaceA.name}. Maintenant, lance de nouveau un D20 pour ta deuxième race.`
+                `${roll} ! ${hybridRaceA.name.male}. Maintenant, lance de nouveau un D20 pour ta deuxième race.`
             );
             btn1.innerText = "Lancer un D20";
             btn1.onclick = generateHybridPlayerSecondHalf;
-            player.race.name += ` ${hybridRaceA.name}`;
+            player.race.name.male += ` ${hybridRaceA.name.male}`;
             player.updateAllVisuals();
         }
 
@@ -644,24 +658,24 @@ function choosePlayerRace() {
             hybridRaceB = structuredClone(intelligentRacesTable[roll - 1]);
 
             if (
-                hybridRaceB.name == "Hybride" ||
-                hybridRaceB.name == hybridRaceA.name
+                hybridRaceB.name.male == "Hybride" ||
+                hybridRaceB.name.male == hybridRaceA.name.male
             ) {
-                gameMessage(`${roll} ! ${hybridRaceB.name} à nouveau. Relance.`);
+                gameMessage(`${roll} ! ${hybridRaceB.name.male} à nouveau. Relance.`);
                 btn1.innerText = "Relancer un D20";
                 return;
             }
 
-            if (hybridRaceB.name == "Non-Être") {
-                player.race.name += `-${hybridRaceB.name}`;
+            if (hybridRaceB.name.male == "Non-Être") {
+                player.race.name.male += `-${hybridRaceB.name.male}`;
                 player.updateAllVisuals();
                 generateNonBeingPlayer(hybridRaceB, true);
                 return;
             }
 
-            player.race.name += `-${hybridRaceB.name}`;
+            player.race.name.male += `-${hybridRaceB.name.male}`;
             player.updateAllVisuals();
-            gameMessage(`${roll} ! ${hybridRaceB.name}.`);
+            gameMessage(`${roll} ! ${hybridRaceB.name.male}.`);
             generateHybridPlayer(hybridRaceA, hybridRaceB);
         }
     }
@@ -674,7 +688,7 @@ function choosePlayerTrait() {
 
     player.traits[0] = structuredClone(strongTraitsTable[roll - 1]);
 
-    gameMessage(`${roll} ! - ${player.traits[0].name}`);
+    gameMessage(`${roll} ! - ${player.traits[0].name.accordMasculin}`);
 
     player.restoreHitPoints();
     player.updateTraitVisuals();
@@ -720,31 +734,248 @@ function drawReward(deck, allCardsCountAsCoins) {
     gameMessage(feedbackMessage);
 }
 
+function nextAdventure() {
+    gameMessage(`Lancez un D100 pour voir quelles péripéties vous attendent.`)
+
+    btn1.innerText = "Lancer le D100"
+    // Test button
+    btn1.onclick = () => { chooseNextAdventure(97) }
+
+    // btn1.onclick = () => {
+    //     const roll = d100.roll()
+    //     chooseNextAdventure(roll)
+    // }
+
+    function chooseNextAdventure(roll) {
+        btn1.style.display = "none"
+        btn2.style.display = "none"
+        btn3.style.display = "none"
+
+        let message = `${roll} !
+        Vous avez le choix entre ces aventures :
+        `;
+
+        let choice1 = adventureTable[roll - 2]
+        let choice2 = adventureTable[roll - 1]
+        let choice3 = adventureTable[roll]
+        console.log(choice1);
+        console.log(choice2);
+        console.log(choice3);
+
+        // Roll - 1
+        if (choice1) {
+            btn1.style.display = "block"
+            switch (choice1.type) {
+                case "Événement":
+                    message += `- Un événement spécial
+                    `;
+                    btn1.innerText = "Événement spécial"
+                    btn1.onclick = () => {
+                        specialEncounter()
+                    }
+                    break;
+                case "Village":
+                    message += `- Visiter un village
+                    `;
+                    btn1.innerText = "Visiter un village"
+                    btn1.onclick = () => {
+                        villageEncounter()
+                    }
+                    break;
+                case "Repos":
+                    message += `- Se reposer
+                    `;
+                    btn1.innerText = "Se reposer"
+                    btn1.onclick = () => {
+                        restEncounter()
+                    }
+                    break;
+                case "Combat !":
+                    message += `- Un combat contre un monstre
+                    `;
+                    btn1.innerText = "Combattre un monstre"
+                    btn1.onclick = () => {
+                        monsterEncounter()
+                    }
+                    break;
+                case "Combat ?":
+                    message += `- Une rencontre avec une créature intelligente
+                    `;
+                    btn1.innerText = "Rencontrer une créature intelligente"
+                    btn1.onclick = () => {
+                        intelligentBeingEncounter()
+                    }
+                    break;
+                case "Coup de chance !":
+                    break;
+                default:
+                    console.console.error("Unknown adventure type !");
+                    break;
+            }
+        }
+
+        // Actual Roll
+        if (choice2.type == choice1.type) {
+            choice2 = undefined
+        }
+        if (choice2) {
+            btn2.style.display = "block"
+            switch (choice2.type) {
+                case "Événement":
+                    message += `- Un événement spécial
+                                `;
+                    btn2.innerText = "Événement spécial"
+                    btn2.onclick = () => {
+                        specialEncounter()
+                    }
+                    break;
+                case "Village":
+                    message += `- Visiter un village
+                                `;
+                    btn2.innerText = "Visiter un village"
+                    btn2.onclick = () => {
+                        villageEncounter()
+                    }
+                    break;
+                case "Repos":
+                    message += `- Se reposer
+                                `;
+                    btn2.innerText = "Se reposer"
+                    btn2.onclick = () => {
+                        restEncounter()
+                    }
+                    break;
+                case "Combat !":
+                    message += `- Un combat contre un monstre
+                                `;
+
+                    btn2.innerText = "Combattre un monstre"
+                    btn2.onclick = () => {
+                        monsterEncounter()
+                    }
+                    break;
+                case "Combat ?":
+                    message += `- Une rencontre avec une créature intelligente
+                                `;
+                    btn2.innerText = "Rencontrer une créature intelligente"
+                    btn2.onclick = () => {
+                        intelligentBeingEncounter()
+                    }
+                    break;
+                case "Coup de chance !":
+                    message += `- Un coup de chance
+                                `;
+                    btn2.innerText = "Coup de chance"
+                    btn2.onclick = () => {
+                        luckyEncounter()
+                    }
+                    break;
+                default:
+                    console.console.error("Unknown adventure type !");
+                    break;
+            }
+        }
+
+        // Roll + 1
+        if (choice3.type == choice1.type
+            || choice3.type == choice2.type) {
+            choice3 = undefined
+        }
+        if (choice3) {
+            btn3.style.display = "block"
+            switch (choice3.type) {
+                case "Événement":
+                    message += `- Un événement spécial
+                            `;
+                    btn3.innerText = "Événement spécial"
+                    btn3.onclick = () => {
+                        specialEncounter()
+                    }
+                    break;
+                case "Village":
+                    message += `- Visiter un village
+                            `;
+                    btn3.innerText = "Visiter un village"
+                    btn3.onclick = () => {
+                        villageEncounter()
+                    }
+                    break;
+                case "Repos":
+                    message += `- Se reposer
+                            `;
+                    btn3.innerText = "Se reposer"
+                    btn3.onclick = () => {
+                        restEncounter()
+                    }
+                    break;
+                case "Combat !":
+                    message += `- Un combat contre un monstre
+                            `;
+                    btn3.innerText = "Combattre un monstre"
+                    btn3.onclick = () => {
+                        monsterEncounter()
+                    }
+                    break;
+                case "Combat ?":
+                    message += `- Une rencontre avec une créature intelligente
+                            `;
+                    btn3.innerText = "Rencontrer une créature intelligente"
+                    btn3.onclick = () => {
+                        intelligentBeingEncounter()
+                    }
+                    break;
+                case "Coup de chance !":
+                    break;
+                default:
+                    console.console.error("Unknown adventure type !");
+                    break;
+            }
+        }
+
+        message += `
+        Que choisissez-vous ?`;
+
+        gameMessage(message)
+    }
+}
+
 function generateIntelligentBeing(roll) {
-    let being = new Being(structuredClone(intelligentRacesTable[roll - 1]))
+    let gender = d20.reducedRoll(d20.roll(), 2) == 1 ? "F" : "M"
+    let being = new Being(structuredClone(intelligentRacesTable[roll - 1]), gender)
+
+    // Momie special rule
+    if (being.race.name.female == "Momie") {
+        being.gender = "F"
+    }
+
+    // Golem special rule
+    if (being.race.name.male == "Golem") {
+        being.gender = "M"
+    }
 
     // Non-Being special rule
-    if (being.race.name == "Non-Être") {
-        being.race = generateNonBeing();
+    if (being.race.name.male == "Non-Être") {
+        being.race = generateNonBeingRace();
     }
 
     // Hybrid special rule
-    if (being.race.name == "Hybride") {
-        being.race = generateHybrid();
+    if (being.race.name.male == "Hybride") {
+        being.race = generateHybridRace();
     }
 
-    function generateNonBeing() {
-        let being = {};
+    function generateNonBeingRace() {
+        let race = {};
 
-        being.name = "Non-Être";
+        race.name.female = "Non-Être";
+        race.name.male = "Non-Être";
 
         // Generate stats
-        being.hitPoints = d100.roll();
-        being.strength = d100.roll();
-        being.speed = d100.roll();
-        being.magic = d100.roll();
+        race.hitPoints = d100.roll();
+        race.strength = d100.roll();
+        race.speed = d100.roll();
+        race.magic = d100.roll();
 
-        adjustGeneratedNonBeing(being);
+        adjustGeneratedNonBeing(race);
 
         function adjustGeneratedNonBeing(being) {
             const totalStats =
@@ -860,42 +1091,53 @@ function generateIntelligentBeing(roll) {
             return being;
         }
 
-        return being;
+        return race;
     }
 
-    function generateHybrid() {
+    function generateHybridRace() {
         let hybrid = {};
-        let beingA = {};
-        let beingB = {};
+        let raceA = {};
+        let raceB = {};
 
-        beingA.name = "Hybride";
-        beingB.name = "Hybride";
+        raceA.name.male = "Hybride";
+        raceB.name.male = "Hybride";
 
         // Generate first half
-        while (beingA.name == "Hybride") {
-            beingA = structuredClone(intelligentRacesTable[d20.roll() - 1]);
+        while (raceA.name.male == "Hybride") {
+            raceA = structuredClone(intelligentRacesTable[d20.roll() - 1]);
 
             // Non-Being special rule
-            if (beingA.name == "Non-Être") {
-                beingA = generateNonBeing();
+            if (raceA.name.male == "Non-Être") {
+                raceA = generateNonBeingRace();
+            }
+
+            // Momie special rule
+            if (raceA.name.female == "Momie") {
+                being.gender = "F"
+            }
+
+            // Golem special rule
+            if (raceA.name.male == "Golem") {
+                being.gender = "M"
             }
         }
 
         // Generate second half
-        while (beingB.name == "Hybride" || beingB.name == beingA.name) {
-            beingB = structuredClone(intelligentRacesTable[d20.roll() - 1]);
+        while (raceB.name.male == "Hybride" || raceB.name.male == raceA.name.male) {
+            raceB = structuredClone(intelligentRacesTable[d20.roll() - 1]);
 
             // Non-Being special rule
-            if (beingB.name == "Non-Être") {
-                beingB = generateNonBeing();
+            if (raceB.name.male == "Non-Être") {
+                raceB = generateNonBeingRace();
             }
         }
 
-        hybrid.name = `Hybride ${beingA.name}-${beingB.name}`;
-        hybrid.hitPoints = Math.round((beingA.hitPoints + beingB.hitPoints) * 0.5);
-        hybrid.strength = Math.round((beingA.strength + beingB.strength) * 0.5);
-        hybrid.speed = Math.round((beingA.speed + beingB.speed) * 0.5);
-        hybrid.magic = Math.round((beingA.magic + beingB.magic) * 0.5);
+        hybrid.name.female = `Hybride ${raceA.name.female}-${raceB.name.female}`;
+        hybrid.name.male = `Hybride ${raceA.name.male}-${raceB.name.male}`;
+        hybrid.hitPoints = Math.round((raceA.hitPoints + raceB.hitPoints) * 0.5);
+        hybrid.strength = Math.round((raceA.strength + raceB.strength) * 0.5);
+        hybrid.speed = Math.round((raceA.speed + raceB.speed) * 0.5);
+        hybrid.magic = Math.round((raceA.magic + raceB.magic) * 0.5);
 
         return hybrid;
     }
@@ -911,7 +1153,7 @@ function generateMonster(roll) {
 
     if (monster.race.name == "Parasite") {
         monster = generateIntelligentBeing(d20.roll());
-        monster.race.name += ` ${monster.race.sex == "F" ? "parasitée" : "parasité"}`;
+        monster.race.name += ` ${monster.gender == "F" ? "parasitée" : "parasité"}`;
     }
 
     if (monster.race.name == "Métamorphe") {
@@ -923,8 +1165,8 @@ function generateMonster(roll) {
 
     monster.restoreHitPoints();
 
-    console.log(`Monstre généré - id : ` + roll);
-    console.log(monster);
+    // console.log(`Monstre généré - id : ` + roll);
+    // console.log(monster);
     return monster;
 }
 
@@ -932,17 +1174,16 @@ function gameMessage(text) {
     txtDungeonMaster.innerText = text;
 }
 
-//#region Combat vs Monster
-function fightMonster(roll) {
-    const monster = generateMonster(roll);
+function fightMonster(monster) {
     console.log(`Fighting : Monster}`);
+    console.log(monster);
 
     gameMessage(
-        `${monster.race.sex == "F" ? "Une" : "Un"} ${monster.race.name} vous barre la route. Le combat est inévitable.`
+        `${monster.race.gender == "F" ? "Une" : "Un"} ${monster.name} vous barre la route. Le combat est inévitable.`
     );
 
     btn1.innerText = "Commencer le combat";
-    btn1.onclick = phaseInitiative;
+    btn1.onclick = () => { phaseInitiative() }
 
     function phaseInitiative() {
         if (playerHasInitiative()) {
@@ -954,7 +1195,7 @@ function fightMonster(roll) {
             return
         }
 
-        gameMessage(`${beingNameWithDeterminantDefini(monster, false)} est plus rapide que toi, ${monster.race.sex == "F" ? "elle" : "il"} attaque en premier.`)
+        gameMessage(`${beingNameWithDeterminantDefini(monster, false)} est plus rapide que toi, ${monster.race.gender == "F" ? "elle" : "il"} attaque en premier.`)
 
         btn1.innerText = "Continuer"
         btn1.onclick = () => { monsterAttack(); }
@@ -968,7 +1209,7 @@ function fightMonster(roll) {
         btn1.innerText = "Attaque physique"
         btn1.onclick = () => { decideIfPowerful(true) }
 
-        btn2.classList.remove("hidden")
+        btn2.style.display = "block"
         btn2.innerText = "Attaque magique"
         btn2.onclick = () => { decideIfPowerful(false) }
 
@@ -979,7 +1220,7 @@ function fightMonster(roll) {
                 btn1.innerText = "Oui"
                 btn1.onclick = () => { powerfulAttack(isPhysical) }
 
-                btn2.classList.remove("hidden")
+                btn2.style.display = "block"
                 btn2.innerText = "Non"
                 btn2.onclick = () => { normalAttack(isPhysical) }
 
@@ -995,7 +1236,7 @@ function fightMonster(roll) {
             gameMessage(`Très bien, Tu utilises un point d'action pour effectuer une attaque puissante.
                 Lance un premier D100 pour voir combien de dégâts tu vas infliger.`)
 
-            btn2.classList.add("hidden")
+            btn2.style.display = "none"
             btn1.innerText = "Lancer un D100"
             btn1.onclick = () => {
                 const firstRoll = d100.roll()
@@ -1018,7 +1259,7 @@ function fightMonster(roll) {
         function normalAttack(isPhysical) {
             gameMessage(`Très bien, lance un D100 pour voir combien de dégâts tu vas infliger.`)
 
-            btn2.classList.add("hidden")
+            btn2.style.display = "none"
             btn1.innerText = "Lancer un D100"
             btn1.onclick = () => {
                 const roll = d100.roll()
@@ -1151,7 +1392,7 @@ function fightMonster(roll) {
     }
 
     function newTurn() {
-        gameMessage(`Tu as résisté à l'assault de ${beingNameWithDeterminantDefini(monster, true)} mais ${monster.race.sex == "F" ? "cette dernière" : "ce dernier"} est toujours debout et prêt${monster.race.sex == "F" ? "e" : ""} à en découdre.
+        gameMessage(`Tu as résisté à l'assault de ${beingNameWithDeterminantDefini(monster, true)} mais ${monster.race.gender == "F" ? "cette dernière" : "ce dernier"} est toujours debout et prêt${monster.race.gender == "F" ? "e" : ""} à en découdre.
             Un nouveau tour de combat commence.`)
 
         btn1.innerText = "Commencer"
@@ -1162,7 +1403,7 @@ function fightMonster(roll) {
         player.restoreHitPoints()
         player.experiencePoints++
 
-        gameMessage(`Bravo ! ${beingNameWithDeterminantDefini(monster, false)} est terrassé${monster.race.sex == "F" ? "e" : ""} !
+        gameMessage(`Bravo ! ${beingNameWithDeterminantDefini(monster, false)} est terrassé${monster.race.gender == "F" ? "e" : ""} !
             Tu te soigne et gagne 1 point d'expérience.
             Tu peux aussi lancer un D20 pour acquérir une récompense potentielle.`)
 
@@ -1209,7 +1450,30 @@ function fightMonster(roll) {
         gameMessage(message)
     }
 }
-//#endregion
+
+function monsterEncounter() {
+    const monster = generateMonster(d20.roll())
+    // Temp
+    let level = 1;
+    //
+    // TODO: put level check logic here
+    //
+
+    switch (level) {
+        case 1:
+            monster.addWeakTrait(d20.roll())
+            break;
+
+        default:
+            break;
+    }
+
+    fightMonster(monster)
+}
+
+function intelligentBeingEncounter() {
+
+}
 
 function visitShop() {
     if (scopaDeck.length <= 0) {
@@ -1228,6 +1492,7 @@ function visitShop() {
 
     imgDeck.onclick = () => {
         if (allowedToDraw) {
+            clearCardsDisplayZone()
             initialShopDraw(scopaDeck);
         }
     };
@@ -1249,7 +1514,15 @@ function visitShop() {
         if (isAllowedToDrawMore()) {
             gameMessage(`${cardDrawn.description}.
                 Tirez encore ${4 - cardsDrawn.length} ${cardsDrawn.length == 3 ? "carte" : "cartes"}.`)
+
             allowedToDraw = true
+
+            imgDeck.onclick = () => {
+                if (allowedToDraw) {
+                    initialShopDraw(deck);
+                }
+            };
+
             return
         }
 
@@ -1350,6 +1623,22 @@ function visitShop() {
         shop.updateDisplay()
         allowedToSellItems = true
     }
+
+}
+
+function restEncounter() {
+
+}
+
+function villageEncounter() {
+
+}
+
+function specialEncounter() {
+
+}
+
+function luckyEncounter() {
 
 }
 
