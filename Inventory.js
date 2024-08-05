@@ -74,12 +74,36 @@ class Inventory {
         return false;
     }
 
-    remove(item) {
-        if (this.slots.indexOf(item) >= 0) {
-            this.slots[this.slots.indexOf(item)] = undefined;
+    remove(itemName) {
+        if (!this.contains(itemName)) {
+            return
         }
 
-        this.updateVisuals();
+        for (let i = 0; i < 8; i++) {
+            if (!this.slots[i]) continue;
+
+            if (this.slots[i].name === itemName) {
+                this.slots[i] = undefined;
+                this.updateVisuals();
+            }
+        }
+    }
+
+    /**
+     * Checks if an item is in the inventory based on its name.
+     * @param itemName String - The name of the item we are checking for.
+     * @returns true if the item is in the inventory, false if it is not.
+     */
+    contains(itemName) {
+        for (let i = 0; i < 8; i++) {
+            if (!this.slots[i]) continue;
+
+            if (this.slots[i].name === itemName) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     updateVisuals() {

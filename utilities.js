@@ -93,3 +93,19 @@ function currentGameMessage() {
 function getWeakTrait(roll) {
   return weakTraitsTable[d20.reducedRoll(roll, 4) - 1]
 }
+
+function getCupsItem(id) {
+  let item = {}
+
+  switch (id) {
+    case 6:
+      item = new EquippableItem(cupsItemsTable[5])
+      item.magic = 15
+      break;
+
+    default:
+      break;
+  }
+
+  return item;
+}

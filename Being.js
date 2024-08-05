@@ -1,13 +1,10 @@
 class Being {
     #hitPoints;
 
-    constructor(race, gender) {
+    constructor(race, gender, traits) {
         this.race = race ? race : { name: "aucune" };
-        this.traits = []
-        this.gender = race.gender
-        if (gender) {
-            this.gender = gender
-        }
+        this.traits = traits ? traits : []
+        this.gender = gender ? gender : race.gender
         this.#hitPoints = 0;
     }
 

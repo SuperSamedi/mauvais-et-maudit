@@ -28,6 +28,7 @@ class Player {
   #goldCoins;
   #actionPoints;
   #experiencePoints;
+  #gender;
 
   constructor() {
     this.inventory = new Inventory();
@@ -37,7 +38,12 @@ class Player {
     this.#goldCoins = 0;
     this.#actionPoints = 2;
     this.#experiencePoints = 0;
+    this.#gender = "M";
     this.updateAllVisuals();
+  }
+
+  get gender() {
+    return this.#gender;
   }
 
   get hitPoints() {

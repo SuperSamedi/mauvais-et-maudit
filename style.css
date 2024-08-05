@@ -32,8 +32,7 @@
   background-color: rgb(100, 100, 100);
   padding: 10px;
   color: rgb(243, 243, 243);
-  font-weight: bold;
-  font-size: large;
+  font-size: 1.25rem;
 }
 
 #controls {

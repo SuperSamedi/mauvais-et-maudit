@@ -4,6 +4,8 @@ const txtDungeonMaster = document.getElementById("dungeon-master-text");
 const btn1 = document.getElementById("btn1");
 const btn2 = document.getElementById("btn2");
 const btn3 = document.getElementById("btn3");
+const btn4 = document.getElementById("btn4");
+const btn5 = document.getElementById("btn5");
 const btnRaceRoll = document.getElementById("btn-race-roll");
 const btnTraitRoll = document.getElementById("btn-trait-roll");
 const btnCardDraw = document.getElementById("btn-card-draw");
@@ -37,17 +39,18 @@ const d20 = new Dice(20);
 const d100 = new Dice(100);
 let shop = new Shop();
 
-let adventureTable = [];
+let encountersTable = [];
 let intelligentRacesTable = [];
 let weakTraitsTable = []
 let strongTraitsTable = [];
 let monstersTable = [];
+let specialEncountersTable = [1];
 
 let scopaDeck = [];
 let coinsItemsTable = [];
 let swordsItemsTable = [];
 // let clubsItemsTable = [];
-// let cupsItemsTable = [];
+let cupsItemsTable = [];
 
 let allowedToDraw = true;
 let allowedToSellItems = false;
@@ -60,7 +63,7 @@ btnCardDraw.onclick = () => {
 };
 
 
-btnFightMonster.onclick = () => { fightMonster(d20.roll()) }
+btnFightMonster.onclick = () => { monsterEncounter() }
 btnVisitShop.onclick = () => { visitShop() }
 btnNextAdventure.onclick = () => { nextAdventure() }
 
@@ -165,12 +168,25 @@ fetch("resources/data-tables/weak-traits.json")
         console.error(error);
     });
 
-fetch("resources/data-tables/adventures.json")
+fetch("resources/data-tables/encounters.json")
     .then((response) => {
         return response.json();
     })
     .then((loadedData) => {
-        adventureTable = loadedData;
+        encountersTable = loadedData;
+        // console.log(adventureTable);
+    })
+    .catch((error) => {
+        // TODO: create a 500 code page
+        console.error(error);
+    });
+
+fetch("resources/data-tables/cups-items.json")
+    .then((response) => {
+        return response.json();
+    })
+    .then((loadedData) => {
+        cupsItemsTable = loadedData;
         // console.log(adventureTable);
     })
     .catch((error) => {
@@ -734,214 +750,9 @@ function drawReward(deck, allCardsCountAsCoins) {
     gameMessage(feedbackMessage);
 }
 
-function nextAdventure() {
-    gameMessage(`Lancez un D100 pour voir quelles péripéties vous attendent.`)
-
-    btn1.innerText = "Lancer le D100"
-    // Test button
-    btn1.onclick = () => { chooseNextAdventure(97) }
-
-    // btn1.onclick = () => {
-    //     const roll = d100.roll()
-    //     chooseNextAdventure(roll)
-    // }
-
-    function chooseNextAdventure(roll) {
-        btn1.style.display = "none"
-        btn2.style.display = "none"
-        btn3.style.display = "none"
-
-        let message = `${roll} !
-        Vous avez le choix entre ces aventures :
-        `;
-
-        let choice1 = adventureTable[roll - 2]
-        let choice2 = adventureTable[roll - 1]
-        let choice3 = adventureTable[roll]
-        console.log(choice1);
-        console.log(choice2);
-        console.log(choice3);
-
-        // Roll - 1
-        if (choice1) {
-            btn1.style.display = "block"
-            switch (choice1.type) {
-                case "Événement":
-                    message += `- Un événement spécial
-                    `;
-                    btn1.innerText = "Événement spécial"
-                    btn1.onclick = () => {
-                        specialEncounter()
-                    }
-                    break;
-                case "Village":
-                    message += `- Visiter un village
-                    `;
-                    btn1.innerText = "Visiter un village"
-                    btn1.onclick = () => {
-                        villageEncounter()
-                    }
-                    break;
-                case "Repos":
-                    message += `- Se reposer
-                    `;
-                    btn1.innerText = "Se reposer"
-                    btn1.onclick = () => {
-                        restEncounter()
-                    }
-                    break;
-                case "Combat !":
-                    message += `- Un combat contre un monstre
-                    `;
-                    btn1.innerText = "Combattre un monstre"
-                    btn1.onclick = () => {
-                        monsterEncounter()
-                    }
-                    break;
-                case "Combat ?":
-                    message += `- Une rencontre avec une créature intelligente
-                    `;
-                    btn1.innerText = "Rencontrer une créature intelligente"
-                    btn1.onclick = () => {
-                        intelligentBeingEncounter()
-                    }
-                    break;
-                case "Coup de chance !":
-                    break;
-                default:
-                    console.console.error("Unknown adventure type !");
-                    break;
-            }
-        }
-
-        // Actual Roll
-        if (choice2.type == choice1.type) {
-            choice2 = undefined
-        }
-        if (choice2) {
-            btn2.style.display = "block"
-            switch (choice2.type) {
-                case "Événement":
-                    message += `- Un événement spécial
-                                `;
-                    btn2.innerText = "Événement spécial"
-                    btn2.onclick = () => {
-                        specialEncounter()
-                    }
-                    break;
-                case "Village":
-                    message += `- Visiter un village
-                                `;
-                    btn2.innerText = "Visiter un village"
-                    btn2.onclick = () => {
-                        villageEncounter()
-                    }
-                    break;
-                case "Repos":
-                    message += `- Se reposer
-                                `;
-                    btn2.innerText = "Se reposer"
-                    btn2.onclick = () => {
-                        restEncounter()
-                    }
-                    break;
-                case "Combat !":
-                    message += `- Un combat contre un monstre
-                                `;
-
-                    btn2.innerText = "Combattre un monstre"
-                    btn2.onclick = () => {
-                        monsterEncounter()
-                    }
-                    break;
-                case "Combat ?":
-                    message += `- Une rencontre avec une créature intelligente
-                                `;
-                    btn2.innerText = "Rencontrer une créature intelligente"
-                    btn2.onclick = () => {
-                        intelligentBeingEncounter()
-                    }
-                    break;
-                case "Coup de chance !":
-                    message += `- Un coup de chance
-                                `;
-                    btn2.innerText = "Coup de chance"
-                    btn2.onclick = () => {
-                        luckyEncounter()
-                    }
-                    break;
-                default:
-                    console.console.error("Unknown adventure type !");
-                    break;
-            }
-        }
-
-        // Roll + 1
-        if (choice3.type == choice1.type
-            || choice3.type == choice2.type) {
-            choice3 = undefined
-        }
-        if (choice3) {
-            btn3.style.display = "block"
-            switch (choice3.type) {
-                case "Événement":
-                    message += `- Un événement spécial
-                            `;
-                    btn3.innerText = "Événement spécial"
-                    btn3.onclick = () => {
-                        specialEncounter()
-                    }
-                    break;
-                case "Village":
-                    message += `- Visiter un village
-                            `;
-                    btn3.innerText = "Visiter un village"
-                    btn3.onclick = () => {
-                        villageEncounter()
-                    }
-                    break;
-                case "Repos":
-                    message += `- Se reposer
-                            `;
-                    btn3.innerText = "Se reposer"
-                    btn3.onclick = () => {
-                        restEncounter()
-                    }
-                    break;
-                case "Combat !":
-                    message += `- Un combat contre un monstre
-                            `;
-                    btn3.innerText = "Combattre un monstre"
-                    btn3.onclick = () => {
-                        monsterEncounter()
-                    }
-                    break;
-                case "Combat ?":
-                    message += `- Une rencontre avec une créature intelligente
-                            `;
-                    btn3.innerText = "Rencontrer une créature intelligente"
-                    btn3.onclick = () => {
-                        intelligentBeingEncounter()
-                    }
-                    break;
-                case "Coup de chance !":
-                    break;
-                default:
-                    console.console.error("Unknown adventure type !");
-                    break;
-            }
-        }
-
-        message += `
-        Que choisissez-vous ?`;
-
-        gameMessage(message)
-    }
-}
-
-function generateIntelligentBeing(roll) {
+function generateIntelligentBeing(roll, traits) {
     let gender = d20.reducedRoll(d20.roll(), 2) == 1 ? "F" : "M"
-    let being = new Being(structuredClone(intelligentRacesTable[roll - 1]), gender)
+    let being = new Being(structuredClone(intelligentRacesTable[roll - 1]), gender, traits)
 
     // Momie special rule
     if (being.race.name.female == "Momie") {
@@ -1148,8 +959,8 @@ function generateIntelligentBeing(roll) {
     return being;
 }
 
-function generateMonster(roll) {
-    let monster = new Being(structuredClone(monstersTable[roll - 1]));
+function generateMonster(roll, traits) {
+    let monster = new Being(structuredClone(monstersTable[roll - 1]), null, traits);
 
     if (monster.race.name == "Parasite") {
         monster = generateIntelligentBeing(d20.roll());
@@ -1170,248 +981,332 @@ function generateMonster(roll) {
     return monster;
 }
 
-function gameMessage(text) {
-    txtDungeonMaster.innerText = text;
+//#region Fight
+/**
+ * @param ctx Object - context data necessary for the fight.
+ * @param ctx.opponent Object - opponent the player is facing in this fight
+ * @param ctx.introMessage String - message displayed when the fight is about to start.
+ * @param ctx.opponentPreparationPhaseCallBack CallBackFunction - run when the opponent is preparing for the turn.
+ * @param ctx.rewardPhaseCallBack CallBackFunction - run when the fight is won.
+ */
+function fight(ctx) {
+    console.log(`Fight:`);
+    console.log(ctx);
+
+    // Message d'intro
+    let message = ctx.introMessage
+    message += `
+    
+    ---- Un combat contre ${ctx.opponent.gender == "F" ? "une" : "un"} ${ctx.opponent.name} commence !`
+    gameMessage(message);
+
+    btn1.style.display = "block"
+    btn1.disabled = false
+    btn1.innerText = "Commencer le combat";
+    btn1.onclick = () => { initiativePhase(ctx) }
 }
 
-function fightMonster(monster) {
-    console.log(`Fighting : Monster}`);
-    console.log(monster);
+function initiativePhase(ctx) {
+    if (playerHasInitiative(ctx.opponent)) {
+        gameMessage(`Vous avez l'initiative. 
+            
+            -- C'est à votre tour de vous préparer.`)
 
-    gameMessage(
-        `${monster.race.gender == "F" ? "Une" : "Un"} ${monster.name} vous barre la route. Le combat est inévitable.`
-    );
+        btn1.innerText = "Se préparer"
+        btn1.onclick = () => { playerPreparationPhase(ctx) }
 
-    btn1.innerText = "Commencer le combat";
-    btn1.onclick = () => { phaseInitiative() }
+        return
+    }
 
-    function phaseInitiative() {
-        if (playerHasInitiative()) {
-            gameMessage(`Tu es plus rapide que ${beingNameWithDeterminantDefini(monster, true)}. C'est à ton tour d'attaquer.`)
+    gameMessage(`${beingNameWithDeterminantDefini(ctx.opponent, false)} a l'initiative, ${ctx.opponent.gender == "F" ? "elle" : "il"} se prépare.`)
 
-            btn1.innerText = "Attaquer"
-            btn1.onclick = () => { playerAttack() }
+    btn1.innerText = "Continuer"
+    btn1.onclick = () => { ctx.opponentPreparationPhaseCallBack(ctx); }
+}
+
+function playerPreparationPhase(ctx) {
+    // TODO : implement this
+    gameMessage(`Phase de préparation.
+        
+        Voulez-vous lancer un sort ou utiliser un objet ?`)
+
+    btn1.innerText = "Ne rien faire"
+    btn1.onclick = () => {
+        if (playerHasInitiative(ctx.opponent)) {
+            opponentPreparationPhase(ctx)
+            return
+        }
+        opponentAttackPhase(ctx)
+    }
+}
+
+// Opponent prep phase if it is second in initiative
+function opponentPreparationPhase(ctx) {
+    gameMessage(`C'est au tour ${beingNameWithDeterminantDefiniContracte(ctx.opponent, "de")} de se préparer.`)
+
+    btn1.innerText = "Continuer"
+    btn1.onclick = () => { ctx.opponentPreparationPhaseCallBack(ctx) }
+}
+
+function regularOpponentPreparationPhase(ctx) {
+    message = `${beingNameWithDeterminantDefini(ctx.opponent, false)} ne fais rien.`
+
+    // If the player has prepared before the opponent. We start the player attack phase.
+    if (playerHasInitiative(ctx.opponent)) {
+        message += `
+        
+        -- C'est à votre tour d'attaquer.`
+
+        gameMessage(message);
+
+        btn1.innerText = "Attaquer"
+        btn1.onclick = () => { playerAttackPhase(ctx) }
+
+        return
+    }
+
+    // Otherwise, we start the player prepare phase
+    message += `
+    
+    -- C'est à votre tour de vous préparer.`
+
+    gameMessage(message)
+
+    btn1.innerText = "Se préparer"
+    btn1.onclick = () => { playerPreparationPhase(ctx) }
+}
+
+function playerAttackPhase(ctx) {
+    let damage = 0;
+
+    gameMessage(`Phase d'attaque
+        
+        -- Voulez-vous faire une attaque physique ou une attaque magique ?`)
+
+    btn1.innerText = "Attaque physique"
+    btn1.onclick = () => { decideIfPowerful(true) }
+
+    btn2.style.display = "block"
+    btn2.disabled = false
+    btn2.innerText = "Attaque magique"
+    btn2.onclick = () => { decideIfPowerful(false) }
+
+    function decideIfPowerful(isPhysical) {
+        if (player.actionPoints > 0) {
+            gameMessage(`Voulez-vous utiliser un point d'action pour effectuer une attaque puissante ? (Vous pourrez lancer deux D100 à la place de un seul.)`)
+
+            btn1.innerText = "Oui"
+            btn1.onclick = () => { powerfulAttack(isPhysical) }
+
+            btn2.style.display = "block"
+            btn2.innerText = "Non"
+            btn2.onclick = () => { normalAttack(isPhysical) }
 
             return
         }
 
-        gameMessage(`${beingNameWithDeterminantDefini(monster, false)} est plus rapide que toi, ${monster.race.gender == "F" ? "elle" : "il"} attaque en premier.`)
-
-        btn1.innerText = "Continuer"
-        btn1.onclick = () => { monsterAttack(); }
+        normalAttack(isPhysical)
     }
 
-    function playerAttack() {
-        let damage = 0;
+    function powerfulAttack(isPhysical) {
+        player.actionPoints -= 1
 
-        gameMessage(`C'est à ton tour d'attaquer. Veux-tu faire une attaque physique ou une attaque magique ?`)
+        gameMessage(`Très bien, vous utilisez un point d'action pour effectuer une attaque puissante.
+            Lancez un premier D100 pour voir combien de dégâts vous allez infliger.`)
 
-        btn1.innerText = "Attaque physique"
-        btn1.onclick = () => { decideIfPowerful(true) }
-
-        btn2.style.display = "block"
-        btn2.innerText = "Attaque magique"
-        btn2.onclick = () => { decideIfPowerful(false) }
-
-        function decideIfPowerful(isPhysical) {
-            if (player.actionPoints > 0) {
-                gameMessage(`Voulez-vous utiliser un point d'action pour effectuer une attaque puissante ? (Vous pourrez lancer deux D100 à la place de un seul.)`)
-
-                btn1.innerText = "Oui"
-                btn1.onclick = () => { powerfulAttack(isPhysical) }
-
-                btn2.style.display = "block"
-                btn2.innerText = "Non"
-                btn2.onclick = () => { normalAttack(isPhysical) }
-
-                return
-            }
-
-            normalAttack(isPhysical)
+        btn2.style.display = "none"
+        btn1.innerText = "Lancer un D100"
+        btn1.onclick = () => {
+            const firstRoll = d100.roll()
+            damage += firstRoll;
+            secondRoll(firstRoll)
         }
 
-        function powerfulAttack(isPhysical) {
-            player.actionPoints -= 1
+        function secondRoll(firstRoll) {
+            gameMessage(`${firstRoll} ! 
+                Maintenant lancez votre D100 bonus.`)
 
-            gameMessage(`Très bien, Tu utilises un point d'action pour effectuer une attaque puissante.
-                Lance un premier D100 pour voir combien de dégâts tu vas infliger.`)
-
-            btn2.style.display = "none"
-            btn1.innerText = "Lancer un D100"
             btn1.onclick = () => {
-                const firstRoll = d100.roll()
-                damage += firstRoll;
-                secondRoll(firstRoll)
-            }
-
-            function secondRoll(firstRoll) {
-                gameMessage(`${firstRoll} ! 
-                    Maintenant lance ton D100 bonus.`)
-
-                btn1.onclick = () => {
-                    const secondRoll = d100.roll()
-                    damage += secondRoll
-                    inflictDamage(isPhysical, secondRoll)
-                }
+                const secondRoll = d100.roll()
+                damage += secondRoll
+                inflictDamage(isPhysical, secondRoll)
             }
         }
-
-        function normalAttack(isPhysical) {
-            gameMessage(`Très bien, lance un D100 pour voir combien de dégâts tu vas infliger.`)
-
-            btn2.style.display = "none"
-            btn1.innerText = "Lancer un D100"
-            btn1.onclick = () => {
-                const roll = d100.roll()
-                damage += roll;
-                inflictDamage(isPhysical, roll)
-            }
-        }
-
-        function inflictDamage(isPhysical, finalRoll) {
-            let message = `${finalRoll} !`
-
-            btn1.innerText = "Continuer"
-            btn1.onclick = () => {
-                if (isBeingDead(monster)) {
-                    fightIsWon()
-                    return
-                }
-
-                // If we attacked first , it's the monster's turn
-                if (playerHasInitiative()) {
-                    monsterAttack()
-                    return
-                }
-
-                newTurn();
-            }
-
-            // Magical Hit
-            if (!isPhysical) {
-                damage = clamp(damage + player.magic - monster.magic, 0, Infinity)
-                monster.hitPoints -= damage
-
-                message += `
-                Tu infliges un total de ${damage} ${damage <= 1 ? "dégât magique" : "dégâts magiques"} ${beingNameWithDeterminantDefiniContracte(monster, 'à')}.`
-                gameMessage(message)
-
-                return
-            }
-
-            // Physical Hit
-            damage = clamp(damage + player.strength - monster.speed, 0, Infinity)
-            monster.hitPoints -= damage
-
-            message += `
-            Tu infliges un total de ${damage} ${damage <= 1 ? "dégât physique" : "dégâts physiques"} ${beingNameWithDeterminantDefiniContracte(monster, 'à')}.`
-
-            gameMessage(message)
-        }
-
     }
 
-    function monsterAttack() {
-        console.log("Phase : Monster Attack");
-        let damage = 0
+    function normalAttack(isPhysical) {
+        gameMessage(`Très bien, lancez un D100 pour voir combien de dégâts vous allez infliger.`)
 
-        gameMessage(`C'est au tour ${beingNameWithDeterminantDefiniContracte(monster, "de")} d'attaquer.`)
-
-        btn1.innerText = "Continuer"
-        btn1.onclick = () => { selectAttackType() }
-
-        function selectAttackType() {
-            // If both stats are equal we choose the version with the most damaging potential
-            if (monster.strength == monster.magic) {
-                const potentialPhysicalDamage = monster.strength - player.speed
-                const potentialMagicalDamage = monster.magic - player.magic
-
-                if (potentialMagicalDamage > potentialPhysicalDamage) {
-                    inflictDamage(false);
-                    return
-                }
-
-                inflictDamage(true);
-                return
-            }
-
-            if (monster.magic > monster.strength) {
-                inflictDamage(false);
-                return;
-            }
-
-            inflictDamage(true);
-        }
-
-        function inflictDamage(isPhysical) {
-            btn1.innerText = "Continuer"
-            btn1.onclick = () => {
-                if (isBeingDead(player)) {
-                    gameOver()
-                    return
-                }
-
-                // If we attacked first it's time for a new turn
-                if (playerHasInitiative()) {
-                    newTurn();
-                    return
-                }
-
-                playerAttack()
-            }
-
-            // Magical Hit
-            if (!isPhysical) {
-                const roll = d100.roll()
-                console.log(`The monster rolls a ${roll} - Magical`);
-                damage = clamp(monster.magic + roll - player.magic, 0, Infinity)
-                player.hitPoints -= damage
-
-                gameMessage(`${beingNameWithDeterminantDefini(monster, false)} attaque et t'inflige ${damage} ${damage <= 1 ? "dégât magique" : "dégâts magiques"}.`)
-                return
-            }
-
-            // Physical Hit
+        btn2.style.display = "none"
+        btn1.innerText = "Lancer un D100"
+        btn1.onclick = () => {
             const roll = d100.roll()
-            console.log(`The monster rolls a ${roll} - Physical`);
-            damage = clamp(monster.strength + roll - player.speed, 0, Infinity)
+            damage += roll;
+            inflictDamage(isPhysical, roll)
+        }
+    }
+
+    function inflictDamage(isPhysical, finalRoll) {
+        let message = `${finalRoll} !`
+
+        // Magical Hit
+        if (!isPhysical) {
+            damage = clamp(damage + player.magic - ctx.opponent.magic, 0, Infinity)
+            ctx.opponent.hitPoints -= damage
+            message += `
+            Vous infligez un total de ${damage} ${damage <= 1 ? "dégât magique" : "dégâts magiques"} ${beingNameWithDeterminantDefiniContracte(ctx.opponent, 'à')}.`
+
+        }
+        // Physical Hit
+        else {
+            damage = clamp(damage + player.strength - ctx.opponent.speed, 0, Infinity)
+            ctx.opponent.hitPoints -= damage
+            message += `
+            Vous infligez un total de ${damage} ${damage <= 1 ? "dégât physique" : "dégâts physiques"} ${beingNameWithDeterminantDefiniContracte(ctx.opponent, 'à')}.`
+        }
+
+        // Check if opponent is KO
+        if (isBeingDead(ctx.opponent)) {
+            gameMessage(message)
+            btn1.innerText = "Continuer"
+            btn1.onclick = () => { ctx.rewardPhaseCallBack(ctx) }
+            return
+        }
+
+        // If we attacked first , it's the opponent's turn
+        if (playerHasInitiative(ctx.opponent)) {
+            message += `
+            
+            -- C'est au tour ${beingNameWithDeterminantDefiniContracte(ctx.opponent, 'de')} d'attaquer.`
+            gameMessage(message)
+            btn1.innerText = "Continuer"
+            btn1.onclick = () => { opponentAttackPhase(ctx) }
+            return
+        }
+
+        // Otherwise we start a new turn
+        btn1.innerText = "Continuer"
+        btn1.onclick = () => { newTurn(ctx) }
+
+    }
+}
+
+function opponentAttackPhase(ctx) {
+    let damage = 0
+
+    // If player attacked first we skip the phase presentation
+    if (playerHasInitiative(ctx.opponent)) {
+        selectAttackType()
+        return
+    }
+
+    gameMessage(`Phase d'attaque.
+       
+        -- C'est au tour ${beingNameWithDeterminantDefiniContracte(ctx.opponent, "de")} d'attaquer.`)
+
+    btn1.innerText = "Continuer"
+    btn1.onclick = () => { selectAttackType() }
+
+    function selectAttackType() {
+        // If both stats are equal we choose the version with the most damaging potential
+        if (ctx.opponent.strength == ctx.opponent.magic) {
+            const potentialPhysicalDamage = ctx.opponent.strength - player.speed
+            const potentialMagicalDamage = ctx.opponent.magic - player.magic
+
+            // Magical
+            if (potentialMagicalDamage > potentialPhysicalDamage) {
+                inflictDamage(false);
+                return
+            }
+
+            // Physical
+            inflictDamage(true);
+            return
+        }
+
+        // Magical Attack
+        if (ctx.opponent.magic > ctx.opponent.strength) {
+            inflictDamage(false);
+            return;
+        }
+
+        // Physical Attack
+        inflictDamage(true);
+    }
+
+    function inflictDamage(isPhysical) {
+        let message = ``
+
+        // Magical Hit
+        if (!isPhysical) {
+            const roll = d100.roll()
+            console.log(`The monster rolls a ${roll} - Magical`);
+            damage = clamp(ctx.opponent.magic + roll - player.magic, 0, Infinity)
             player.hitPoints -= damage
 
-            gameMessage(`${beingNameWithDeterminantDefini(monster, false)} attaque et t'inflige ${damage} ${damage <= 1 ? "dégât physique" : "dégâts physiques"}.`)
+            message += `${beingNameWithDeterminantDefini(ctx.opponent, false)} attaque et vous inflige ${damage} ${damage <= 1 ? "dégât magique" : "dégâts magiques"}.`
         }
-    }
+        // Physical Hit
+        else {
 
-    function playerHasInitiative() {
-        if (monster.speed > player.speed) {
-            // console.log("Player does not have the initiative.");
-            return false
+            const roll = d100.roll()
+            console.log(`The monster rolls a ${roll} - Physical`);
+            damage = clamp(ctx.opponent.strength + roll - player.speed, 0, Infinity)
+            player.hitPoints -= damage
+
+            message += `${beingNameWithDeterminantDefini(ctx.opponent, false)} attaque et vous inflige ${damage} ${damage <= 1 ? "dégât physique" : "dégâts physiques"}.`
         }
 
-        // console.log("Player has the initiative.");
-        return true
-    }
+        // Check if the hit killed the player
+        // Display just the hit message and set up button to bring to the game over screen
+        if (isBeingDead(player)) {
+            gameMessage(message)
+            btn1.innerText = "Continuer"
+            btn1.onclick = () => { gameOver() }
 
-    function newTurn() {
-        gameMessage(`Tu as résisté à l'assault de ${beingNameWithDeterminantDefini(monster, true)} mais ${monster.race.gender == "F" ? "cette dernière" : "ce dernier"} est toujours debout et prêt${monster.race.gender == "F" ? "e" : ""} à en découdre.
-            Un nouveau tour de combat commence.`)
-
-        btn1.innerText = "Commencer"
-        btn1.onclick = () => { phaseInitiative() }
-    }
-
-    function fightIsWon() {
-        player.restoreHitPoints()
-        player.experiencePoints++
-
-        gameMessage(`Bravo ! ${beingNameWithDeterminantDefini(monster, false)} est terrassé${monster.race.gender == "F" ? "e" : ""} !
-            Tu te soigne et gagne 1 point d'expérience.
-            Tu peux aussi lancer un D20 pour acquérir une récompense potentielle.`)
-
-        btn1.innerText = "Lancer un D20"
-        btn1.onclick = () => {
-            const roll = d20.roll();
-            fightReward(roll)
+            return
         }
+
+        // If we attacked first it's time for a new turn
+        if (playerHasInitiative(ctx.opponent)) {
+            gameMessage(message)
+            btn1.innerText = "Continuer"
+            btn1.onclick = () => { newTurn(ctx) }
+
+            return
+        }
+
+        // Otherwise, we start the player attack phase
+        message += `
+        
+        -- C'est à votre tour d'attaquer.`
+        gameMessage(message)
+        btn1.innerText = "Attaquer"
+        btn1.onclick = () => { playerAttackPhase(ctx) }
+    }
+}
+
+function newTurn(ctx) {
+    gameMessage(`Vous avez résisté à l'assault de ${beingNameWithDeterminantDefini(ctx.opponent, true)} mais ${ctx.opponent.gender == "F" ? "cette dernière" : "ce dernier"} est toujours debout et prêt${ctx.opponent.gender == "F" ? "e" : ""} à en découdre.
+        
+        -- Un nouveau tour de combat commence.`)
+
+    btn1.innerText = "Commencer"
+    btn1.onclick = () => { initiativePhase(ctx) }
+}
+
+function regularRewardPhase(ctx) {
+    player.restoreHitPoints()
+    player.experiencePoints++
+
+    gameMessage(`${beingNameWithDeterminantDefini(ctx.opponent, false)} est terrassé${ctx.opponent.gender == "F" ? "e" : ""} !
+        Vous vous soignez et gagnez 1 point d'expérience.
+        Vous Pouvez aussi lancer un D20 pour acquérir une récompense potentielle.`)
+
+    btn1.innerText = "Lancer un D20"
+    btn1.onclick = () => {
+        const roll = d20.roll();
+        fightReward(roll)
     }
 
     function fightReward(roll) {
@@ -1421,12 +1316,12 @@ function fightMonster(monster) {
 
         switch (reducedRoll) {
             case 2:
-                message += `Tu gagnes 1 point d'action.`
+                message += `Vous gagnez 1 point d'action.`
                 player.actionPoints++
                 break;
 
             case 3:
-                message += `Tu peux tirer une carte du deck mais toutes les cartes comptent comme des cartes 'Pièces'.`
+                message += `Vous pouvez tirer une carte du deck mais toutes les cartes comptent comme des cartes 'Pièces'.`
                 allowedToDraw = true;
                 imgDeck.onclick = () => {
                     clearCardsDisplayZone()
@@ -1435,7 +1330,7 @@ function fightMonster(monster) {
                 break;
 
             case 4:
-                message += `Tu peux tirer une carte du deck. Tu gagnes immédiatement l'objet ou l'or correspondant.`
+                message += `Vous pouvez tirer une carte du deck. Vous gagnez immédiatement l'objet ou l'or correspondant.`
                 allowedToDraw = true;
                 imgDeck.onclick = () => {
                     clearCardsDisplayZone()
@@ -1448,11 +1343,229 @@ function fightMonster(monster) {
                 break;
         }
         gameMessage(message)
+
+        // TODO: Check next adventure step
     }
 }
 
+function playerHasInitiative(opponent) {
+    if (opponent.speed > player.speed) {
+        return false
+    }
+
+    return true
+}
+//#endregion
+
+function nextAdventure() {
+    gameMessage(`Lancez un D100 pour voir quelles péripéties vous attendent.`)
+
+    btn1.innerText = "Lancer le D100"
+    // Test button
+    btn1.onclick = () => { chooseNextAdventure(60) }
+
+    // btn1.onclick = () => {
+    //     const roll = d100.roll()
+    //     chooseNextAdventure(roll)
+    // }
+
+    function chooseNextAdventure(roll) {
+        btn1.style.display = "none"
+        btn2.style.display = "none"
+        btn3.style.display = "none"
+
+        let message = `${roll} !
+        Vous avez le choix entre ces aventures :
+        `;
+
+        let choice1 = encountersTable[roll - 2]
+        let choice2 = encountersTable[roll - 1]
+        let choice3 = encountersTable[roll]
+        console.log(choice1);
+        console.log(choice2);
+        console.log(choice3);
+
+        // TODO : Improve this shit :P
+        // Roll - 1
+        if (choice1) {
+            btn1.style.display = "block"
+            switch (choice1.type) {
+                case "Événement":
+                    message += `- Un événement spécial
+                    `;
+                    btn1.innerText = "Événement spécial"
+                    btn1.onclick = () => {
+                        specialEncounter()
+                    }
+                    break;
+                case "Village":
+                    message += `- Visiter un village
+                    `;
+                    btn1.innerText = "Visiter un village"
+                    btn1.onclick = () => {
+                        villageEncounter()
+                    }
+                    break;
+                case "Repos":
+                    message += `- Se reposer
+                    `;
+                    btn1.innerText = "Se reposer"
+                    btn1.onclick = () => {
+                        restEncounter()
+                    }
+                    break;
+                case "Combat !":
+                    message += `- Un combat contre un monstre
+                    `;
+                    btn1.innerText = "Combattre un monstre"
+                    btn1.onclick = () => {
+                        monsterEncounter()
+                    }
+                    break;
+                case "Combat ?":
+                    message += `- Une rencontre avec une créature intelligente
+                    `;
+                    btn1.innerText = "Rencontrer une créature intelligente"
+                    btn1.onclick = () => {
+                        intelligentBeingEncounter()
+                    }
+                    break;
+                case "Coup de chance !":
+                    break;
+                default:
+                    console.console.error("Unknown adventure type !");
+                    break;
+            }
+        }
+
+        // Actual Roll
+        if (choice2.type == choice1.type) {
+            choice2 = undefined
+        }
+        if (choice2) {
+            btn2.style.display = "block"
+            switch (choice2.type) {
+                case "Événement":
+                    message += `- Un événement spécial
+                                `;
+                    btn2.innerText = "Événement spécial"
+                    btn2.onclick = () => {
+                        specialEncounter()
+                    }
+                    break;
+                case "Village":
+                    message += `- Visiter un village
+                                `;
+                    btn2.innerText = "Visiter un village"
+                    btn2.onclick = () => {
+                        villageEncounter()
+                    }
+                    break;
+                case "Repos":
+                    message += `- Se reposer
+                                `;
+                    btn2.innerText = "Se reposer"
+                    btn2.onclick = () => {
+                        restEncounter()
+                    }
+                    break;
+                case "Combat !":
+                    message += `- Un combat contre un monstre
+                                `;
+
+                    btn2.innerText = "Combattre un monstre"
+                    btn2.onclick = () => {
+                        monsterEncounter()
+                    }
+                    break;
+                case "Combat ?":
+                    message += `- Une rencontre avec une créature intelligente
+                                `;
+                    btn2.innerText = "Rencontrer une créature intelligente"
+                    btn2.onclick = () => {
+                        intelligentBeingEncounter()
+                    }
+                    break;
+                case "Coup de chance !":
+                    message += `- Un coup de chance
+                                `;
+                    btn2.innerText = "Coup de chance"
+                    btn2.onclick = () => {
+                        luckyEncounter()
+                    }
+                    break;
+                default:
+                    console.console.error("Unknown adventure type !");
+                    break;
+            }
+        }
+
+        // Roll + 1
+        if (choice3.type == choice1.type
+            || choice3.type == choice2.type) {
+            choice3 = undefined
+        }
+        if (choice3) {
+            btn3.style.display = "block"
+            switch (choice3.type) {
+                case "Événement":
+                    message += `- Un événement spécial
+                            `;
+                    btn3.innerText = "Événement spécial"
+                    btn3.onclick = () => {
+                        specialEncounter()
+                    }
+                    break;
+                case "Village":
+                    message += `- Visiter un village
+                            `;
+                    btn3.innerText = "Visiter un village"
+                    btn3.onclick = () => {
+                        villageEncounter()
+                    }
+                    break;
+                case "Repos":
+                    message += `- Se reposer
+                            `;
+                    btn3.innerText = "Se reposer"
+                    btn3.onclick = () => {
+                        restEncounter()
+                    }
+                    break;
+                case "Combat !":
+                    message += `- Un combat contre un monstre
+                            `;
+                    btn3.innerText = "Combattre un monstre"
+                    btn3.onclick = () => {
+                        monsterEncounter()
+                    }
+                    break;
+                case "Combat ?":
+                    message += `- Une rencontre avec une créature intelligente
+                            `;
+                    btn3.innerText = "Rencontrer une créature intelligente"
+                    btn3.onclick = () => {
+                        intelligentBeingEncounter()
+                    }
+                    break;
+                case "Coup de chance !":
+                    break;
+                default:
+                    console.console.error("Unknown adventure type !");
+                    break;
+            }
+        }
+
+        message += `
+        Que choisissez-vous ?`;
+
+        gameMessage(message)
+    }
+}
+
+//#region Encounters
 function monsterEncounter() {
-    const monster = generateMonster(d20.roll())
+    const traits = []
     // Temp
     let level = 1;
     //
@@ -1461,14 +1574,24 @@ function monsterEncounter() {
 
     switch (level) {
         case 1:
-            monster.addWeakTrait(d20.roll())
+            traits.push(getWeakTrait(d20.roll()))
             break;
 
         default:
             break;
     }
 
-    fightMonster(monster)
+    const monster = generateMonster(d20.roll(), traits)
+    let introMessage = `${monster.gender == "F" ? "Une" : "Un"} ${monster.name} vous barre la route. Le combat est inévitable.`
+
+    const contextData = {
+        opponent: monster,
+        introMessage: introMessage,
+        opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
+        rewardPhaseCallBack: regularRewardPhase
+    }
+
+    fight(contextData)
 }
 
 function intelligentBeingEncounter() {
@@ -1635,12 +1758,223 @@ function villageEncounter() {
 }
 
 function specialEncounter() {
+    const roll = getRandomInt(specialEncountersTable.length) + 1
 
+    switch (roll) {
+        case 1:
+            event01()
+            break;
+
+        default:
+            console.error("Unknown special event ID.")
+            break;
+    }
+
+    function event01() {
+        // TEST
+        // const potion = structuredClone(cupsItemsTable[0])
+        // const ether = structuredClone(cupsItemsTable[1])
+        // player.inventory.add(potion)
+        // player.inventory.add(ether)
+        // player.goldCoins += 200
+
+        gameMessage(`Vous rencontrez un voyageur dont l'enfant est gravement malade. Il vous supplie de l'aider.
+        --- Si vous avez une potion ou un ether, vous pouvez lui donner.
+        --- Si vous avez 200PO vous pouvez lui donner pour qu'il achète un remède.
+        --- Vous pouvez vous battre contre le voyageur.
+        --- Vous pouvez ne rien faire et passer votre chemin.
+        
+        Que choisissez-vous de faire ?`)
+
+        btn1.style.display = "block"
+        btn2.style.display = "block"
+        btn3.style.display = "block"
+        btn4.style.display = "block"
+        btn5.style.display = "block"
+        btn1.innerText = "Donner une potion"
+        btn2.innerText = "Donner un ether"
+        btn3.innerText = "Donner 200PO"
+        btn4.innerText = "Se battre"
+        btn5.innerText = "Passer mon chemin"
+        btn1.disabled = false
+        btn2.disabled = false
+        btn3.disabled = false
+        btn4.disabled = false
+        btn5.disabled = false
+        if (!player.inventory.contains("Potion")) btn1.disabled = true
+        if (!player.inventory.contains("Éther")) btn2.disabled = true
+        if (player.goldCoins < 200) btn3.disabled = true
+        btn1.onclick = () => { givePotion() }
+        btn2.onclick = () => { giveEther() }
+        btn3.onclick = () => { giveGold() }
+        btn4.onclick = () => { fightTraveler() }
+        btn5.onclick = () => { leave() }
+
+        function givePotion() {
+            if (!player.inventory.contains("Potion")) return;
+
+            gameMessage(`Vous donnez une Potion au voyageur.
+                Il vous remercie avec une voix pleine d'émotions et vous offre un objet en retour.
+                
+                Vous recevez le Pendentif de la Lune.
+                Vous recevez également 1XP.`)
+
+            player.inventory.remove("Potion")
+            player.inventory.add(getCupsItem(6))
+            player.experiencePoints++
+
+            btn1.innerText = "Continuer"
+        }
+
+        function giveEther() {
+            if (!player.inventory.contains("Éther")) return;
+
+            gameMessage(`Vous donnez un Éther au voyageur.
+                Il vous remercie avec une voix pleine d'émotions et vous offre un objet en retour.
+                
+                Vous recevez le Pendentif de la Lune.
+                Vous recevez également 1XP.`)
+
+            player.inventory.remove("Éther")
+            player.inventory.add(getCupsItem(6))
+            player.experiencePoints++
+
+            btn1.innerText = "Continuer"
+        }
+
+        function giveGold() {
+            if (player.goldCoins < 200) return;
+
+            gameMessage(`Vous donnez 200PO au voyageur.
+                Il vous remercie chaleureusement et vous offre un objet en retour.
+                
+                Vous recevez une Dague.
+                Vous recevez également 1XP.`)
+
+            player.goldCoins -= 200
+            player.inventory.add(new SwordsItem(swordsItemsTable[0]))
+            player.experiencePoints++
+
+            btn1.innerText = "Continuer"
+        }
+
+        function fightTraveler() {
+            // Humain male costaud
+            const traveler = generateIntelligentBeing(1, [strongTraitsTable[5]])
+            traveler.gender = "M"
+
+            let introMessage = `Vous faites comprendre au voyageur vos intentions hostiles. Ce dernier vous regarde avec stupeur en se redressant, prêt à défendre sa peau.`
+
+            const travelerPreparationPhase = (ctx) => {
+                let message = ``
+                const roll = d20.roll()
+
+                // Teleports away
+                if (roll >= 11) {
+                    btn1.innerText = "Continuer"
+                    btn1.onclick = () => {
+                        // TODO: check next step.
+                    }
+                    message += `Le voyageur lance un sort de téléportation et disparaît avec sa fille, vous laissant ${player.gender == "F" ? "seule" : "seul"} au milieu du chemin.
+                        
+                        Le combat est terminé.`
+                    if (player.hitPoints < player.maxHitPoints) {
+                        player.restoreHitPoints()
+                        message += `
+                        Vous vous soignez et continuez votre route.`
+                        gameMessage(message)
+                        return
+                    }
+
+                    message += ` Vous continuez votre route.`
+                    gameMessage(message)
+                    return
+                }
+
+                // Traveler does nothing
+                message = `${beingNameWithDeterminantDefini(ctx.opponent, false)} ne fais rien.`
+
+                // If player already prepared we go to the player's attack phase
+                if (playerHasInitiative(ctx.opponent)) {
+                    message += `
+                    
+                    -- C'est à votre tour d'attaquer.`
+
+                    gameMessage(message);
+
+                    btn1.innerText = "Attaquer"
+                    btn1.onclick = () => {
+                        playerAttackPhase(ctx)
+                    }
+                    return
+                }
+
+                // Otherwise, we go to its prepare phase
+                message += `
+                
+                -- C'est à votre tour de vous préparer.`
+
+                gameMessage(message);
+
+                btn1.innerText = "Se préparer"
+                btn1.onclick = () => {
+                    playerPreparationPhase(ctx)
+                }
+            }
+
+            const travelerRewardPhase = () => {
+                btn1.innerText = "Continuer"
+                btn1.onclick = () => {
+                    // TODO: check next step.
+                }
+
+                player.experiencePoints++;
+
+                let message = `Le voyageur est vaincu.
+                Vous recevez 1XP`
+
+                if (player.hitPoints < player.maxHitPoints) {
+                    player.restoreHitPoints()
+                    message += `.
+                    Vous vous soignez et continuez votre route.`
+                    gameMessage(message)
+                    return
+                }
+
+                message += ` et continuez votre route.`
+                gameMessage(message)
+            }
+
+            const contextData = {
+                opponent: traveler,
+                introMessage: introMessage,
+                opponentPreparationPhaseCallBack: travelerPreparationPhase,
+                rewardPhaseCallBack: travelerRewardPhase
+            }
+
+            fight(contextData)
+        }
+
+        function leave() {
+            btn1.disabled = false
+            btn1.innerText = "Continuer"
+            btn1.onclick = () => {
+                // TODO: check next step
+            }
+
+            gameMessage(`Vous partagez votre sympathie au voyageur mais lui dites que vous ne pouvez pas l'aider.
+                Vous gagner 1Xp et continuer votre route.`)
+
+            player.experiencePoints++;
+        }
+
+    }
 }
 
 function luckyEncounter() {
 
 }
+//#endregion
 
 function addCardToDisplayZone(card) {
     const cardElement = document.createElement("img")
@@ -1662,9 +1996,13 @@ function isBeingDead(being) {
     return false
 }
 
+function gameMessage(text) {
+    txtDungeonMaster.innerText = text;
+}
+
 function gameOver() {
-    gameMessage(`Tu es mort·e, ton aventure s'achève ici.
-            Merci d'avoir joué ! On espère que tu t'es quand même bien amusé·e.
-            Recharge la page si tu souhaites recommencer une partie.`)
+    gameMessage(`Vous êtes ${player.gender == "F" ? "morte" : "mort"}, votre aventure s'achève ici.
+            Merci d'avoir joué ! On espère que vous vous êtes quand même bien ${player.gender == "F" ? "amusée" : "amusé"}.
+            Rechargez la page si vous souhaitez recommencer une partie.`)
 }
 

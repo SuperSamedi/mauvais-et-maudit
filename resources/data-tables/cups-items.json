@@ -1,0 +1,138 @@
+[
+  {
+    "type": "consommable",
+    "name": "Potion",
+    "preposition": "la ",
+    "description": "Restaure 20PV à l'utilisateur.",
+    "buyValue": 200,
+    "sellValue": 100,
+    "equippable": false
+  },
+  {
+    "type": "consommable",
+    "name": "Éther",
+    "preposition": "l'",
+    "description": "L'utilisateur récupère 1PA.",
+    "buyValue": 200,
+    "sellValue": 100,
+    "equippable": false
+  },
+  {
+    "type": "consommable",
+    "name": "Trèfle à 4 feuilles",
+    "preposition": "le ",
+    "description": "Permet d'annuler un tirage de dé ou de carte, et de le recommencer.",
+    "buyValue": 400,
+    "sellValue": 150,
+    "equippable": false
+  },
+  {
+    "type": "équipement",
+    "name": "Armure Légère",
+    "preposition": "l'",
+    "description": "PV +15",
+    "hitPoints": 15,
+    "buyValue": 300,
+    "sellValue": 150,
+    "equippable": true
+  },
+  {
+    "type": "équipement",
+    "name": "Armure Lourde",
+    "preposition": "l'",
+    "description": "PV +30, VI -5",
+    "hitPoints": 30,
+    "speed": -5,
+    "buyValue": 500,
+    "sellValue": 200,
+    "equippable": true
+  },
+  {
+    "type": "équipement",
+    "name": "Pendentif de la Lune",
+    "preposition": "le ",
+    "description": "MA +15",
+    "magic": 15,
+    "buyValue": 450,
+    "sellValue": 200,
+    "equippable": true
+  },
+  {
+    "type": "équipement",
+    "name": "Bague d'Équilibre",
+    "preposition": "la ",
+    "description": "PV +5, FO +5, VI +5, MA +5",
+    "hitPoints": 5,
+    "strength": 5,
+    "speed": 5,
+    "magic": 5,
+    "buyValue": 550,
+    "sellValue": 250,
+    "equippable": true
+  },
+  {
+    "type": "consommable",
+    "name": "Élixir de Vie",
+    "preposition": "l'",
+    "description": "L'utilisateur récupère tous ses PV immédiatement.",
+    "buyValue": 700,
+    "sellValue": 300,
+    "equippable": false
+  },
+  {
+    "type": "équipement",
+    "name": "Manteau de Géant",
+    "preposition": "le ",
+    "description": "PV +50",
+    "hitPoints": 50,
+    "buyValue": 1000,
+    "sellValue": 450,
+    "equippable": true
+  },
+  {
+    "type": "équipement",
+    "name": "Coupe Invidable",
+    "preposition": "la ",
+    "description": "Donne 1PA au début de chaque combat, avant la détermination de l'initiative.",
+    "magic": 15,
+    "buyValue": 1200,
+    "sellValue": 600,
+    "equippable": true
+  },
+  {
+    "type": "passif",
+    "name": "Lanterne de Vision",
+    "preposition": "la ",
+    "description": "Protège de certains événements, ainsi que des effets négatifs de la Grotte, du Marécage et des Étangs Putrides.",
+    "buyValue": 900,
+    "sellValue": 400,
+    "equippable": false
+  },
+  {
+    "type": "passif",
+    "name": "Compas des Anciens",
+    "preposition": "le ",
+    "description": "Permet d'annuler le tirage de dé déterminant l'environnement en arrivant dans une nouvelle zone et de le recommencer immédiatement. (une fois par zone)",
+    "buyValue": 600,
+    "sellValue": 250,
+    "equippable": false
+  },
+  {
+    "type": "consommable",
+    "name": "Tablette de Pouvoir",
+    "preposition": "la ",
+    "description": "Détruit instantanément votre adversaire. Dans le cas d'un boss, lui ôte instantanément 50PV.",
+    "buyValue": 800,
+    "sellValue": 400,
+    "equippable": false
+  },
+  {
+    "type": "divers",
+    "name": "Bout de Métal",
+    "preposition": "le ",
+    "description": "Bout de métal inutile prenant de la place dans l'inventaire.",
+    "buyValue": 100,
+    "sellValue": 50,
+    "equippable": false
+  }
+]

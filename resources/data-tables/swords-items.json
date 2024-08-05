@@ -1,6 +1,6 @@
 [
   {
-    "type": "weapon",
+    "type": "arme",
     "name": "Dague",
     "preposition": "une ",
     "description": "FO +5, VI +5",
@@ -11,7 +11,7 @@
     "equippable": true
   },
   {
-    "type": "weapon",
+    "type": "arme",
     "name": "Masse",
     "preposition": "une ",
     "description": "FO +10",
@@ -21,7 +21,7 @@
     "equippable": true
   },
   {
-    "type": "weapon",
+    "type": "arme",
     "name": "Hache",
     "preposition": "une ",
     "description": "FO +15",
@@ -31,7 +31,7 @@
     "equippable": true
   },
   {
-    "type": "weapon",
+    "type": "arme",
     "name": "Lance",
     "preposition": "une ",
     "description": "FO +10, VI +5",
@@ -42,7 +42,7 @@
     "equippable": true
   },
   {
-    "type": "weapon",
+    "type": "arme",
     "name": "Épée",
     "preposition": "une ",
     "description": "FO +15, VI +5",
@@ -53,7 +53,7 @@
     "equippable": true
   },
   {
-    "type": "weapon",
+    "type": "arme",
     "name": "Bâton Magique",
     "preposition": "un ",
     "description": "MA +15",
@@ -63,7 +63,7 @@
     "equippable": true
   },
   {
-    "type": "weapon",
+    "type": "arme",
     "name": "Espadon",
     "preposition": "un ",
     "description": "FO +25, VI -5",
@@ -74,7 +74,7 @@
     "equippable": true
   },
   {
-    "type": "weapon",
+    "type": "arme",
     "name": "Sabre Stellaire",
     "preposition": "le ",
     "description": "FO +25, VI +5",
@@ -85,7 +85,7 @@
     "equippable": true
   },
   {
-    "type": "weapon",
+    "type": "arme",
     "name": "Arc Spectral",
     "preposition": "l'",
     "description": "FO +10, VI +25",
@@ -96,7 +96,7 @@
     "equippable": true
   },
   {
-    "type": "weapon",
+    "type": "arme",
     "name": "Sceptre de la Nuit",
     "preposition": "le ",
     "description": "VI +10, MA +25",

@@ -13,11 +13,11 @@ class EquippableItem extends Item {
         }
 
         // Only one 'Weapon' can be equipped at the same time
-        if (this.type == "weapon") {
+        if (this.type == "arme") {
             let otherWeaponAlreadyEquipped = false;
             // console.log("Is Weapon !");
             player.inventory.slots.forEach((inventoryItem) => {
-                if (inventoryItem.type == "weapon" && inventoryItem.equipped == true) {
+                if (inventoryItem.type == "arme" && inventoryItem.equipped == true) {
                     console.log("Found another weapon already equipped.");
                     otherWeaponAlreadyEquipped = true;
                     return;
@@ -25,6 +25,21 @@ class EquippableItem extends Item {
             });
 
             if (otherWeaponAlreadyEquipped == true) return false;
+        }
+
+        // Only one 'Equipment' can be equipped at the same time
+        if (this.type == "équipement") {
+            let otherEquipmentAlreadyEquipped = false;
+            // console.log("Is Equipment !");
+            player.inventory.slots.forEach((inventoryItem) => {
+                if (inventoryItem.type == "équipement" && inventoryItem.equipped == true) {
+                    console.log("Found another equipment already equipped.");
+                    otherEquipmentAlreadyEquipped = true;
+                    return;
+                }
+            });
+
+            if (otherEquipmentAlreadyEquipped == true) return false;
         }
 
         this.isEquipped = true
