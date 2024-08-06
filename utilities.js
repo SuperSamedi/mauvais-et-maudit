@@ -223,3 +223,20 @@ function getCupsItem(id) {
 
   return item;
 }
+
+
+function isBeingDead(being) {
+  if (being.hitPoints <= 0) {
+    return true
+  }
+
+  return false
+}
+
+function hideAllGenericButtons() {
+  btn1.style.display = "none"
+  btn2.style.display = "none"
+  btn3.style.display = "none"
+  btn4.style.display = "none"
+  btn5.style.display = "none"
+}

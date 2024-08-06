@@ -32,6 +32,7 @@ class Player {
 
   constructor() {
     this.inventory = new Inventory();
+    this.type = "Intelligent Being"
     this.race = { name: { male: "aucune" } };
     this.traits = new Array({ name: { accordMasculin: "aucun" } });
     this.#hitPoints = 0;
@@ -78,6 +79,11 @@ class Player {
       }
     });
 
+    // Environment modifiers
+    if (currentEnvironment.statsModifiers.player.hitPoints) {
+      stat += currentEnvironment.statsModifiers.player.hitPoints
+    }
+
     return stat;
   }
 
@@ -103,6 +109,11 @@ class Player {
         stat += item.strength;
       }
     });
+
+    // Environment modifiers
+    if (currentEnvironment.statsModifiers.player.strength) {
+      stat += currentEnvironment.statsModifiers.player.strength
+    }
 
     return stat;
   }
@@ -130,6 +141,11 @@ class Player {
       }
     });
 
+    // Environment modifiers
+    if (currentEnvironment.statsModifiers.player.speed) {
+      stat += currentEnvironment.statsModifiers.player.speed
+    }
+
     return stat;
   }
 
@@ -155,6 +171,11 @@ class Player {
         stat += item.magic;
       }
     });
+
+    // Environment modifiers
+    if (currentEnvironment.statsModifiers.player.magic) {
+      stat += currentEnvironment.statsModifiers.player.magic
+    }
 
     return stat;
   }

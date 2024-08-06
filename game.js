@@ -740,6 +740,39 @@ function choosePlayerTrait() {
     player.updateStatsVisuals();
 }
 
+function chooseNewEnvironment() {
+    gameMessage(`Vous arrivez dans un nouvel environement.
+        Lancez le D20 pour tirer celui-ci.`)
+
+    hideAllGenericButtons()
+    btn1.style.display = "block"
+    btn1.disabled = false
+    btn1.innerText = "Lancer le D20"
+    btn1.onclick = () => {
+        const roll = d20.roll()
+        newEnvironmentResult(roll)
+    }
+
+    function newEnvironmentResult(roll) {
+        // Pass data to the currentEnvironment of voyage.js
+        const newEnvironment = environmentsTable[roll - 1]
+        currentEnvironment.name = newEnvironment.name
+        currentEnvironment.description = newEnvironment.description
+        if (newEnvironment.statsModifiers) currentEnvironment.statsModifiers = newEnvironment.statsModifiers
+        if (newEnvironment.shopModifiers) currentEnvironment.shopModifiers = newEnvironment.shopModifiers
+        if (newEnvironment.InnModifiers) currentEnvironment.InnModifiers = newEnvironment.InnModifiers
+
+        updateAllEnvironmentVisuals()
+        player.updateStatsVisuals()
+
+        gameMessage(`${roll} ! ${newEnvironment.name}.
+            - Effet : ${newEnvironment.description}`)
+
+        btn1.innerText = "Continuer"
+        btn1.onclick = () => { nextAdventure() }
+    }
+}
+
 function drawReward(deck, allCardsCountAsCoins) {
     allowedToDraw = false;
 
@@ -781,7 +814,7 @@ function drawReward(deck, allCardsCountAsCoins) {
 
 function generateIntelligentBeing(roll, traits) {
     let gender = d20.reducedRoll(d20.roll(), 2) == 1 ? "F" : "M"
-    let being = new Being(structuredClone(intelligentRacesTable[roll - 1]), gender, traits)
+    let being = new Being("Intelligent Being", structuredClone(intelligentRacesTable[roll - 1]), gender, traits)
 
     // Momie special rule
     if (being.race.name.female == "Momie") {
@@ -989,7 +1022,7 @@ function generateIntelligentBeing(roll, traits) {
 }
 
 function generateMonster(roll, traits) {
-    let monster = new Being(structuredClone(monstersTable[roll - 1]), null, traits);
+    let monster = new Being("Monster", structuredClone(monstersTable[roll - 1]), null, traits);
 
     if (monster.race.name == "Parasite") {
         monster = generateIntelligentBeing(d20.roll());
@@ -1392,8 +1425,12 @@ function playerHasInitiative(opponent) {
 //#endregion
 
 function nextAdventure() {
-    gameMessage(`Lancez un D100 pour voir quelles péripéties vous attendent.`)
+    gameMessage(`Une nouvelle étape de votre voyage commence.
+        Lancez un D100 pour voir quelles péripéties vous attendent.`)
 
+    hideAllGenericButtons()
+    btn1.style.display = "block"
+    btn1.disabled = false
     btn1.innerText = "Lancer le D100"
     // Test button
     btn1.onclick = () => { chooseNextAdventure(60) }
@@ -1404,9 +1441,7 @@ function nextAdventure() {
     // }
 
     function chooseNextAdventure(roll) {
-        btn1.style.display = "none"
-        btn2.style.display = "none"
-        btn3.style.display = "none"
+        hideAllGenericButtons()
 
         let message = `${roll} !
         Vous avez le choix entre ces aventures :
@@ -1465,6 +1500,7 @@ function nextAdventure() {
                     }
                     break;
                 case "Coup de chance !":
+                    btn1.style.display = "none"
                     break;
                 default:
                     console.console.error("Unknown adventure type !");
@@ -1583,6 +1619,7 @@ function nextAdventure() {
                     }
                     break;
                 case "Coup de chance !":
+                    btn3.style.display = "none"
                     break;
                 default:
                     console.console.error("Unknown adventure type !");
@@ -2164,14 +2201,6 @@ function addCardToDisplayZone(card) {
 
 function clearCardsDisplayZone() {
     zoneCardsDrawn.innerHTML = ``;
-}
-
-function isBeingDead(being) {
-    if (being.hitPoints <= 0) {
-        return true
-    }
-
-    return false
 }
 
 function gameMessage(text) {

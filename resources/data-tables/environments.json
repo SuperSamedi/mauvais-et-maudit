@@ -167,7 +167,7 @@
     "description": "Toutes les rencontres avec des créatures intelligentes sont remplacées par des combats. \nLes villages ne possèdent pas d'auberges.\nDeux cartes seulement par magasin. Les prix des magasins sont augmentés de 50PO.",
     "shopModifiers": {
       "prices": 50,
-      "itemsLimit": 2
+      "cardsLimit": 2
     }
   }
 ]
