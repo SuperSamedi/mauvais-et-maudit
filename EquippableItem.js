@@ -7,18 +7,15 @@ class EquippableItem extends Item {
 
     // Toggle equip-unequip
     equip() {
-        if (this.isEquipped == true) {
-            this.unequip();
-            return false;
-        }
+        if (this.isEquipped == true) return false;
 
         // Only one 'Weapon' can be equipped at the same time
         if (this.type == "arme") {
             let otherWeaponAlreadyEquipped = false;
             // console.log("Is Weapon !");
             player.inventory.slots.forEach((inventoryItem) => {
-                if (inventoryItem.type == "arme" && inventoryItem.equipped == true) {
-                    console.log("Found another weapon already equipped.");
+                if (inventoryItem.type == "arme" && inventoryItem.isEquipped == true) {
+                    // console.log("Found another weapon already equipped.");
                     otherWeaponAlreadyEquipped = true;
                     return;
                 }
@@ -32,8 +29,8 @@ class EquippableItem extends Item {
             let otherEquipmentAlreadyEquipped = false;
             // console.log("Is Equipment !");
             player.inventory.slots.forEach((inventoryItem) => {
-                if (inventoryItem.type == "équipement" && inventoryItem.equipped == true) {
-                    console.log("Found another equipment already equipped.");
+                if (inventoryItem.type == "équipement" && inventoryItem.isEquipped == true) {
+                    // console.log("Found another equipment already equipped.");
                     otherEquipmentAlreadyEquipped = true;
                     return;
                 }

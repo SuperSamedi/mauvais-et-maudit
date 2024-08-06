@@ -28,7 +28,7 @@
 
 #dungeon-master-text {
   width: 800px;
-  height: 200px;
+  min-height: 200px;
   border: 2px solid black;
   background-color: rgb(100, 100, 100);
   padding: 10px;

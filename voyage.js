@@ -212,6 +212,9 @@ function getMonstersLevel() {
     return currentEnvironment.monstersLevel
 }
 
+function isFirstStep(step = currentStep, environment = currentEnvironment) {
+    return environment.steps.indexOf(step) == 0 ? true : false
+}
 /**
  * Checks if the step is the last one of the environment
  * @param {object} step (often used to evaluate the currentStep)

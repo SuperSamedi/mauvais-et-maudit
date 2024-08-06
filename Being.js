@@ -60,8 +60,24 @@ class Being {
         }
 
         // Environment modifiers
-        if (this.type == "Monster") stat += currentEnvironment.statsModifiers.monsters.hitPoints ? currentEnvironment.statsModifiers.monsters.hitPoints : 0;
-        if (this.type == "Intelligent Being") stat += currentEnvironment.statsModifiers.intelligentBeings.hitPoints ? currentEnvironment.statsModifiers.intelligentBeings.hitPoints : 0;
+        if (this.type == "Monster") {
+            if (currentEnvironment.statsModifiers) {
+                if (currentEnvironment.statsModifiers.monsters) {
+                    if (currentEnvironment.statsModifiers.monsters.hitPoints) {
+                        stat += currentEnvironment.statsModifiers.monsters.hitPoints
+                    }
+                }
+            }
+        }
+        if (this.type == "Intelligent Being") {
+            if (currentEnvironment.statsModifiers) {
+                if (currentEnvironment.statsModifiers.intelligentBeings) {
+                    if (currentEnvironment.statsModifiers.intelligentBeings.hitPoints) {
+                        stat += currentEnvironment.statsModifiers.intelligentBeings.hitPoints
+                    }
+                }
+            }
+        }
 
         return stat;
     }
@@ -84,8 +100,24 @@ class Being {
         }
 
         // Environment modifiers
-        if (this.type == "Monster") stat += currentEnvironment.statsModifiers.monsters.strength ? currentEnvironment.statsModifiers.monsters.strength : 0;
-        if (this.type == "Intelligent Being") stat += currentEnvironment.statsModifiers.intelligentBeings.strength ? currentEnvironment.statsModifiers.intelligentBeings.strength : 0;
+        if (this.type == "Monster") {
+            if (currentEnvironment.statsModifiers) {
+                if (currentEnvironment.statsModifiers.monsters) {
+                    if (currentEnvironment.statsModifiers.monsters.strength) {
+                        stat += currentEnvironment.statsModifiers.monsters.strength
+                    }
+                }
+            }
+        }
+        if (this.type == "Intelligent Being") {
+            if (currentEnvironment.statsModifiers) {
+                if (currentEnvironment.statsModifiers.intelligentBeings) {
+                    if (currentEnvironment.statsModifiers.intelligentBeings.strength) {
+                        stat += currentEnvironment.statsModifiers.intelligentBeings.strength
+                    }
+                }
+            }
+        }
 
         return stat;
     }
@@ -106,8 +138,24 @@ class Being {
         }
 
         // Environment modifiers
-        if (this.type == "Monster") stat += currentEnvironment.statsModifiers.monsters.speed ? currentEnvironment.statsModifiers.monsters.speed : 0;
-        if (this.type == "Intelligent Being") stat += currentEnvironment.statsModifiers.intelligentBeings.speed ? currentEnvironment.statsModifiers.intelligentBeings.speed : 0;
+        if (this.type == "Monster") {
+            if (currentEnvironment.statsModifiers) {
+                if (currentEnvironment.statsModifiers.monsters) {
+                    if (currentEnvironment.statsModifiers.monsters.speed) {
+                        stat += currentEnvironment.statsModifiers.monsters.speed
+                    }
+                }
+            }
+        }
+        if (this.type == "Intelligent Being") {
+            if (currentEnvironment.statsModifiers) {
+                if (currentEnvironment.statsModifiers.intelligentBeings) {
+                    if (currentEnvironment.statsModifiers.intelligentBeings.speed) {
+                        stat += currentEnvironment.statsModifiers.intelligentBeings.speed
+                    }
+                }
+            }
+        }
 
         return stat;
     }
@@ -128,8 +176,24 @@ class Being {
         }
 
         // Environment modifiers
-        if (this.type == "Monster") stat += currentEnvironment.statsModifiers.monsters.magic ? currentEnvironment.statsModifiers.monsters.magic : 0;
-        if (this.type == "Intelligent Being") stat += currentEnvironment.statsModifiers.intelligentBeings.magic ? currentEnvironment.statsModifiers.intelligentBeings.magic : 0;
+        if (this.type == "Monster") {
+            if (currentEnvironment.statsModifiers) {
+                if (currentEnvironment.statsModifiers.monsters) {
+                    if (currentEnvironment.statsModifiers.monsters.magic) {
+                        stat += currentEnvironment.statsModifiers.monsters.magic
+                    }
+                }
+            }
+        }
+        if (this.type == "Intelligent Being") {
+            if (currentEnvironment.statsModifiers) {
+                if (currentEnvironment.statsModifiers.intelligentBeings) {
+                    if (currentEnvironment.statsModifiers.intelligentBeings.magic) {
+                        stat += currentEnvironment.statsModifiers.intelligentBeings.magic
+                    }
+                }
+            }
+        }
 
         return stat;
     }

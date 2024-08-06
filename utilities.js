@@ -239,4 +239,10 @@ function hideAllGenericButtons() {
   btn3.style.display = "none"
   btn4.style.display = "none"
   btn5.style.display = "none"
+  btn6.style.display = "none"
+}
+
+function activateButton(btn) {
+  btn.style.display = "block"
+  btn.disabled = false
 }

@@ -40,6 +40,12 @@ class Player {
     this.#actionPoints = 2;
     this.#experiencePoints = 0;
     this.#gender = "M";
+    this.levelUpStats = {
+      hitPoints: 0,
+      strength: 0,
+      speed: 0,
+      magic: 0
+    }
     this.updateAllVisuals();
   }
 
@@ -80,9 +86,16 @@ class Player {
     });
 
     // Environment modifiers
-    if (currentEnvironment.statsModifiers.player.hitPoints) {
-      stat += currentEnvironment.statsModifiers.player.hitPoints
+    if (currentEnvironment.statsModifiers) {
+      if (currentEnvironment.statsModifiers.player) {
+        if (currentEnvironment.statsModifiers.player.hitPoints) {
+          stat += currentEnvironment.statsModifiers.player.hitPoints
+        }
+      }
     }
+
+    // Level up stats
+    stat += this.levelUpStats.hitPoints
 
     return stat;
   }
@@ -111,9 +124,16 @@ class Player {
     });
 
     // Environment modifiers
-    if (currentEnvironment.statsModifiers.player.strength) {
-      stat += currentEnvironment.statsModifiers.player.strength
+    if (currentEnvironment.statsModifiers) {
+      if (currentEnvironment.statsModifiers.player) {
+        if (currentEnvironment.statsModifiers.player.strength) {
+          stat += currentEnvironment.statsModifiers.player.strength
+        }
+      }
     }
+
+    // Level up stats
+    stat += this.levelUpStats.strength
 
     return stat;
   }
@@ -142,9 +162,16 @@ class Player {
     });
 
     // Environment modifiers
-    if (currentEnvironment.statsModifiers.player.speed) {
-      stat += currentEnvironment.statsModifiers.player.speed
+    if (currentEnvironment.statsModifiers) {
+      if (currentEnvironment.statsModifiers.player) {
+        if (currentEnvironment.statsModifiers.player.speed) {
+          stat += currentEnvironment.statsModifiers.player.speed
+        }
+      }
     }
+
+    // Level up stats
+    stat += this.levelUpStats.speed
 
     return stat;
   }
@@ -173,9 +200,16 @@ class Player {
     });
 
     // Environment modifiers
-    if (currentEnvironment.statsModifiers.player.magic) {
-      stat += currentEnvironment.statsModifiers.player.magic
+    if (currentEnvironment.statsModifiers) {
+      if (currentEnvironment.statsModifiers.player) {
+        if (currentEnvironment.statsModifiers.player.magic) {
+          stat += currentEnvironment.statsModifiers.player.magic
+        }
+      }
     }
+
+    // Level up stats
+    stat += this.levelUpStats.magic
 
     return stat;
   }
@@ -223,11 +257,72 @@ class Player {
     this.updateExperiencePointsVisuals();
   }
 
+
+  // Level ups
+  levelUpHitPoints() {
+    if (!allowedToLevelUp) return
+    if (this.experiencePoints <= 0) return
+
+    this.experiencePoints--
+    this.levelUpStats.hitPoints += 5
+
+    this.restoreHitPoints()
+    this.updateExperiencePointsVisuals()
+    this.updateHitPointsVisuals()
+  }
+
+  levelUpStrength() {
+    if (!allowedToLevelUp) return
+    if (this.experiencePoints <= 0) return
+
+    this.experiencePoints--
+    this.levelUpStats.strength += 5
+
+    this.updateExperiencePointsVisuals()
+    this.updateStrengthVisuals()
+  }
+
+  levelUpSpeed() {
+    if (!allowedToLevelUp) return
+    if (this.experiencePoints <= 0) return
+
+    this.experiencePoints--
+    this.levelUpStats.speed += 5
+
+    this.updateExperiencePointsVisuals()
+    this.updateSpeedVisuals()
+  }
+
+  levelUpMagic() {
+    if (!allowedToLevelUp) return
+    if (this.experiencePoints <= 0) return
+
+    this.experiencePoints--
+    this.levelUpStats.magic += 5
+
+    this.updateExperiencePointsVisuals()
+    this.updateMagicVisuals()
+  }
+
+  buyActionPoint() {
+    if (!allowedToLevelUp) return
+    if (this.experiencePoints <= 0) return
+
+    this.experiencePoints--
+    this.actionPoints++
+
+    this.updateExperiencePointsVisuals()
+    this.updateActionPointsVisuals()
+  }
+
+
   restoreHitPoints() {
     this.hitPoints = this.maxHitPoints;
     this.updateHitPointsVisuals();
   }
 
+
+  // Visuals updates
   updateAllVisuals() {
     this.updateRaceVisuals()
     this.updateTraitVisuals()

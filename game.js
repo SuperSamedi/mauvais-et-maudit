@@ -6,6 +6,7 @@ const btn2 = document.getElementById("btn2");
 const btn3 = document.getElementById("btn3");
 const btn4 = document.getElementById("btn4");
 const btn5 = document.getElementById("btn5");
+const btn6 = document.getElementById("btn6");
 const btnRaceRoll = document.getElementById("btn-race-roll");
 const btnTraitRoll = document.getElementById("btn-trait-roll");
 const btnCardDraw = document.getElementById("btn-card-draw");
@@ -57,6 +58,7 @@ let cupsItemsTable = [];
 
 let allowedToDraw = true;
 let allowedToSellItems = false;
+let allowedToLevelUp = false;
 
 
 btnRaceRoll.onclick = choosePlayerRace;
@@ -68,7 +70,9 @@ btnCardDraw.onclick = () => {
 
 btnFightMonster.onclick = () => { monsterEncounter() }
 btnVisitShop.onclick = () => { visitShop() }
-btnNextAdventure.onclick = () => { nextAdventure() }
+
+const adventureBeginsMessage = `Vous contemplez les plaines de votre campagne natale. Savoir que vous ne reviendrai peut-être jamais chez vous vous fais un petit pincement au coeur mais votre détermination est sans faille, votre destin vous appel.`
+btnNextAdventure.onclick = () => { nextAdventure(adventureBeginsMessage) }
 
 imgDeck.onclick = () => {
     if (allowedToDraw) {
@@ -267,6 +271,10 @@ fetch("resources/data-tables/strongissime-traits.json")
 // roll = 20
 // console.log(d20.reducedRoll(roll, 4));
 //#endregion
+
+
+hideAllGenericButtons()
+
 
 function choosePlayerRace() {
     const roll = d20.roll();
@@ -740,8 +748,11 @@ function choosePlayerTrait() {
     player.updateStatsVisuals();
 }
 
-function chooseNewEnvironment() {
-    gameMessage(`Vous arrivez dans un nouvel environement.
+function chooseNewEnvironment(customMessage) {
+    let message = customMessage
+    gameMessage(`${customMessage}
+        
+        Vous arrivez dans un nouvel environement.
         Lancez le D20 pour tirer celui-ci.`)
 
     hideAllGenericButtons()
@@ -769,15 +780,20 @@ function chooseNewEnvironment() {
             - Effet : ${newEnvironment.description}`)
 
         btn1.innerText = "Continuer"
-        btn1.onclick = () => { nextAdventure() }
+        // TODO :  add flavor text to the environments
+        btn1.onclick = () => { nextAdventure("") }
     }
 }
 
 function drawReward(deck, allCardsCountAsCoins) {
+    if (!allowedToDraw) return
+
     allowedToDraw = false;
 
     if (deck.length <= 0) {
         gameMessage("La pioche est vide...");
+        btn1.innerText = "Continuer"
+        btn1.onclick = () => { nextAdventure("") }
         return;
     }
 
@@ -792,7 +808,7 @@ function drawReward(deck, allCardsCountAsCoins) {
         const reward = structuredClone(coinsItemsTable[cardDrawn.value - 1]);
         player.goldCoins += reward.goldCoins;
         feedbackMessage += ` 
-        Tu reçois ${reward.goldCoins} pièces d'or`;
+        Vous recevez ${reward.goldCoins} pièces d'or`;
 
         if (reward.actionPoints) {
             player.actionPoints += reward.actionPoints;
@@ -804,12 +820,21 @@ function drawReward(deck, allCardsCountAsCoins) {
         let reward = new SwordsItem(structuredClone(swordsItemsTable[cardDrawn.value - 1]));
         player.inventory.add(reward);
         feedbackMessage += ` 
-        Tu reçois ${reward.preposition}${reward.name} (${reward.description})`;
+        Vous recevez ${reward.preposition}${reward.name} (${reward.description})`;
         //console.log(inventory);
     }
 
     feedbackMessage += `.`;
     gameMessage(feedbackMessage);
+
+    hideAllGenericButtons()
+    btn1.style.display = "block"
+    btn1.disabled = false
+    btn1.innerText = "Continuer"
+    btn1.onclick = () => {
+        clearCardsDisplayZone()
+        nextAdventure("")
+    }
 }
 
 function generateIntelligentBeing(roll, traits) {
@@ -1062,6 +1087,7 @@ function fight(ctx) {
     ---- Un combat contre ${ctx.opponent.gender == "F" ? "une" : "un"} ${ctx.opponent.name} commence !`
     gameMessage(message);
 
+    hideAllGenericButtons()
     btn1.style.display = "block"
     btn1.disabled = false
     btn1.innerText = "Commencer le combat";
@@ -1155,7 +1181,7 @@ function playerAttackPhase(ctx) {
 
     function decideIfPowerful(isPhysical) {
         if (player.actionPoints > 0) {
-            gameMessage(`Voulez-vous utiliser un point d'action pour effectuer une attaque puissante ? (Vous pourrez lancer deux D100 à la place de un seul.)`)
+            gameMessage(`Voulez-vous utiliser un point d'action pour effectuer une attaque puissante ? (Vous recevrez un lancé bonus du D100 qui sera ajouté à vos dégâts.)`)
 
             btn1.innerText = "Oui"
             btn1.onclick = () => { powerfulAttack(isPhysical) }
@@ -1174,10 +1200,10 @@ function playerAttackPhase(ctx) {
         player.actionPoints -= 1
 
         gameMessage(`Très bien, vous utilisez un point d'action pour effectuer une attaque puissante.
-            Lancez un premier D100 pour voir combien de dégâts vous allez infliger.`)
+            Lancez une première fois le D100 pour voir combien de dégâts vous allez infliger.`)
 
         btn2.style.display = "none"
-        btn1.innerText = "Lancer un D100"
+        btn1.innerText = "Lancer le D100"
         btn1.onclick = () => {
             const firstRoll = d100.roll()
             damage += firstRoll;
@@ -1197,10 +1223,10 @@ function playerAttackPhase(ctx) {
     }
 
     function normalAttack(isPhysical) {
-        gameMessage(`Très bien, lancez un D100 pour voir combien de dégâts vous allez infliger.`)
+        gameMessage(`Très bien, lancez le D100 pour voir combien de dégâts vous allez infliger.`)
 
         btn2.style.display = "none"
-        btn1.innerText = "Lancer un D100"
+        btn1.innerText = "Lancer le D100"
         btn1.onclick = () => {
             const roll = d100.roll()
             damage += roll;
@@ -1349,7 +1375,7 @@ function opponentAttackPhase(ctx) {
 }
 
 function newTurn(ctx) {
-    gameMessage(`Vous avez résisté à l'assault de ${beingNameWithDeterminantDefini(ctx.opponent, true)} mais ${ctx.opponent.gender == "F" ? "cette dernière" : "ce dernier"} est toujours debout et prêt${ctx.opponent.gender == "F" ? "e" : ""} à en découdre.
+    gameMessage(`Vous avez résisté à l'assault ${beingNameWithDeterminantDefiniContracte(ctx.opponent, "de")} mais ${ctx.opponent.gender == "F" ? "cette dernière" : "ce dernier"} est toujours debout et prêt${ctx.opponent.gender == "F" ? "e" : ""} à en découdre.
         
         -- Un nouveau tour de combat commence.`)
 
@@ -1358,6 +1384,7 @@ function newTurn(ctx) {
 }
 
 function regularRewardPhase(ctx) {
+    stepCompleted();
     player.restoreHitPoints()
     player.experiencePoints++
 
@@ -1372,41 +1399,45 @@ function regularRewardPhase(ctx) {
     }
 
     function fightReward(roll) {
+        hideAllGenericButtons()
+
         const reducedRoll = d20.reducedRoll(roll, 4)
-        let message = `${roll} !
-        `;
 
         switch (reducedRoll) {
             case 2:
-                message += `Vous gagnez 1 point d'action.`
+                gameMessage(`${roll} !
+                    Vous gagnez 1 point d'action.`)
                 player.actionPoints++
                 break;
 
             case 3:
-                message += `Vous pouvez tirer une carte du deck mais toutes les cartes comptent comme des cartes 'Pièces'.`
+                gameMessage(`${roll} !
+                    Vous pouvez tirer une carte du deck mais toutes les cartes comptent comme des cartes 'Pièces'.`)
                 allowedToDraw = true;
                 imgDeck.onclick = () => {
-                    clearCardsDisplayZone()
                     drawReward(scopaDeck, true)
                 }
-                break;
+                return
 
             case 4:
-                message += `Vous pouvez tirer une carte du deck. Vous gagnez immédiatement l'objet ou l'or correspondant.`
+                gameMessage(`${roll} !
+                    Vous pouvez tirer une carte du deck. Vous gagnez immédiatement l'objet ou l'or correspondant.`)
                 allowedToDraw = true;
                 imgDeck.onclick = () => {
-                    clearCardsDisplayZone()
                     drawReward(scopaDeck, false)
                 }
-                break;
+                return
 
             default:
-                message += `Aucune récompense. Déso...`
+                gameMessage(`${roll} !
+                    Aucune récompense.Déso...`)
                 break;
         }
-        gameMessage(message)
 
-        // TODO: Check next adventure step
+        btn1.style.display = "block"
+        btn1.disabled = false
+        btn1.innerText = "Continuer"
+        btn1.onclick = () => { nextAdventure("") }
     }
 }
 
@@ -1424,8 +1455,18 @@ function playerHasInitiative(opponent) {
 }
 //#endregion
 
-function nextAdventure() {
-    gameMessage(`Une nouvelle étape de votre voyage commence.
+function nextAdventure(customMessage = "") {
+    // If we start a new environment we choose it first
+    if (isFirstStep() && currentEnvironment.name == "") {
+        chooseNewEnvironment(customMessage)
+        return
+    }
+
+    let message = customMessage
+
+    gameMessage(`${message}
+        
+        Une nouvelle étape de votre voyage commence.
         Lancez un D100 pour voir quelles péripéties vous attendent.`)
 
     hideAllGenericButtons()
@@ -1458,6 +1499,8 @@ function nextAdventure() {
         // Roll - 1
         if (choice1) {
             btn1.style.display = "block"
+            btn1.disabled = false
+
             switch (choice1.type) {
                 case "Événement":
                     message += `- Un événement spécial
@@ -1501,6 +1544,7 @@ function nextAdventure() {
                     break;
                 case "Coup de chance !":
                     btn1.style.display = "none"
+                    btn1.disabled = true
                     break;
                 default:
                     console.console.error("Unknown adventure type !");
@@ -1514,6 +1558,8 @@ function nextAdventure() {
         }
         if (choice2) {
             btn2.style.display = "block"
+            btn2.disabled = false
+
             switch (choice2.type) {
                 case "Événement":
                     message += `- Un événement spécial
@@ -1577,6 +1623,8 @@ function nextAdventure() {
         }
         if (choice3) {
             btn3.style.display = "block"
+            btn3.disabled = false
+
             switch (choice3.type) {
                 case "Événement":
                     message += `- Un événement spécial
@@ -1620,6 +1668,7 @@ function nextAdventure() {
                     break;
                 case "Coup de chance !":
                     btn3.style.display = "none"
+                    btn3.disabled = true
                     break;
                 default:
                     console.console.error("Unknown adventure type !");
@@ -1901,6 +1950,7 @@ function visitShop() {
         gameMessage(`${cardDrawn.description}.
             C'est bon. Appuyez sur continuer pour voir l'objet, ou les objets, disponible(s) dans le magasin.`)
 
+        activateButton(btn1)
         btn1.innerText = "Continuer"
         btn1.onclick = () => { deployShop() }
 
@@ -1945,6 +1995,8 @@ function visitShop() {
         btn1.innerText = "Partir"
         btn1.onclick = () => {
             allowedToSellItems = false
+            stepCompleted()
+            nextAdventure("Vous sortez du magasin et décidez de continuer votre route.")
         }
 
         cardsDrawn.forEach(card => {
@@ -1974,7 +2026,65 @@ function visitShop() {
 }
 
 function restEncounter() {
+    gameMessage(`Vous trouvez un coin relativement sûr et aménagez un campement sommaire. Vous vous sustentez et vous apprêtez à passer la nuit tout en repensant aux situations auxquelles vous avez fait face jusqu'ici.
+        
+        - Vous gagnez 2PA.
+        - Vous pouvez dépenser vos points d'expérience(XP) pour améliorer vos caractéristiques de manière permanente (1XP = 5 points de caractéristique).
+        - Vous pouvez également utiliser vos points d'expérience(XP) pour acquérir d'avantage de points d'action(PA) (1XP = 1PA).`)
 
+    activateButton(btn1)
+    activateButton(btn2)
+    activateButton(btn3)
+    activateButton(btn4)
+    activateButton(btn5)
+    activateButton(btn6)
+
+    btn1.innerText = "Améliorer les Points de Vie (PV)"
+    btn2.innerText = "Améliorer la Force (FO)"
+    btn3.innerText = "Améliorer la Vitesse (VI)"
+    btn4.innerText = "Améliorer la Magie (MA)"
+    btn5.innerText = "Échanger 1XP pour 1PA"
+    btn6.innerText = "Lever le camp"
+
+    btn1.onclick = () => {
+        player.levelUpHitPoints()
+        checkButtonsValidity()
+    }
+    btn2.onclick = () => {
+        player.levelUpStrength()
+        checkButtonsValidity()
+    }
+    btn3.onclick = () => {
+        player.levelUpSpeed()
+        checkButtonsValidity()
+    }
+    btn4.onclick = () => {
+        player.levelUpMagic()
+        checkButtonsValidity()
+    }
+    btn5.onclick = () => {
+        player.buyActionPoint()
+        checkButtonsValidity()
+    }
+    btn6.onclick = () => {
+        stepCompleted()
+        nextAdventure("Après une bonne nuit de sommeil, vous mangez un déjeuner frugal avant de remballer vos affaires et de continuer votre route.")
+        btn6.onclick = () => { }
+    }
+
+    player.actionPoints += 2
+    checkButtonsValidity()
+    allowedToLevelUp = true
+
+    function checkButtonsValidity() {
+        if (player.experiencePoints <= 0) {
+            btn1.disabled = true
+            btn2.disabled = true
+            btn3.disabled = true
+            btn4.disabled = true
+            btn5.disabled = true
+        }
+    }
 }
 
 function villageEncounter() {
@@ -2038,7 +2148,13 @@ function specialEncounter() {
             player.inventory.add(getCupsItem(6))
             player.experiencePoints++
 
+            stepCompleted()
+
+            hideAllGenericButtons()
+            btn1.style.display = "block"
+            btn1.disabled = false
             btn1.innerText = "Continuer"
+            btn1.onclick = () => { nextAdventure("") }
         }
 
         function giveEther() {
@@ -2054,7 +2170,13 @@ function specialEncounter() {
             player.inventory.add(getCupsItem(6))
             player.experiencePoints++
 
+            stepCompleted()
+
+            hideAllGenericButtons()
+            btn1.style.display = "block"
+            btn1.disabled = false
             btn1.innerText = "Continuer"
+            btn1.onclick = () => { nextAdventure("") }
         }
 
         function giveGold() {
@@ -2070,7 +2192,13 @@ function specialEncounter() {
             player.inventory.add(new SwordsItem(swordsItemsTable[0]))
             player.experiencePoints++
 
+            stepCompleted();
+
+            hideAllGenericButtons()
+            btn1.style.display = "block"
+            btn1.disabled = false
             btn1.innerText = "Continuer"
+            btn1.onclick = () => { nextAdventure("") }
         }
 
         function fightTraveler() {
@@ -2086,10 +2214,11 @@ function specialEncounter() {
 
                 // Teleports away
                 if (roll >= 11) {
+                    stepCompleted()
+
                     btn1.innerText = "Continuer"
-                    btn1.onclick = () => {
-                        // TODO: check next step.
-                    }
+                    btn1.onclick = () => { nextAdventure("") }
+
                     message += `Le voyageur lance un sort de téléportation et disparaît avec sa fille, vous laissant ${player.gender == "F" ? "seule" : "seul"} au milieu du chemin.
                         
                         Le combat est terminé.`
@@ -2138,10 +2267,10 @@ function specialEncounter() {
             }
 
             const travelerRewardPhase = () => {
+                stepCompleted();
+
                 btn1.innerText = "Continuer"
-                btn1.onclick = () => {
-                    // TODO: check next step.
-                }
+                btn1.onclick = () => { nextAdventure("") }
 
                 player.experiencePoints++;
 
@@ -2150,14 +2279,12 @@ function specialEncounter() {
 
                 if (player.hitPoints < player.maxHitPoints) {
                     player.restoreHitPoints()
-                    message += `.
-                    Vous vous soignez et continuez votre route.`
-                    gameMessage(message)
+                    gameMessage(`${message}.
+                    Vous vous soignez et continuez votre route.`)
                     return
                 }
 
-                message += ` et continuez votre route.`
-                gameMessage(message)
+                gameMessage(`${message} et continuez votre route.`)
             }
 
             const contextData = {
@@ -2171,16 +2298,18 @@ function specialEncounter() {
         }
 
         function leave() {
-            btn1.disabled = false
-            btn1.innerText = "Continuer"
-            btn1.onclick = () => {
-                // TODO: check next step
-            }
-
             gameMessage(`Vous partagez votre sympathie au voyageur mais lui dites que vous ne pouvez pas l'aider.
                 Vous gagner 1Xp et continuer votre route.`)
 
             player.experiencePoints++;
+
+            stepCompleted()
+
+            hideAllGenericButtons()
+            btn1.style.display = "block"
+            btn1.disabled = false
+            btn1.innerText = "Continuer"
+            btn1.onclick = () => { nextAdventure("") }
         }
 
     }
