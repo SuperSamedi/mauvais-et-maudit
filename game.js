@@ -71,7 +71,7 @@ btnCardDraw.onclick = () => {
 btnFightMonster.onclick = () => { monsterEncounter() }
 btnVisitShop.onclick = () => { visitShop() }
 
-const adventureBeginsMessage = `Vous contemplez les plaines de votre campagne natale. Savoir que vous ne reviendrai peut-être jamais chez vous vous fais un petit pincement au coeur mais votre détermination est sans faille, votre destin vous appel.`
+const adventureBeginsMessage = `Vous contemplez les plaines de votre campagne natale. Savoir que vous ne reviendrai peut-être jamais chez vous vous fais un petit pincement au cœur mais votre détermination est sans faille, votre destin vous appelle.`
 btnNextAdventure.onclick = () => { nextAdventure(adventureBeginsMessage) }
 
 imgDeck.onclick = () => {
@@ -230,6 +230,7 @@ fetch("resources/data-tables/strongissime-traits.json")
 // #endregion
 
 //#region TESTS
+// Reduced roll algorithm test
 // let roll = 1
 // console.log(d20.reducedRoll(roll, 4));
 // roll = 2
@@ -270,9 +271,27 @@ fetch("resources/data-tables/strongissime-traits.json")
 // console.log(d20.reducedRoll(roll, 4));
 // roll = 20
 // console.log(d20.reducedRoll(roll, 4));
+
+// Test gender equity
+// let males = 0
+// let females = 0
+
+// for (let i = 0; i < 10000; i++) {
+//     const being = generateIntelligentBeing()
+//     if (being.gender == "F") {
+//         females++
+//         continue
+//     }
+//     if (being.gender == "M") {
+//         males++
+//     }
+// }
+
+// console.log(`males: ${males}`);
+// console.log(`females: ${females}`);
 //#endregion
 
-
+// =====> START
 hideAllGenericButtons()
 
 
@@ -832,12 +851,20 @@ function drawReward(deck, allCardsCountAsCoins) {
     btn1.disabled = false
     btn1.innerText = "Continuer"
     btn1.onclick = () => {
+        console.log(environments.indexOf(currentEnvironment));
+        console.log(isFirstStep());
         clearCardsDisplayZone()
-        nextAdventure("")
+        // Check if is the very first adventure roll
+        if (environments.indexOf(currentEnvironment) == 0 && isFirstStep()) {
+            console.log("check");
+            nextAdventure(adventureBeginsMessage)
+            return
+        }
+        nextAdventure()
     }
 }
 
-function generateIntelligentBeing(roll, traits) {
+function generateIntelligentBeing(roll = d20.roll(), traits = []) {
     let gender = d20.reducedRoll(d20.roll(), 2) == 1 ? "F" : "M"
     let being = new Being("Intelligent Being", structuredClone(intelligentRacesTable[roll - 1]), gender, traits)
 
@@ -1474,7 +1501,7 @@ function nextAdventure(customMessage = "") {
     btn1.disabled = false
     btn1.innerText = "Lancer le D100"
     // Test button
-    btn1.onclick = () => { chooseNextAdventure(60) }
+    btn1.onclick = () => { chooseNextAdventure(21) }
 
     // btn1.onclick = () => {
     //     const roll = d100.roll()
@@ -1685,27 +1712,7 @@ function nextAdventure(customMessage = "") {
 
 //#region ENCOUNTERS
 function monsterEncounter() {
-    let traits = []
-
-    switch (currentEnvironment.monstersLevel) {
-        case 1:
-            traits.push(getWeakTrait(d20.roll()))
-            break;
-
-        case 3:
-            traits.push(getStrongTrait(d20.roll()))
-            break;
-
-        case 4:
-            traits.push(getStrongTrait(d20.roll()))
-            traits.push(getStrongTrait(d20.roll()))
-            traits = mergeIntoStrongissimeTrait(traits)
-            break;
-
-        default:
-            break;
-    }
-
+    let traits = generateTraits()
     const monster = generateMonster(d20.roll(), traits)
     let introMessage = `${monster.gender == "F" ? "Une" : "Un"} ${monster.name} vous barre la route. Le combat est inévitable.`
 
@@ -1717,166 +1724,123 @@ function monsterEncounter() {
     }
 
     fight(contextData)
+}
 
-    function mergeIntoStrongissimeTrait(traits) {
-        // if we have different traits, no need to merge into strongissime trait.
-        if (traits[0].name.accordMasculin != traits[1].name.accordMasculin) return traits
+function intelligentBeingEncounter() {
+    hideAllGenericButtons()
 
-        switch (traits[0].name.accordMasculin) {
-            case "Géant":
-                traits = []
-                traits.push(structuredClone(strongissimeTraitsTable[0]))
-                break;
+    let traits = generateTraits()
+    const intelligentBeing = generateIntelligentBeing(d20.roll(), traits)
 
-            case "Puissant":
-                traits = []
-                traits.push(structuredClone(strongissimeTraitsTable[1]))
-                break;
+    gameMessage(`Alors que vous marchiez tranquillement sur le chemin, vous croisez ${intelligentBeing.gender == "F" ? "une" : "un"} ${intelligentBeing.name}. 
+        Lancez le D20 pour voir quel attitude ${intelligentBeing.gender == "F" ? "elle" : "il"} va adopter.`)
 
-            case "Agile":
-                traits = []
-                traits.push(structuredClone(strongissimeTraitsTable[2]))
-                break;
+    activateButton(btn1)
+    btn1.innerText = "Lancer le D20"
+    btn1.onclick = () => {
+        const roll = d20.roll()
+        checkAttitude(roll)
+    }
 
-            case "Rusé":
-                traits = []
-                traits.push(structuredClone(strongissimeTraitsTable[3]))
-                break;
+    function checkAttitude(roll) {
+        switch (roll) {
+            case roll <= 3:
+                gameMessage(`${roll} !
+                    ${beingNameWithDeterminantDefini(intelligentBeing, false)} vous salue poliment et fait mine de vouloir continuer sa route sans plus d'interaction.
+                    - Voulez-vous continuer votre chemin ou l'attaquer ?`)
 
-            case "Immense":
-                traits = []
-                traits.push(structuredClone(strongissimeTraitsTable[4]))
-                break;
-
-            case "Costaud":
-                traits = []
-                traits.push(structuredClone(strongissimeTraitsTable[5]))
-                break;
-
-            case "Alerte":
-                traits = []
-                traits.push(structuredClone(strongissimeTraitsTable[6]))
-                break;
-
-            case "Véloce":
-                traits = []
-                traits.push(structuredClone(strongissimeTraitsTable[7]))
-                break;
-
-            case "Magique":
-                traits = []
-                traits.push(structuredClone(strongissimeTraitsTable[8]))
-                break;
-
-            case "Maudit":
-                traits = []
-                traits.push(structuredClone(strongissimeTraitsTable[9]))
-                break;
-
-            case "Rapide":
-                traits = []
-                traits.push(structuredClone(strongissimeTraitsTable[10]))
-                break;
-
-            case "Enchanté":
-                traits = []
-                traits.push(structuredClone(strongissimeTraitsTable[11]))
-                break;
-
-            case "Agressif":
-                traits = []
-                traits.push(structuredClone(strongissimeTraitsTable[12]))
-                break;
-
-            case "Savant":
-                traits = []
-                traits.push(structuredClone(strongissimeTraitsTable[13]))
-                break;
-
-            case "Svelte":
-                traits = []
-                traits.push(structuredClone(strongissimeTraitsTable[14]))
-                break;
-
-            case "Dément":
-                traits = []
-                traits.push(structuredClone(strongissimeTraitsTable[15]))
-                break;
-
-            case "Bestial":
-                traits = []
-                traits.push(structuredClone(strongissimeTraitsTable[16]))
-                break;
-
-            case "Massif":
-                traits = []
-                traits.push(structuredClone(strongissimeTraitsTable[17]))
-                break;
-
-            case "Gigantesque":
-                traits = []
-                traits.push(structuredClone(strongissimeTraitsTable[18]))
-                break;
-
-            case "Mutant":
-                // Combine everything into first trait and then delete the second one
-                if (traits[1].hitPoints) {
-                    if (traits[0].hitPoints) {
-                        traits[0].hitPoints += traits[1].hitPoints
+                activateButton(btn2)
+                btn1.innerText = "Continuer"
+                btn2.innerText = "Attaquer"
+                btn1.onclick = () => { letBeingGo() }
+                btn2.onclick = () => {
+                    const contextData = {
+                        opponent: intelligentBeing,
+                        introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(intelligentBeing, false)} et adoptez une position de combat.`,
+                        opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
+                        rewardPhaseCallBack: regularRewardPhase
                     }
-                    else {
-                        traits[0].hitPoints = traits[1].hitPoints
-                    }
-                }
-                if (traits[1].strength) {
-                    if (traits[0].strength) {
-                        traits[0].strength += traits[1].strength
-                    }
-                    else {
-                        traits[0].strength = traits[1].strength
-                    }
-                }
-                if (traits[1].speed) {
-                    if (traits[0].speed) {
-                        traits[0].speed += traits[1].speed
-                    }
-                    else {
-                        traits[0].speed = traits[1].speed
-                    }
-                }
-                if (traits[1].magic) {
-                    if (traits[0].magic) {
-                        traits[0].magic += traits[1].magic
-                    }
-                    else {
-                        traits[0].magic = traits[1].magic
-                    }
+
+                    fight(contextData)
                 }
 
-                traits[0].name.accordFeminin = "Mutantissime"
-                traits[0].name.accordMasculin = "Mutantissime"
-                generateDescription(traits[0])
-                traits.pop()
                 break;
 
             default:
                 break;
         }
 
-        return traits
+        function letBeingGo() {
+            hideAllGenericButtons()
+
+            gameMessage(`Vous continuez votre route.
+                - Vous gagnez 1XP.`)
+
+            stepCompleted()
+            player.experiencePoints++
+
+            activateButton(btn1)
+            btn1.innerText = "Continuer"
+            btn1.onclick = () => {
+                nextAdventure()
+            }
+        }
     }
 }
 
-function intelligentBeingEncounter() {
 
+function restEncounter() {
+    const introMessage = `Vous trouvez un coin relativement sûr et aménagez un campement sommaire. Vous vous sustentez et vous apprêtez à passer la nuit tout en repensant aux situations auxquelles vous avez fait face jusqu'ici.`
+    const outroMessage = `Après une bonne nuit de sommeil, vous mangez un déjeuner frugal avant de remballer vos affaires et de vous remettre en route.`
+
+    rest(introMessage, outroMessage, "Lever le camp")
+}
+
+function villageEncounter() {
+    let innPrice = 100
+
+    // environment modifiers
+    if (currentEnvironment.innModifiers) {
+        if (currentEnvironment.innModifiers.price) {
+            innPrice += currentEnvironment.innModifiers.price
+        }
+    }
+
+    gameMessage(`Vous arrivez sur la place principale d'un petit village. Les passants vous dévisagent avec méfiance.
+        
+        Que choisissez-vous de faire :
+        - Se rendre au magasin. (possibilité d'acheter et de revendre des objets)
+        - Se rendre à l'auberge. (coûte ${innPrice}PO, permet de se reposer)`)
+
+    hideAllGenericButtons()
+
+    activateButton(btn1)
+    activateButton(btn2)
+
+    btn1.innerText = "Aller au magasin"
+    btn2.innerText = "Aller à l'auberge (-100PO)"
+
+    btn1.onclick = () => {
+        visitShop()
+    }
+    btn2.onclick = () => {
+        visitInn(innPrice)
+    }
+
+    if (player.goldCoins < innPrice) btn2.disabled = true
 }
 
 function visitShop() {
+    hideAllGenericButtons()
+
     if (scopaDeck.length <= 0) {
         gameMessage("Vous arrivez devant le magasin mais réalisez avec déception que celui-ci est fermé (il n'y a plus de carte dans la pioche).");
+        activateButton(btn1)
         btn1.innerText = "Partir"
-        // Next adventure roll
-        btn1.onclick = () => { }
+        btn1.onclick = () => {
+            stepCompleted()
+            nextAdventure("Vous sortez du village avec déception. Mais vous repensez à votre quête et retrouvez du baume au cœur car seul vous pouvez arrêter le Mal et ce dernier n'attend pas.")
+        }
         return;
     }
 
@@ -1884,7 +1848,6 @@ function visitShop() {
         Tirez 4 cartes pour voir quels objets sont en vente (les cartes 'Pièces' ne correspondent à aucun objet achetable).`);
 
     let cardsDrawn = []
-    let items = []
 
     imgDeck.onclick = () => {
         if (allowedToDraw) {
@@ -1996,7 +1959,8 @@ function visitShop() {
         btn1.onclick = () => {
             allowedToSellItems = false
             stepCompleted()
-            nextAdventure("Vous sortez du magasin et décidez de continuer votre route.")
+            clearCardsDisplayZone()
+            nextAdventure("Vous sortez du magasin et continuez votre route.")
         }
 
         cardsDrawn.forEach(card => {
@@ -2025,8 +1989,19 @@ function visitShop() {
 
 }
 
-function restEncounter() {
-    gameMessage(`Vous trouvez un coin relativement sûr et aménagez un campement sommaire. Vous vous sustentez et vous apprêtez à passer la nuit tout en repensant aux situations auxquelles vous avez fait face jusqu'ici.
+function visitInn(price) {
+    if (player.goldCoins < price) return
+
+    player.goldCoins -= price
+
+    rest("Vous entrez dans l'auberge et commandez une chambre et un bon repas chaud. Vous passez une nuit paisible, le ventre plein.",
+        "Au petit matin, vous rassemblez vos affaires et dégustez un délicieux déjeuner préparé par l'aubergiste avant de quitter le village et repartir sur les traces du Mal.",
+        "Quitter l'auberge")
+
+}
+
+function rest(introMessage, outroMessage, continueButtonText) {
+    gameMessage(`${introMessage}
         
         - Vous gagnez 2PA.
         - Vous pouvez dépenser vos points d'expérience(XP) pour améliorer vos caractéristiques de manière permanente (1XP = 5 points de caractéristique).
@@ -2044,7 +2019,7 @@ function restEncounter() {
     btn3.innerText = "Améliorer la Vitesse (VI)"
     btn4.innerText = "Améliorer la Magie (MA)"
     btn5.innerText = "Échanger 1XP pour 1PA"
-    btn6.innerText = "Lever le camp"
+    btn6.innerText = continueButtonText
 
     btn1.onclick = () => {
         player.levelUpHitPoints()
@@ -2067,8 +2042,9 @@ function restEncounter() {
         checkButtonsValidity()
     }
     btn6.onclick = () => {
+        allowedToLevelUp = false
         stepCompleted()
-        nextAdventure("Après une bonne nuit de sommeil, vous mangez un déjeuner frugal avant de remballer vos affaires et de continuer votre route.")
+        nextAdventure(outroMessage)
         btn6.onclick = () => { }
     }
 
@@ -2085,10 +2061,6 @@ function restEncounter() {
             btn5.disabled = true
         }
     }
-}
-
-function villageEncounter() {
-
 }
 
 function specialEncounter() {
@@ -2318,6 +2290,7 @@ function specialEncounter() {
 function luckyEncounter() {
 
 }
+
 //#endregion
 
 function addCardToDisplayZone(card) {

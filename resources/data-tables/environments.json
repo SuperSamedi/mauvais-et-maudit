@@ -108,7 +108,7 @@
     "shopModifiers": {
       "prices": -50
     },
-    "InnModifiers": {
+    "innModifiers": {
       "price": -50
     }
   },
