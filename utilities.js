@@ -91,7 +91,121 @@ function currentGameMessage() {
 }
 
 function getWeakTrait(roll) {
-  return weakTraitsTable[d20.reducedRoll(roll, 4) - 1]
+  return structuredClone(weakTraitsTable[d20.reducedRoll(roll, 4) - 1])
+}
+
+function getStrongTrait(roll) {
+  let trait = structuredClone(strongTraitsTable[roll - 1])
+
+  // Mutant special rule
+  if (trait.name.accordMasculin == "Mutant") {
+    trait = generateMutantTrait();
+  }
+
+  return trait
+
+  // Choose a stat to boost by 40 and another to nerf by 20
+  function generateMutantTrait() {
+    let trait = {
+      name: {
+        accordFeminin: "Mutante",
+        accordMasculin: "Mutant",
+      }
+    }
+
+    let boostRoll = d20.reducedRoll(d20.roll(), 4)
+    let nerfRoll = d20.reducedRoll(d20.roll(), 4)
+
+    while (nerfRoll == boostRoll) {
+      nerfRoll = d20.reducedRoll(d20.roll(), 4)
+    }
+
+    switch (boostRoll) {
+      case 1:
+        trait.hitPoints = 40
+        break;
+
+      case 2:
+        trait.strength = 40
+        break;
+
+      case 3:
+        trait.speed = 40
+        break;
+
+      case 4:
+        trait.magic = 40
+        break;
+
+      default:
+        throw new Error("Weirdness in generateMutantTrait(). The variable boostRoll has an unexpected value.");
+    }
+
+    switch (nerfRoll) {
+      case 1:
+        trait.hitPoints = -20
+        break;
+
+      case 2:
+        trait.strength = -20
+        break;
+
+      case 3:
+        trait.speed = -20
+        break;
+
+      case 4:
+        trait.magic = -20
+        break;
+
+      default:
+        throw new Error("Weirdness in generateMutantTrait(). The variable nerfRoll has an unexpected value.");
+    }
+
+    // construct description
+    generateDescription(trait)
+
+    return trait
+  }
+}
+
+function generateDescription(trait) {
+  trait.description = ""
+  let isFirstStat = true
+  let numberOfStats = 0
+  let statsTreated = 0
+
+  if (trait.hitPoints) {
+    numberOfStats++
+  }
+  if (trait.strength) {
+    numberOfStats++
+  }
+  if (trait.speed) {
+    numberOfStats++
+  }
+  if (trait.magic) {
+    numberOfStats++
+  }
+
+  if (trait.hitPoints) {
+    statsTreated++
+    trait.description += `PV ${trait.hitPoints < 0 ? "" : "+"}${trait.hitPoints}${statsTreated < numberOfStats ? "," : ""}`
+    isFirstStat = false
+  }
+  if (trait.strength) {
+    statsTreated++
+    trait.description += `${isFirstStat ? "" : " "}FO ${trait.strength < 0 ? "" : "+"}${trait.strength}${statsTreated < numberOfStats ? "," : ""}`
+    isFirstStat = false
+  }
+  if (trait.speed) {
+    statsTreated++
+    trait.description += `${isFirstStat ? "" : " "}VI ${trait.speed < 0 ? "" : "+"}${trait.speed}${statsTreated < numberOfStats ? "," : ""}`
+    isFirstStat = false
+  }
+  if (trait.magic) {
+    trait.description += `${isFirstStat ? "" : " "}MA ${trait.strength < 0 ? "" : "+"}${trait.magic}`
+  }
 }
 
 function getCupsItem(id) {

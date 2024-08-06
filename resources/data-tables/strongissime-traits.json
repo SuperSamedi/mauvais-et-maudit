@@ -1,0 +1,176 @@
+[
+  {
+    "name": {
+      "accordFeminin": "Géantissime",
+      "accordMasculin": "Géantissime"
+    },
+    "hitPoints": 40,
+    "description": "PV +40"
+  },
+  {
+    "name": {
+      "accordFeminin": "Puissantissime",
+      "accordMasculin": "Puissantissime"
+    },
+    "strength": 40,
+    "description": "FO +40"
+  },
+  {
+    "name": {
+      "accordFeminin": "Agilissime",
+      "accordMasculin": "Agilissime"
+    },
+    "speed": 40,
+    "description": "VI +40"
+  },
+  {
+    "name": {
+      "accordFeminin": "Ruséissime",
+      "accordMasculin": "Ruséissime"
+    },
+    "magic": 40,
+    "description": "MA +40"
+  },
+  {
+    "name": {
+      "accordFeminin": "Immenssissime",
+      "accordMasculin": "Immenssissime"
+    },
+    "hitPoints": 60,
+    "speed": -20,
+    "description": "PV +60, VI -20"
+  },
+  {
+    "name": {
+      "accordFeminin": "Costaudissime",
+      "accordMasculin": "Costaudissime"
+    },
+    "hitPoints": 20,
+    "strength": 20,
+    "description": "PV +20, FO +20"
+  },
+  {
+    "name": {
+      "accordFeminin": "Alertissime",
+      "accordMasculin": "Alertissime"
+    },
+    "hitPoints": 20,
+    "speed": 20,
+    "description": "PV +20, VI +20"
+  },
+  {
+    "name": {
+      "accordFeminin": "Vélocissime",
+      "accordMasculin": "Vélocissime"
+    },
+    "hitPoints": -20,
+    "speed": 60,
+    "description": "PV -20, VI +60"
+  },
+  {
+    "name": {
+      "accordFeminin": "Magiquissime",
+      "accordMasculin": "Magiquissime"
+    },
+    "strength": -20,
+    "magic": 60,
+    "description": "FO -20, MA +60"
+  },
+  {
+    "name": {
+      "accordFeminin": "Mauditissime",
+      "accordMasculin": "Mauditissime"
+    },
+    "hitPoints": -20,
+    "magic": 60,
+    "description": "PV -20, MA +60"
+  },
+  {
+    "name": {
+      "accordFeminin": "Rapidissime",
+      "accordMasculin": "Rapidissime"
+    },
+    "speed": 60,
+    "magic": -20,
+    "description": "VI +60, MA -20"
+  },
+  {
+    "name": {
+      "accordFeminin": "Enchantéissime",
+      "accordMasculin": "Enchantéissime"
+    },
+    "speed": 20,
+    "magic": 20,
+    "description": "VI +20, MA +20"
+  },
+  {
+    "name": {
+      "accordFeminin": "Agressifissime",
+      "accordMasculin": "Agressifissime"
+    },
+    "strength": 20,
+    "speed": 20,
+    "description": "FO +20, VI +20"
+  },
+  {
+    "name": {
+      "accordFeminin": "Savantissime",
+      "accordMasculin": "Savantissime"
+    },
+    "speed": -20,
+    "magic": 60,
+    "description": "VI -20, MA +60"
+  },
+  {
+    "name": {
+      "accordFeminin": "Sveltissime",
+      "accordMasculin": "Sveltissime"
+    },
+    "strength": -20,
+    "speed": 60,
+    "description": "FO -20, VI +60"
+  },
+  {
+    "name": {
+      "accordFeminin": "Démentissime",
+      "accordMasculin": "Démentissime"
+    },
+    "strength": 60,
+    "magic": -20,
+    "description": "FO +60, MA -20"
+  },
+  {
+    "name": {
+      "accordFeminin": "Bestialissime",
+      "accordMasculin": "Bestialissime"
+    },
+    "hitPoints": -20,
+    "strength": 60,
+    "description": "PV -20, FO +60"
+  },
+  {
+    "name": {
+      "accordFeminin": "Massifissime",
+      "accordMasculin": "Massifissime"
+    },
+    "strength": 60,
+    "speed": -20,
+    "description": "FO +60, VI -20"
+  },
+  {
+    "name": {
+      "accordFeminin": "Gigantesquissime",
+      "accordMasculin": "Gigantesquissime"
+    },
+    "hitPoints": 80,
+    "speed": -20,
+    "magic": -20,
+    "description": "PV +80, VI -20, MA -20"
+  },
+  {
+    "name": {
+      "accordFeminin": "Mutantissime",
+      "accordMasculin": "Mutantissime"
+    }
+  }
+]

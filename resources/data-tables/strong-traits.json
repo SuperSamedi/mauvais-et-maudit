@@ -48,5 +48,129 @@
     "hitPoints": 10,
     "strength": 10,
     "description": "PV +10, FO +10"
+  },
+  {
+    "name": {
+      "accordFeminin": "Alerte",
+      "accordMasculin": "Alerte"
+    },
+    "hitPoints": 10,
+    "speed": 10,
+    "description": "PV +10, VI +10"
+  },
+  {
+    "name": {
+      "accordFeminin": "Véloce",
+      "accordMasculin": "Véloce"
+    },
+    "hitPoints": -10,
+    "speed": 30,
+    "description": "PV -10, VI +30"
+  },
+  {
+    "name": {
+      "accordFeminin": "Magique",
+      "accordMasculin": "Magique"
+    },
+    "strength": -10,
+    "magic": 30,
+    "description": "FO -10, MA +30"
+  },
+  {
+    "name": {
+      "accordFeminin": "Maudite",
+      "accordMasculin": "Maudit"
+    },
+    "hitPoints": -10,
+    "magic": 30,
+    "description": "PV -10, MA +30"
+  },
+  {
+    "name": {
+      "accordFeminin": "Rapide",
+      "accordMasculin": "Rapide"
+    },
+    "speed": 30,
+    "magic": -10,
+    "description": "VI +30, MA -10"
+  },
+  {
+    "name": {
+      "accordFeminin": "Enchantée",
+      "accordMasculin": "Enchanté"
+    },
+    "speed": 10,
+    "magic": 10,
+    "description": "VI +10, MA +10"
+  },
+  {
+    "name": {
+      "accordFeminin": "Agressive",
+      "accordMasculin": "Agressif"
+    },
+    "strength": 10,
+    "speed": 10,
+    "description": "FO +10, VI +10"
+  },
+  {
+    "name": {
+      "accordFeminin": "Savante",
+      "accordMasculin": "Savant"
+    },
+    "speed": -10,
+    "magic": 30,
+    "description": "VI -10, MA +30"
+  },
+  {
+    "name": {
+      "accordFeminin": "Svelte",
+      "accordMasculin": "Svelte"
+    },
+    "strength": -10,
+    "speed": 30,
+    "description": "FO -10, VI +30"
+  },
+  {
+    "name": {
+      "accordFeminin": "Démente",
+      "accordMasculin": "Dément"
+    },
+    "strength": 30,
+    "magic": -10,
+    "description": "FO +30, MA -10"
+  },
+  {
+    "name": {
+      "accordFeminin": "Bestiale",
+      "accordMasculin": "Bestial"
+    },
+    "hitPoints": -10,
+    "strength": 30,
+    "description": "PV -10, FO +30"
+  },
+  {
+    "name": {
+      "accordFeminin": "Massive",
+      "accordMasculin": "Massif"
+    },
+    "strength": 30,
+    "speed": -10,
+    "description": "FO +30, VI -10"
+  },
+  {
+    "name": {
+      "accordFeminin": "Gigantesque",
+      "accordMasculin": "Gigantesque"
+    },
+    "hitPoints": 40,
+    "speed": -10,
+    "magic": -10,
+    "description": "PV +40, VI -10, MA -10"
+  },
+  {
+    "name": {
+      "accordFeminin": "Mutante",
+      "accordMasculin": "Mutant"
+    }
   }
 ]

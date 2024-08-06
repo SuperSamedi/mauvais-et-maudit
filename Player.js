@@ -13,12 +13,12 @@ const txtPlayerExperiencePoints = document.getElementById("experience-points")
 // Hover Trait for details/description
 txtPlayerTrait.addEventListener("mouseover", (e) => {
   if (player.traits[0].description) {
-    txtPlayerTrait.innerText = `${player.traits[0].name} (${player.traits[0].description})`;
+    txtPlayerTrait.innerText = `${player.gender == "F" ? player.traits[0].name.accordFeminin : player.traits[0].name.accordMasculin} (${player.traits[0].description})`;
   }
 });
 txtPlayerTrait.addEventListener("mouseleave", (e) => {
   if (player.traits[0].description) {
-    txtPlayerTrait.innerText = `${player.traits[0].name}`;
+    txtPlayerTrait.innerText = `${player.gender == "F" ? player.traits[0].name.accordFeminin : player.traits[0].name.accordMasculin}`;
   }
 });
 

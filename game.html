@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="voyage.css">
 </head>
 
 <body>
@@ -25,7 +26,7 @@
         <div id="character-sheet">
             <h2>Fiche de Personnage</h2>
             <section>
-                <span>Nom : </span><strong><input id="player-name" type="text"></strong>
+                <span>Nom : </span><strong><span id="player-name"></span></strong>
             </section>
 
             <section>
@@ -82,6 +83,106 @@
                 <div class="inventory-grid-item item" data-number="7"></div>
 
             </section>
+        </div>
+
+        <div id="voyage">
+            <h3 class="section-header">Voyage</h3>
+            <div id="environment0" class="environment">
+                <span>1.</span><strong><span class="environment-name" data-number="0"></span></strong>
+                <hr>
+                <p>(Monstres faciles)</p>
+                <p class="environment-description" data-number="0"></p>
+                <div class="steps">
+                    <div class="step" data-number="0"></div>
+                    <div class="line"></div>
+                    <div class="step" data-number="1"></div>
+                    <div class="line"></div>
+                    <div class="step" data-number="2"></div>
+                    <div class="line"></div>
+                    <div class="step" data-number="3"></div>
+                    <div class="line hidden"></div>
+                    <div class="step hidden" data-number="4"></div>
+                </div>
+            </div>
+            <div id="environment1" class="environment">
+                <span>2.</span><strong><span class="environment-name" data-number="1"></span></strong>
+                <hr>
+                <p>(Monstres faciles)</p>
+                <p class="environment-description" data-number="1"></p>
+                <div class="steps">
+                    <div class="step" data-number="0"></div>
+                    <div class="line"></div>
+                    <div class="step" data-number="1"></div>
+                    <div class="line"></div>
+                    <div class="step" data-number="2"></div>
+                    <div class="line hidden"></div>
+                    <div class="step hidden" data-number="3"></div>
+                </div>
+            </div>
+            <div id="environment2" class="environment">
+                <span>3.</span><strong><span class="environment-name" data-number="2"></span></strong>
+                <hr>
+                <p>(Monstres normaux)</p>
+                <p class="environment-description" data-number="2"></p>
+                <div class="steps">
+                    <div class="step" data-number="0"></div>
+                    <div class="line"></div>
+                    <div class="step" data-number="1"></div>
+                    <div class="line"></div>
+                    <div class="step" data-number="2"></div>
+                    <div class="line"></div>
+                    <div class="step" data-number="3"></div>
+                    <div class="line hidden"></div>
+                    <div class="step hidden" data-number="4"></div>
+                </div>
+            </div>
+            <div id="environment3" class="environment">
+                <span>4.</span><strong><span class="environment-name" data-number="3"></span></strong>
+                <hr>
+                <p>(Monstres forts)</p>
+                <p class="environment-description" data-number="3"></p>
+                <div class="steps">
+                    <div class="step" data-number="0"></div>
+                    <div class="line"></div>
+                    <div class="step" data-number="1"></div>
+                    <div class="line"></div>
+                    <div class="step" data-number="2"></div>
+                    <div class="line hidden"></div>
+                    <div class="step hidden" data-number="3"></div>
+                </div>
+            </div>
+            <div id="environment4" class="environment">
+                <span>5.</span><strong><span class="environment-name" data-number="4"></span></strong>
+                <hr>
+                <p>(Monstres super forts)</p>
+                <p class="environment-description" data-number="4"></p>
+                <div class="steps">
+                    <div class="step" data-number="0"></div>
+                    <div class="line"></div>
+                    <div class="step" data-number="1"></div>
+                    <div class="line"></div>
+                    <div class="step" data-number="2"></div>
+                    <div class="line"></div>
+                    <div class="step" data-number="3"></div>
+                    <div class="line hidden"></div>
+                    <div class="step hidden" data-number="4"></div>
+                </div>
+            </div>
+            <div id="environment5" class="environment">
+                <span>6.</span><strong><span class="environment-name" data-number="5"></span></strong>
+                <hr>
+                <p>(Monstres super forts)</p>
+                <p class="environment-description" data-number="5"></p>
+                <div class="steps">
+                    <div class="step" data-number="0"></div>
+                    <div class="line"></div>
+                    <div class="step" data-number="1"></div>
+                    <div class="line"></div>
+                    <div class="step" data-number="2"></div>
+                    <div class="line hidden"></div>
+                    <div class="step hidden" data-number="3"></div>
+                </div>
+            </div>
         </div>
 
         <div id="main">
@@ -150,6 +251,7 @@
     <script src="Shop.js"></script>
     <script src="Being.js"></script>
     <script src="Player.js"></script>
+    <script src="voyage.js"></script>
     <script src="game.js"></script>
 </body>
 

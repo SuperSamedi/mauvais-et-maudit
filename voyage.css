@@ -1,0 +1,45 @@
+#voyage {
+  border: 2px solid black;
+  width: 400px;
+}
+
+#voyage hr {
+  width: 250px;
+  margin-left: 15px;
+}
+
+.environment {
+  border-top: 2px solid black;
+  padding: 10px;
+}
+
+.environment-name {
+  padding-left: 5px;
+}
+
+.steps {
+  display: flex;
+  flex-direction: row;
+  margin: 10px;
+}
+
+.step {
+  width: 25px;
+  height: 25px;
+  border: 2px solid black;
+  border-radius: 50%;
+  /* background-image: url("assets/icons/icon-fight.png"); */
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.completed {
+  background-color: aquamarine;
+}
+
+.line {
+  width: 50px;
+  height: 2px;
+  background-color: black;
+  transform: translateY(13px);
+}

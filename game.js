@@ -39,12 +39,15 @@ const d20 = new Dice(20);
 const d100 = new Dice(100);
 let shop = new Shop();
 
+
 let encountersTable = [];
 let intelligentRacesTable = [];
 let weakTraitsTable = []
 let strongTraitsTable = [];
+let strongissimeTraitsTable = [];
 let monstersTable = [];
 let specialEncountersTable = [1];
+let environmentsTable = [];
 
 let scopaDeck = [];
 let coinsItemsTable = [];
@@ -95,7 +98,7 @@ fetch("resources/data-tables/strong-traits.json")
     })
     .then((loadedData) => {
         strongTraitsTable = loadedData;
-        //console.log(strongTraitsTable);
+        console.log(strongTraitsTable);
     })
     .catch((error) => {
         //TODO: create a 500 code page
@@ -188,6 +191,32 @@ fetch("resources/data-tables/cups-items.json")
     .then((loadedData) => {
         cupsItemsTable = loadedData;
         // console.log(adventureTable);
+    })
+    .catch((error) => {
+        // TODO: create a 500 code page
+        console.error(error);
+    });
+
+fetch("resources/data-tables/environments.json")
+    .then((response) => {
+        return response.json();
+    })
+    .then((loadedData) => {
+        environmentsTable = loadedData;
+        // console.log(environmentsTable);
+    })
+    .catch((error) => {
+        // TODO: create a 500 code page
+        console.error(error);
+    });
+
+fetch("resources/data-tables/strongissime-traits.json")
+    .then((response) => {
+        return response.json();
+    })
+    .then((loadedData) => {
+        strongissimeTraitsTable = loadedData;
+        // console.log(strongissimeTraitsTable);
     })
     .catch((error) => {
         // TODO: create a 500 code page
@@ -981,7 +1010,7 @@ function generateMonster(roll, traits) {
     return monster;
 }
 
-//#region Fight
+//#region FIGHT
 /**
  * @param ctx Object - context data necessary for the fight.
  * @param ctx.opponent Object - opponent the player is facing in this fight
@@ -1349,6 +1378,11 @@ function regularRewardPhase(ctx) {
 }
 
 function playerHasInitiative(opponent) {
+    // Environment 'Plaines' special rule
+    if (currentEnvironment.name == "Plaines") {
+        return true
+    }
+
     if (opponent.speed > player.speed) {
         return false
     }
@@ -1563,18 +1597,23 @@ function nextAdventure() {
     }
 }
 
-//#region Encounters
+//#region ENCOUNTERS
 function monsterEncounter() {
-    const traits = []
-    // Temp
-    let level = 1;
-    //
-    // TODO: put level check logic here
-    //
+    let traits = []
 
-    switch (level) {
+    switch (currentEnvironment.monstersLevel) {
         case 1:
             traits.push(getWeakTrait(d20.roll()))
+            break;
+
+        case 3:
+            traits.push(getStrongTrait(d20.roll()))
+            break;
+
+        case 4:
+            traits.push(getStrongTrait(d20.roll()))
+            traits.push(getStrongTrait(d20.roll()))
+            traits = mergeIntoStrongissimeTrait(traits)
             break;
 
         default:
@@ -1592,6 +1631,154 @@ function monsterEncounter() {
     }
 
     fight(contextData)
+
+    function mergeIntoStrongissimeTrait(traits) {
+        // if we have different traits, no need to merge into strongissime trait.
+        if (traits[0].name.accordMasculin != traits[1].name.accordMasculin) return traits
+
+        switch (traits[0].name.accordMasculin) {
+            case "Géant":
+                traits = []
+                traits.push(structuredClone(strongissimeTraitsTable[0]))
+                break;
+
+            case "Puissant":
+                traits = []
+                traits.push(structuredClone(strongissimeTraitsTable[1]))
+                break;
+
+            case "Agile":
+                traits = []
+                traits.push(structuredClone(strongissimeTraitsTable[2]))
+                break;
+
+            case "Rusé":
+                traits = []
+                traits.push(structuredClone(strongissimeTraitsTable[3]))
+                break;
+
+            case "Immense":
+                traits = []
+                traits.push(structuredClone(strongissimeTraitsTable[4]))
+                break;
+
+            case "Costaud":
+                traits = []
+                traits.push(structuredClone(strongissimeTraitsTable[5]))
+                break;
+
+            case "Alerte":
+                traits = []
+                traits.push(structuredClone(strongissimeTraitsTable[6]))
+                break;
+
+            case "Véloce":
+                traits = []
+                traits.push(structuredClone(strongissimeTraitsTable[7]))
+                break;
+
+            case "Magique":
+                traits = []
+                traits.push(structuredClone(strongissimeTraitsTable[8]))
+                break;
+
+            case "Maudit":
+                traits = []
+                traits.push(structuredClone(strongissimeTraitsTable[9]))
+                break;
+
+            case "Rapide":
+                traits = []
+                traits.push(structuredClone(strongissimeTraitsTable[10]))
+                break;
+
+            case "Enchanté":
+                traits = []
+                traits.push(structuredClone(strongissimeTraitsTable[11]))
+                break;
+
+            case "Agressif":
+                traits = []
+                traits.push(structuredClone(strongissimeTraitsTable[12]))
+                break;
+
+            case "Savant":
+                traits = []
+                traits.push(structuredClone(strongissimeTraitsTable[13]))
+                break;
+
+            case "Svelte":
+                traits = []
+                traits.push(structuredClone(strongissimeTraitsTable[14]))
+                break;
+
+            case "Dément":
+                traits = []
+                traits.push(structuredClone(strongissimeTraitsTable[15]))
+                break;
+
+            case "Bestial":
+                traits = []
+                traits.push(structuredClone(strongissimeTraitsTable[16]))
+                break;
+
+            case "Massif":
+                traits = []
+                traits.push(structuredClone(strongissimeTraitsTable[17]))
+                break;
+
+            case "Gigantesque":
+                traits = []
+                traits.push(structuredClone(strongissimeTraitsTable[18]))
+                break;
+
+            case "Mutant":
+                // Combine everything into first trait and then delete the second one
+                if (traits[1].hitPoints) {
+                    if (traits[0].hitPoints) {
+                        traits[0].hitPoints += traits[1].hitPoints
+                    }
+                    else {
+                        traits[0].hitPoints = traits[1].hitPoints
+                    }
+                }
+                if (traits[1].strength) {
+                    if (traits[0].strength) {
+                        traits[0].strength += traits[1].strength
+                    }
+                    else {
+                        traits[0].strength = traits[1].strength
+                    }
+                }
+                if (traits[1].speed) {
+                    if (traits[0].speed) {
+                        traits[0].speed += traits[1].speed
+                    }
+                    else {
+                        traits[0].speed = traits[1].speed
+                    }
+                }
+                if (traits[1].magic) {
+                    if (traits[0].magic) {
+                        traits[0].magic += traits[1].magic
+                    }
+                    else {
+                        traits[0].magic = traits[1].magic
+                    }
+                }
+
+                traits[0].name.accordFeminin = "Mutantissime"
+                traits[0].name.accordMasculin = "Mutantissime"
+                generateDescription(traits[0])
+                traits.pop()
+                break;
+
+            default:
+                break;
+        }
+
+        return traits
+    }
 }
 
 function intelligentBeingEncounter() {
@@ -1758,17 +1945,8 @@ function villageEncounter() {
 }
 
 function specialEncounter() {
-    const roll = getRandomInt(specialEncountersTable.length) + 1
-
-    switch (roll) {
-        case 1:
-            event01()
-            break;
-
-        default:
-            console.error("Unknown special event ID.")
-            break;
-    }
+    const specialEncounters = [event01]
+    specialEncounters[getRandomInt(specialEncounters.length)]()
 
     function event01() {
         // TEST
