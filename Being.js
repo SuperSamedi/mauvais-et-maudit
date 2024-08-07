@@ -1,20 +1,24 @@
 class Being {
     #hitPoints;
 
-    constructor(type, race, gender, traits) {
-        this.race = race ? race : { name: "aucune" };
-        this.traits = traits ? traits : []
-        this.gender = gender ? gender : race.gender
-        this.#hitPoints = 0;
+    constructor(type, races, gender, traits) {
         this.type = type
+        this.races = races ? races : [{ name: { female: "aucune", male: "aucune" } }];
+        this.gender = gender ? gender : races[0].gender
+        this.traits = traits ? traits : []
+        this.#hitPoints = 0;
     }
 
     get name() {
-        let name = this.race.name.male
-        if (this.gender == "F") {
-            name = this.race.name.female
+        let name = ""
+
+        name += this.gender == "F" ? this.races[0].name.female : this.races[0].name.male
+
+        if (this.races.length > 1) {
+            name = `Hybride ${name}-${this.gender == "F" ? this.races[1].name.female : this.races[1].name.male}`
         }
 
+        // Add traits
         for (let i = 0; i < this.traits.length; i++) {
             // Check if first trait
             if (i == 0) {
@@ -29,8 +33,7 @@ class Being {
                 name += ` et `
             }
 
-            name += `${this.gender == "F" ? this.traits[i].name.accordFeminin.toLowerCase() : this.traits[i].name.accordMasculin.toLowerCase()
-                } `
+            name += `${this.gender == "F" ? this.traits[i].name.accordFeminin.toLowerCase() : this.traits[i].name.accordMasculin.toLowerCase()}`
         }
 
         return name
@@ -47,9 +50,13 @@ class Being {
     get maxHitPoints() {
         let stat = 0;
 
-        if (this.race.hitPoints) {
-            stat += this.race.hitPoints;
-        }
+        let racesStat = 0
+        this.races.forEach(race => {
+            if (race.hitPoints) {
+                racesStat += race.hitPoints;
+            }
+        })
+        stat += Math.round(racesStat / this.races.length)
 
         if (this.traits) {
             this.traits.forEach((trait) => {
@@ -85,10 +92,14 @@ class Being {
     get strength() {
         let stat = 0;
 
-        // Race stat
-        if (this.race.strength) {
-            stat += this.race.strength;
-        }
+        // Races stats
+        let racesStat = 0
+        this.races.forEach(race => {
+            if (race.strength) {
+                racesStat += race.strength;
+            }
+        })
+        stat += Math.round(racesStat / this.races.length)
 
         // Traits stats
         if (this.traits) {
@@ -125,9 +136,13 @@ class Being {
     get speed() {
         let stat = 0;
 
-        if (this.race.speed) {
-            stat += this.race.speed;
-        }
+        let racesStat = 0
+        this.races.forEach(race => {
+            if (race.speed) {
+                racesStat += race.speed;
+            }
+        })
+        stat += Math.round(racesStat / this.races.length)
 
         if (this.traits) {
             this.traits.forEach((trait) => {
@@ -163,9 +178,13 @@ class Being {
     get magic() {
         let stat = 0;
 
-        if (this.race.magic) {
-            stat += this.race.magic;
-        }
+        let racesStat = 0
+        this.races.forEach(race => {
+            if (race.magic) {
+                racesStat += race.magic;
+            }
+        })
+        stat += Math.round(racesStat / this.races.length)
 
         if (this.traits) {
             this.traits.forEach((trait) => {

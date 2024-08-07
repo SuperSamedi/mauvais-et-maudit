@@ -33,11 +33,11 @@ class Player {
   constructor() {
     this.inventory = new Inventory();
     this.type = "Intelligent Being"
-    this.race = { name: { male: "aucune" } };
-    this.traits = new Array({ name: { accordMasculin: "aucun" } });
+    this.races = [{ name: { female: "aucune", male: "aucune" } }];
+    this.traits = new Array({ name: { accordFeminin: "aucun", accordMasculin: "aucun" } });
     this.#hitPoints = 0;
     this.#goldCoins = 0;
-    this.#actionPoints = 2;
+    this.#actionPoints = 0;
     this.#experiencePoints = 0;
     this.#gender = "M";
     this.levelUpStats = {
@@ -47,6 +47,22 @@ class Player {
       magic: 0
     }
     this.updateAllVisuals();
+  }
+
+  get fullRaceName() {
+    let name = ""
+
+    name += this.gender == "F" ? this.races[0].name.female : this.races[0].name.male
+
+    if (this.races.length > 1) {
+      name = `Hybride ${name}`
+
+      if (this.races[1].name) {
+        name += `-${this.gender == "F" ? this.races[1].name.female : this.races[1].name.male}`
+      }
+    }
+
+    return name
   }
 
   get gender() {
@@ -65,9 +81,14 @@ class Player {
   get maxHitPoints() {
     let stat = 0;
 
-    if (this.race.hitPoints) {
-      stat += this.race.hitPoints;
-    }
+    // Stats from races
+    let racesStat = 0
+    this.races.forEach(race => {
+      if (race.hitPoints) {
+        racesStat += race.hitPoints;
+      }
+    })
+    stat += Math.round(racesStat / this.races.length)
 
     if (this.traits) {
       this.traits.forEach((trait) => {
@@ -103,9 +124,13 @@ class Player {
   get strength() {
     let stat = 0;
 
-    if (this.race.strength) {
-      stat += this.race.strength;
-    }
+    let racesStat = 0
+    this.races.forEach(race => {
+      if (race.strength) {
+        racesStat += race.strength;
+      }
+    })
+    stat += Math.round(racesStat / this.races.length)
 
     if (this.traits) {
       this.traits.forEach((trait) => {
@@ -141,9 +166,13 @@ class Player {
   get speed() {
     let stat = 0;
 
-    if (this.race.speed) {
-      stat += this.race.speed;
-    }
+    let racesStat = 0
+    this.races.forEach(race => {
+      if (race.speed) {
+        racesStat += race.speed;
+      }
+    })
+    stat += Math.round(racesStat / this.races.length)
 
     if (this.traits) {
       this.traits.forEach((trait) => {
@@ -179,9 +208,13 @@ class Player {
   get magic() {
     let stat = 0;
 
-    if (this.race.magic) {
-      stat += this.race.magic;
-    }
+    let racesStat = 0
+    this.races.forEach(race => {
+      if (race.magic) {
+        racesStat += race.magic;
+      }
+    })
+    stat += Math.round(racesStat / this.races.length)
 
     if (this.traits) {
       this.traits.forEach((trait) => {
@@ -321,6 +354,16 @@ class Player {
     this.updateHitPointsVisuals();
   }
 
+  hasARaceInCommonWith(intelligentBeing) {
+    // For each player race we check each of the being's race to see if one matches
+    this.races.forEach(race => {
+      intelligentBeing.races.forEach(beingRace => {
+        if (race.name.male == beingRace.name.male) return true
+      })
+    })
+
+    return false
+  }
 
   // Visuals updates
   updateAllVisuals() {
@@ -337,7 +380,7 @@ class Player {
 
   //Race et Trait
   updateRaceVisuals() {
-    txtPlayerRace.innerText = this.race.name.male;
+    txtPlayerRace.innerText = this.fullRaceName;
   }
   updateTraitVisuals() {
     txtPlayerTrait.innerText = this.traits[0].name.accordMasculin;

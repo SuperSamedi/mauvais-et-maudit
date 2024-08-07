@@ -8,7 +8,6 @@ const btn4 = document.getElementById("btn4");
 const btn5 = document.getElementById("btn5");
 const btn6 = document.getElementById("btn6");
 const btnRaceRoll = document.getElementById("btn-race-roll");
-const btnTraitRoll = document.getElementById("btn-trait-roll");
 const btnCardDraw = document.getElementById("btn-card-draw");
 
 const imgDeck = document.getElementById("deck");
@@ -56,13 +55,12 @@ let swordsItemsTable = [];
 // let clubsItemsTable = [];
 let cupsItemsTable = [];
 
-let allowedToDraw = true;
+let allowedToDraw = false;
 let allowedToSellItems = false;
 let allowedToLevelUp = false;
 
 
 btnRaceRoll.onclick = choosePlayerRace;
-btnTraitRoll.onclick = choosePlayerTrait;
 btnCardDraw.onclick = () => {
     allowedToDraw = true;
 };
@@ -77,7 +75,7 @@ btnNextAdventure.onclick = () => { nextAdventure(adventureBeginsMessage) }
 imgDeck.onclick = () => {
     if (allowedToDraw) {
         clearCardsDisplayZone();
-        drawReward(scopaDeck, false);
+        drawReward(scopaDeck, false, true);
     }
 };
 
@@ -295,6 +293,10 @@ fetch("resources/data-tables/strongissime-traits.json")
 hideAllGenericButtons()
 
 
+function choosePlayerGender(params) {
+    // TODO
+}
+
 function choosePlayerRace() {
     const roll = d20.roll();
 
@@ -302,35 +304,45 @@ function choosePlayerRace() {
     let hybridRaceB = {};
     // const roll = getRandomInt(intelligentRacesTable.length) + 1;
 
-    player.race = structuredClone(intelligentRacesTable[roll - 1]);
+    player.races[0] = structuredClone(intelligentRacesTable[roll - 1]);
     //console.log(intelligentRacesTable);
 
     // Non-Being special rule
-    if (player.race.name.male == "Non-Être") {
+    if (player.races[0].name.male == "Non-Être") {
         player.restoreHitPoints();
         player.updateAllVisuals();
-        generateNonBeingPlayer(player.race, false);
+        generateNonBeingPlayer(player.races[0], false);
         return;
     }
 
     // Hybrid special rule
-    if (player.race.name.male == "Hybride") {
+    if (player.races[0].name.male == "Hybride") {
         player.updateAllVisuals();
         generateHybridPlayer();
         return;
     }
 
-    gameMessage(`${roll} ! - ${player.race.name.male}`);
+    gameMessage(`${roll} ! - ${player.races[0].name.male}`);
 
     player.restoreHitPoints();
     player.updateRaceVisuals();
     player.updateStatsVisuals();
+
+    gameMessage(`${currentGameMessage()}
+
+        - Maintenant, lancez le D20 pour tirer votre trait.`)
+
+    activateButton(btn1)
+    btn1.innerText = "Lancer le D20"
+    btn1.onclick = () => { choosePlayerTrait() }
 
     //#region Non-Being Player Generation
     function generateNonBeingPlayer(being, isGeneratingHybrid) {
         gameMessage(`19 ! - Non-Être.
         Les Non-Êtres sont des créatures instables. Tu vas devoir tirer tes stats au hasard.
         Lance le D100 pour tes points de vie.`);
+
+        activateButton(btn1)
         btn1.innerText = "Lancer le D100";
         btn1.onclick = generateNonBeingHitPoints;
 
@@ -344,7 +356,7 @@ function choosePlayerRace() {
             }
 
             gameMessage(`${roll} !
-        Maintenant lance à nouveau le D100 pour ta stat de force.`);
+        Maintenant, lance à nouveau le D100 pour ta stat de force.`);
 
             btn1.onclick = generateNonBeingStrength;
         }
@@ -359,7 +371,7 @@ function choosePlayerRace() {
             }
 
             gameMessage(`${roll} !
-        Maintenant lance encore le D100 pour ta stat de vitesse.`);
+            Maintenant lance encore le D100 pour ta stat de vitesse.`);
 
             btn1.onclick = generateNonBeingSpeed;
         }
@@ -374,7 +386,7 @@ function choosePlayerRace() {
             }
 
             gameMessage(`${roll} !
-        Et enfin, lance le D100 pour ta stat de magie.`);
+            Et enfin, lance le D100 pour ta stat de magie.`);
 
             btn1.onclick = generateNonBeingMagic;
         }
@@ -397,8 +409,8 @@ function choosePlayerRace() {
         }
 
         function checkNonBeingStability(being) {
-            const totalStats =
-                being.hitPoints + being.strength + being.speed + being.magic;
+            const totalStats = being.hitPoints + being.strength + being.speed + being.magic;
+            console.log(`Total Non-Être stats : ${totalStats}`);
 
             if (totalStats < 200) {
                 const pointsToAdd = 200 - totalStats;
@@ -429,8 +441,27 @@ function choosePlayerRace() {
             gameMessage(`C'est bon ! Ton état de Non-Être est suffisamment stable.`);
 
             if (isGeneratingHybrid) {
-                generateHybridPlayer();
+                activateButton(btn1)
+                btn1.innerText = "Continuer"
+                btn1.onclick = () => { generateHybridPlayer(); }
+
+                if (!hybridRaceB.name) {
+                    gameMessage(`${currentGameMessage()}
+
+                        - Lancez le D20 pour tirer votre deuxième race.`)
+
+                    btn1.innerText = "Lancer le D20"
+                    return
+                }
             }
+
+            gameMessage(`${currentGameMessage()}
+
+                - Maintenant, lancez le D20 pour tirer votre trait.`)
+
+            activateButton(btn1)
+            btn1.innerText = "Lancer le D20"
+            btn1.onclick = () => { choosePlayerTrait() }
         }
 
         function adjustStats(being, amount, isAdding) {
@@ -635,25 +666,44 @@ function choosePlayerRace() {
             }
 
             function confirmStatsAdjustment(being, isGeneratingHybrid) {
-                being.hitPoints = hitPoints.value;
-                (being.strength = strength.value),
-                    (being.speed = speed.value),
-                    (being.magic = magic.value);
+                being.hitPoints = hitPoints.value
+                being.strength = strength.value
+                being.speed = speed.value
+                being.magic = magic.value
+
+                // TODO : hide stats adjustment panel
+                gameMessage(`C'est bon !`)
 
                 if (isGeneratingHybrid) {
-                    generateHybridPlayer();
-                    return;
+                    if (!hybridRaceB.name) {
+                        gameMessage(`${currentGameMessage()}
+                            
+                            - Maintenant, lancez le D20 pour tirer votre deuxième race.`)
+
+                        activateButton(btn1)
+                        btn1.innerText = "Lancer le D20"
+                        btn1.onclick = () => { generateHybridPlayer(); }
+                        return
+                    }
+
+                    generateHybridPlayer()
+                    return
                 }
 
                 player.restoreHitPoints();
                 player.updateAllVisuals();
                 console.log(player);
 
-                //TODO: next game step
+                gameMessage(`${currentGameMessage()}
+
+                    - Maintenant, lancez le D20 pour tirer votre trait.`)
+
+                activateButton(btn1)
+                btn1.innerText = "Lancer le D20"
+                btn1.onclick = () => { choosePlayerTrait() }
             }
         }
     }
-
     //#endregion
 
     //#region Hybrid Player Generation
@@ -665,7 +715,10 @@ function choosePlayerRace() {
             gameMessage(`20 ! - Hybride.
             Tu vas devoir tirer deux races séparément. Ta race finale sera un mélange des deux.
             Lance un D20 pour ta première race.`);
+
+            activateButton(btn1)
             btn1.onclick = generateHybridPlayerFirstHalf;
+
             return;
         }
         // Second come around (after 1st half hybride)
@@ -676,24 +729,19 @@ function choosePlayerRace() {
         }
 
         // Final
-        player.race.name.male = `Hybride ${hybridRaceA.name.male}-${hybridRaceB.name.male}`;
-        player.race.hitPoints = Math.round(
-            (hybridRaceA.hitPoints + hybridRaceB.hitPoints) * 0.5
-        );
-        player.race.strength = Math.round(
-            (hybridRaceA.strength + hybridRaceB.strength) * 0.5
-        );
-        player.race.speed = Math.round(
-            (hybridRaceA.speed + hybridRaceB.speed) * 0.5
-        );
-        player.race.magic = Math.round(
-            (hybridRaceA.magic + hybridRaceB.magic) * 0.5
-        );
-
+        player.races = [hybridRaceA, hybridRaceB]
         player.restoreHitPoints();
         player.updateAllVisuals();
+        gameMessage(`${currentGameMessage()}
+            
+            Maintenant, lancez le D20 pour choisir votre trait.`)
 
-        // TODO: Next Game Step
+        activateButton(btn1)
+        btn1.innerText = "Lancer le D20"
+        btn1.onclick = () => {
+            choosePlayerTrait()
+        }
+
 
         function generateHybridPlayerFirstHalf() {
             const roll = d20.roll();
@@ -702,25 +750,28 @@ function choosePlayerRace() {
 
             // Hybrid exception
             if (hybridRaceA.name.male == "Hybride") {
-                gameMessage(`${roll} ! ${hybridRaceA.name.male} à nouveau. Relance.`);
+                gameMessage(`${roll} ! ${player.gender == "F" ? hybridRaceA.name.female : hybridRaceA.name.male} à nouveau. Relancez.`);
                 btn1.innerText = "Relancer un D20";
                 return;
             }
 
             // Non-Being special rule
             if (hybridRaceA.name.male == "Non-Être") {
-                player.race.name.male += ` ${hybridRaceA.name.male}`;
+                player.races = [hybridRaceA, {}]
                 player.updateAllVisuals();
                 generateNonBeingPlayer(hybridRaceA, true); // Sends us back to generateHybridPlayer at the end
                 return;
             }
 
+            player.races = [hybridRaceA, {}]
+
             gameMessage(
-                `${roll} ! ${hybridRaceA.name.male}. Maintenant, lance de nouveau un D20 pour ta deuxième race.`
+                `${roll} ! ${player.gender == "F" ? hybridRaceA.name.female : hybridRaceA.name.male}. Maintenant, lancez à nouveau le D20 pour votre deuxième race.`
             );
+
             btn1.innerText = "Lancer un D20";
             btn1.onclick = generateHybridPlayerSecondHalf;
-            player.race.name.male += ` ${hybridRaceA.name.male}`;
+
             player.updateAllVisuals();
         }
 
@@ -733,22 +784,20 @@ function choosePlayerRace() {
                 hybridRaceB.name.male == "Hybride" ||
                 hybridRaceB.name.male == hybridRaceA.name.male
             ) {
-                gameMessage(`${roll} ! ${hybridRaceB.name.male} à nouveau. Relance.`);
+                gameMessage(`${roll} ! ${player.gender == "F" ? hybridRaceB.name.female : hybridRaceB.name.male} à nouveau. Relancez.`);
                 btn1.innerText = "Relancer un D20";
                 return;
             }
 
             if (hybridRaceB.name.male == "Non-Être") {
-                player.race.name.male += `-${hybridRaceB.name.male}`;
+                player.races = [hybridRaceA, hybridRaceB]
                 player.updateAllVisuals();
                 generateNonBeingPlayer(hybridRaceB, true);
                 return;
             }
 
-            player.race.name.male += `-${hybridRaceB.name.male}`;
-            player.updateAllVisuals();
-            gameMessage(`${roll} ! ${hybridRaceB.name.male}.`);
-            generateHybridPlayer(hybridRaceA, hybridRaceB);
+            gameMessage(`${roll} ! ${player.gender == "F" ? hybridRaceB.name.female : hybridRaceB.name.male}.`);
+            generateHybridPlayer();
         }
     }
 
@@ -756,15 +805,20 @@ function choosePlayerRace() {
 }
 
 function choosePlayerTrait() {
+    hideAllGenericButtons()
     const roll = getRandomInt(strongTraitsTable.length) + 1;
 
     player.traits[0] = structuredClone(strongTraitsTable[roll - 1]);
 
-    gameMessage(`${roll} ! - ${player.traits[0].name.accordMasculin}`);
+    gameMessage(`${roll} ! - ${player.gender == "F" ? player.traits[0].name.accordFeminin : player.traits[0].name.accordMasculin}
+        
+        - Ensuite, tirez une carte du deck. Vous recevrez une récompense en fonction de la carte.`);
 
     player.restoreHitPoints();
     player.updateTraitVisuals();
     player.updateStatsVisuals();
+
+    allowedToDraw = true
 }
 
 function chooseNewEnvironment(customMessage) {
@@ -804,7 +858,7 @@ function chooseNewEnvironment(customMessage) {
     }
 }
 
-function drawReward(deck, allCardsCountAsCoins) {
+function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpReward = false) {
     if (!allowedToDraw) return
 
     allowedToDraw = false;
@@ -822,9 +876,10 @@ function drawReward(deck, allCardsCountAsCoins) {
     //console.log(scopaDeck);
     addCardToDisplayZone(cardDrawn)
     feedbackMessage += `${cardDrawn.description} !`;
+    let reward = {}
 
     if (cardDrawn.suit == "coins" || allCardsCountAsCoins === true) {
-        const reward = structuredClone(coinsItemsTable[cardDrawn.value - 1]);
+        reward = structuredClone(coinsItemsTable[cardDrawn.value - 1]);
         player.goldCoins += reward.goldCoins;
         feedbackMessage += ` 
         Vous recevez ${reward.goldCoins} pièces d'or`;
@@ -836,7 +891,7 @@ function drawReward(deck, allCardsCountAsCoins) {
     }
 
     if (cardDrawn.suit == "swords" && allCardsCountAsCoins === false) {
-        let reward = new SwordsItem(structuredClone(swordsItemsTable[cardDrawn.value - 1]));
+        reward = new SwordsItem(structuredClone(swordsItemsTable[cardDrawn.value - 1]));
         player.inventory.add(reward);
         feedbackMessage += ` 
         Vous recevez ${reward.preposition}${reward.name} (${reward.description})`;
@@ -844,48 +899,70 @@ function drawReward(deck, allCardsCountAsCoins) {
     }
 
     feedbackMessage += `.`;
-    gameMessage(feedbackMessage);
 
     hideAllGenericButtons()
-    btn1.style.display = "block"
-    btn1.disabled = false
+    activateButton(btn1)
+
+    if (isSetUpReward) {
+        imgDeck.onclick = () => {
+            if (allowedToDraw) {
+                clearCardsDisplayZone();
+                drawReward(scopaDeck, false, false)
+            }
+        }
+        player.actionPoints += 2
+        feedbackMessage += `
+        Vous recevez également, comme bonus de départ, 2 points d'action${reward.actionPoints ? " supplémentaires" : ""}.
+        
+        Vous êtes maintenant ${player.gender == "F" ? "prête" : "prêt"} à commencer votre aventure !
+        - Appuyer sur 'Commencer'.`
+
+        gameMessage(feedbackMessage);
+
+
+        btn1.innerText = "Commencer"
+        btn1.onclick = () => { nextAdventure(adventureBeginsMessage) }
+
+        return
+    }
+
+    gameMessage(feedbackMessage);
+
     btn1.innerText = "Continuer"
     btn1.onclick = () => {
-        console.log(environments.indexOf(currentEnvironment));
-        console.log(isFirstStep());
         clearCardsDisplayZone()
-        // Check if is the very first adventure roll
-        if (environments.indexOf(currentEnvironment) == 0 && isFirstStep()) {
-            console.log("check");
-            nextAdventure(adventureBeginsMessage)
-            return
-        }
         nextAdventure()
     }
 }
 
 function generateIntelligentBeing(roll = d20.roll(), traits = []) {
     let gender = d20.reducedRoll(d20.roll(), 2) == 1 ? "F" : "M"
-    let being = new Being("Intelligent Being", structuredClone(intelligentRacesTable[roll - 1]), gender, traits)
+
+    let being = new Being(
+        "Intelligent Being",
+        [structuredClone(intelligentRacesTable[roll - 1])],
+        gender,
+        traits
+    )
 
     // Momie special rule
-    if (being.race.name.female == "Momie") {
+    if (being.races[0].name.female == "Momie") {
         being.gender = "F"
     }
 
     // Golem special rule
-    if (being.race.name.male == "Golem") {
+    if (being.races[0].name.male == "Golem") {
         being.gender = "M"
     }
 
     // Non-Being special rule
-    if (being.race.name.male == "Non-Être") {
-        being.race = generateNonBeingRace();
+    if (being.races[0].name.male == "Non-Être") {
+        being.races[0] = generateNonBeingRace();
     }
 
     // Hybrid special rule
-    if (being.race.name.male == "Hybride") {
-        being.race = generateHybridRace();
+    if (being.races[0].name.male == "Hybride") {
+        being.races = generateHybridRaces();
     }
 
     function generateNonBeingRace() {
@@ -1019,8 +1096,7 @@ function generateIntelligentBeing(roll = d20.roll(), traits = []) {
         return race;
     }
 
-    function generateHybridRace() {
-        let hybrid = {};
+    function generateHybridRaces() {
         let raceA = {};
         let raceB = {};
 
@@ -1057,35 +1133,27 @@ function generateIntelligentBeing(roll = d20.roll(), traits = []) {
             }
         }
 
-        hybrid.name.female = `Hybride ${raceA.name.female}-${raceB.name.female}`;
-        hybrid.name.male = `Hybride ${raceA.name.male}-${raceB.name.male}`;
-        hybrid.hitPoints = Math.round((raceA.hitPoints + raceB.hitPoints) * 0.5);
-        hybrid.strength = Math.round((raceA.strength + raceB.strength) * 0.5);
-        hybrid.speed = Math.round((raceA.speed + raceB.speed) * 0.5);
-        hybrid.magic = Math.round((raceA.magic + raceB.magic) * 0.5);
-
-        return hybrid;
+        return [raceA, raceB];
     }
-
-    // TODO: Add trait based on level parameter (1 to 4)
 
     being.restoreHitPoints();
     return being;
 }
 
-function generateMonster(roll, traits) {
-    let monster = new Being("Monster", structuredClone(monstersTable[roll - 1]), null, traits);
+function generateMonster(roll = d20.roll(), traits = []) {
+    let monster = new Being("Monster", [structuredClone(monstersTable[roll - 1])], undefined, traits);
 
-    if (monster.race.name == "Parasite") {
-        monster = generateIntelligentBeing(d20.roll());
-        monster.race.name += ` ${monster.gender == "F" ? "parasitée" : "parasité"}`;
+    if (monster.races[0].name.male == "Parasite") {
+        monster = generateIntelligentBeing(d20.roll(), monster.traits);
+        monster.races[monster.races.length - 1].name.female += ` parasitée`;
+        monster.races[monster.races.length - 1].name.male += ` parasité`;
     }
 
-    if (monster.race.name == "Métamorphe") {
-        monster.race.hitPoints = d100.roll();
-        monster.race.strength = clamp(d100.roll() - 30, 10, 100);
-        monster.race.speed = clamp(d100.roll() - 30, 10, 100);
-        monster.race.magic = clamp(d100.roll() - 30, 10, 100);
+    if (monster.races[0].name.male == "Métamorphe") {
+        monster.races[0].hitPoints = d100.roll();
+        monster.races[0].strength = clamp(d100.roll() - 30, 10, 100);
+        monster.races[0].speed = clamp(d100.roll() - 30, 10, 100);
+        monster.races[0].magic = clamp(d100.roll() - 30, 10, 100);
     }
 
     monster.restoreHitPoints();
@@ -1764,6 +1832,12 @@ function intelligentBeingEncounter() {
                     fight(contextData)
                 }
 
+                break;
+
+            case roll <= 6:
+                if (condition) {
+
+                }
                 break;
 
             default:
