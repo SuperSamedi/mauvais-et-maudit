@@ -58,6 +58,7 @@ let cupsItemsTable = [];
 let allowedToDraw = false;
 let allowedToSellItems = false;
 let allowedToLevelUp = false;
+let allowedToRerollEnvironmentRoll = false
 
 
 btnRaceRoll.onclick = choosePlayerRace;
@@ -100,7 +101,7 @@ fetch("resources/data-tables/strong-traits.json")
     })
     .then((loadedData) => {
         strongTraitsTable = loadedData;
-        console.log(strongTraitsTable);
+        // console.log(strongTraitsTable);
     })
     .catch((error) => {
         //TODO: create a 500 code page
@@ -228,6 +229,7 @@ fetch("resources/data-tables/strongissime-traits.json")
 // #endregion
 
 //#region TESTS
+//#region ReducedRoll Tests
 // Reduced roll algorithm test
 // let roll = 1
 // console.log(d20.reducedRoll(roll, 4));
@@ -269,8 +271,9 @@ fetch("resources/data-tables/strongissime-traits.json")
 // console.log(d20.reducedRoll(roll, 4));
 // roll = 20
 // console.log(d20.reducedRoll(roll, 4));
+//#endregion
 
-// Test gender equity
+//#region Test gender equity
 // let males = 0
 // let females = 0
 
@@ -287,6 +290,19 @@ fetch("resources/data-tables/strongissime-traits.json")
 
 // console.log(`males: ${males}`);
 // console.log(`females: ${females}`);
+//#endregion
+
+//#region Tests Strongissime trait
+// setTimeout(function () {
+//     // console.log(strongTraitsTable);
+//     // const testTraits = [getStrongTrait(3), getStrongTrait(3), getStrongTrait(3)]
+//     // const testTraits = [getStrongTrait(20), getStrongTrait(1), getStrongTrait(20), getStrongTrait(1), getStrongTrait(5)]
+//     // const testTraits = [getStrongTrait(19), getStrongTrait(1), getStrongTrait(19)]
+//     const testTraits = [getStrongTrait(15), getStrongTrait(15)]
+//     const being = generateIntelligentBeing(20, testTraits)
+//     console.log(being.name);
+// }, 200);
+//#endregion
 //#endregion
 
 // =====> START
@@ -832,19 +848,41 @@ function chooseNewEnvironment(customMessage) {
     btn1.style.display = "block"
     btn1.disabled = false
     btn1.innerText = "Lancer le D20"
-    btn1.onclick = () => {
-        const roll = d20.roll()
-        newEnvironmentResult(roll)
-    }
+    btn1.onclick = () => { newEnvironmentResult(d20.roll()) }
 
     function newEnvironmentResult(roll) {
-        // Pass data to the currentEnvironment of voyage.js
         const newEnvironment = environmentsTable[roll - 1]
+
+        // Pass data to the currentEnvironment of voyage.js
         currentEnvironment.name = newEnvironment.name
         currentEnvironment.description = newEnvironment.description
         if (newEnvironment.statsModifiers) currentEnvironment.statsModifiers = newEnvironment.statsModifiers
         if (newEnvironment.shopModifiers) currentEnvironment.shopModifiers = newEnvironment.shopModifiers
         if (newEnvironment.InnModifiers) currentEnvironment.InnModifiers = newEnvironment.InnModifiers
+
+        let message = `${roll} ! ${newEnvironment.name}.
+        - Effet : ${newEnvironment.description}`
+
+        if (allowedToRerollEnvironmentRoll) {
+            gameMessage(`${message}
+                
+                Durant votre voyage vous avez gagné la possibilité d'annuler votre prochain jet d'environnement. Voulez-vous annuler ce jet et relancer le dé ?`)
+
+            allowedToRerollEnvironmentRoll = false
+
+            btn1.innerText = "Garder ce lancé"
+            btn1.onclick = () => {
+                updateAllEnvironmentVisuals()
+                player.updateStatsVisuals()
+
+                nextAdventure()
+            }
+            activateButton(btn2)
+            btn2.innerText = "Relancer"
+            btn2.onclick = () => { newEnvironmentResult(d20.roll()) }
+
+            return
+        }
 
         updateAllEnvironmentVisuals()
         player.updateStatsVisuals()
@@ -968,6 +1006,7 @@ function generateIntelligentBeing(roll = d20.roll(), traits = []) {
     function generateNonBeingRace() {
         let race = {};
 
+        race.name = {}
         race.name.female = "Non-Être";
         race.name.male = "Non-Être";
 
@@ -977,14 +1016,11 @@ function generateIntelligentBeing(roll = d20.roll(), traits = []) {
         race.speed = d100.roll();
         race.magic = d100.roll();
 
-        adjustGeneratedNonBeing(race);
+        return adjustGeneratedNonBeing(race);
 
         function adjustGeneratedNonBeing(being) {
-            const totalStats =
-                being.hitPoints + being.strength + being.speed + being.magic;
-            console.log(
-                `Non-Être généré avec ${totalStats} points de stats totales.`
-            );
+            const totalStats = being.hitPoints + being.strength + being.speed + being.magic;
+            // console.log(`Non-Être généré avec ${totalStats} points de stats totales.`);
 
             //Check if over powered
             if (totalStats > 300) {
@@ -1089,17 +1125,18 @@ function generateIntelligentBeing(roll = d20.roll(), traits = []) {
                     adjustmentPoints--;
                 }
             }
-
+            // const adjustedTotalStats = being.hitPoints + being.strength + being.speed + being.magic
+            // console.log(`Final adjustd stat total : ${adjustedTotalStats}`);
             return being;
         }
-
-        return race;
     }
 
     function generateHybridRaces() {
         let raceA = {};
         let raceB = {};
 
+        raceA.name = {}
+        raceB.name = {}
         raceA.name.male = "Hybride";
         raceB.name.male = "Hybride";
 
@@ -1551,6 +1588,7 @@ function playerHasInitiative(opponent) {
 //#endregion
 
 function nextAdventure(customMessage = "") {
+    hideAllGenericButtons()
     // If we start a new environment we choose it first
     if (isFirstStep() && currentEnvironment.name == "") {
         chooseNewEnvironment(customMessage)
@@ -1564,9 +1602,7 @@ function nextAdventure(customMessage = "") {
         Une nouvelle étape de votre voyage commence.
         Lancez un D100 pour voir quelles péripéties vous attendent.`)
 
-    hideAllGenericButtons()
-    btn1.style.display = "block"
-    btn1.disabled = false
+    activateButton(btn1)
     btn1.innerText = "Lancer le D100"
     // Test button
     btn1.onclick = () => { chooseNextAdventure(21) }
@@ -1799,6 +1835,8 @@ function intelligentBeingEncounter() {
 
     let traits = generateTraits()
     const intelligentBeing = generateIntelligentBeing(d20.roll(), traits)
+    console.log("intelligent being Encounter :");
+    console.log(intelligentBeing);
 
     gameMessage(`Alors que vous marchiez tranquillement sur le chemin, vous croisez ${intelligentBeing.gender == "F" ? "une" : "un"} ${intelligentBeing.name}. 
         Lancez le D20 pour voir quel attitude ${intelligentBeing.gender == "F" ? "elle" : "il"} va adopter.`)
@@ -1811,11 +1849,35 @@ function intelligentBeingEncounter() {
     }
 
     function checkAttitude(roll) {
-        switch (roll) {
-            case roll <= 3:
+        console.log("checkattitude roll" + roll);
+        if (roll <= 3) {
+            gameMessage(`${roll} !
+                ${beingNameWithDeterminantDefini(intelligentBeing, false)} vous salue poliment et fait mine de vouloir continuer sa route sans plus d'interaction.
+                - Voulez-vous continuer votre chemin ou l'attaquer ?`)
+
+            activateButton(btn2)
+            btn1.innerText = "Continuer"
+            btn2.innerText = "Attaquer"
+            btn1.onclick = () => { letBeingGo() }
+            btn2.onclick = () => {
+                const contextData = {
+                    opponent: intelligentBeing,
+                    introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(intelligentBeing, false)} et adoptez une position de combat.`,
+                    opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
+                    rewardPhaseCallBack: regularRewardPhase
+                }
+
+                fight(contextData)
+            }
+            return;
+        }
+        if (roll <= 6) {
+            // If race in common or as strong as the being - Free passage
+            if (player.hasARaceInCommonWith(intelligentBeing) || player.strength >= intelligentBeing.strength) {
                 gameMessage(`${roll} !
-                    ${beingNameWithDeterminantDefini(intelligentBeing, false)} vous salue poliment et fait mine de vouloir continuer sa route sans plus d'interaction.
-                    - Voulez-vous continuer votre chemin ou l'attaquer ?`)
+                    ${beingNameWithDeterminantDefini(intelligentBeing, false)} vous toise du regard avant de s'écarter du chemin pour vous laisser passer. Vous déceler un certain air de frustration sur son visage.
+                    
+                    - Voulez-vous continuer votre route ou l'attaquer ?`)
 
                 activateButton(btn2)
                 btn1.innerText = "Continuer"
@@ -1831,18 +1893,165 @@ function intelligentBeingEncounter() {
 
                     fight(contextData)
                 }
+                return
+            }
 
-                break;
+            // Otherwise, asks for toll
+            const toll = 50 * (environments.indexOf(currentEnvironment) + 1)
 
-            case roll <= 6:
-                if (condition) {
+            gameMessage(`${roll} !
+                ${beingNameWithDeterminantDefini(intelligentBeing, false)} se met en travers du chemin et d'un air menaçant vous demande ${toll}PO pour pouvoir passer.
+                
+                Que choisissez-vous ?
+                - Donner l'argent.
+                - Attaquer ${beingNameWithDeterminantDefini(intelligentBeing, true)}.`)
 
+            activateButton(btn2)
+            btn1.innerText = `Donner ${toll}PO`
+            btn2.innerText = `Attaquer`
+            btn1.onclick = () => { giveGold(toll) }
+            btn2.onclick = () => {
+                const contextData = {
+                    opponent: intelligentBeing,
+                    introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(intelligentBeing, false)} et adoptez une position de combat.`,
+                    opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
+                    rewardPhaseCallBack: regularRewardPhase
                 }
-                break;
 
-            default:
-                break;
+                fight(contextData)
+            }
+            return
         }
+        if (roll <= 9) {
+            // If race in common or as strong magically as the being - Free passage
+            if (player.hasARaceInCommonWith(intelligentBeing) || player.magic >= intelligentBeing.magic) {
+                gameMessage(`${roll} !
+                    ${beingNameWithDeterminantDefini(intelligentBeing, false)} vous toise du regard avant de s'écarter du chemin pour vous laisser passer. Vous déceler un certain air de frustration sur son visage.
+    
+                    - Voulez-vous continuer votre route ou l'attaquer ?`)
+
+                activateButton(btn2)
+                btn1.innerText = "Continuer"
+                btn2.innerText = "Attaquer"
+                btn1.onclick = () => { letBeingGo() }
+                btn2.onclick = () => {
+                    const contextData = {
+                        opponent: intelligentBeing,
+                        introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(intelligentBeing, false)} et adoptez une position de combat.`,
+                        opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
+                        rewardPhaseCallBack: regularRewardPhase
+                    }
+
+                    fight(contextData)
+                }
+                return
+            }
+
+            // Otherwise, asks for toll
+            const toll = 50 * (environments.indexOf(currentEnvironment) + 1)
+
+            gameMessage(`${roll} !
+            ${beingNameWithDeterminantDefini(intelligentBeing, false)} se met en travers du chemin et d'un air menaçant vous demande ${toll}PO pour pouvoir passer.
+
+            Que choisissez-vous ?
+            - Donner l'argent.
+            - Attaquer ${beingNameWithDeterminantDefini(intelligentBeing, true)}.`)
+
+            activateButton(btn2)
+            btn1.innerText = `Donner ${toll}PO`
+            btn2.innerText = `Attaquer`
+            btn1.onclick = () => { giveGold(toll) }
+            btn2.onclick = () => {
+                const contextData = {
+                    opponent: intelligentBeing,
+                    introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(intelligentBeing, false)} et adoptez une position de combat.`,
+                    opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
+                    rewardPhaseCallBack: regularRewardPhase
+                }
+
+                fight(contextData)
+            }
+            return
+        }
+        if (roll <= 12) {
+            // FIGHT !
+            const introMessage = `${roll} !
+                Dès que ${beingNameWithDeterminantDefini(intelligentBeing, true)} vous aperçois, ${intelligentBeing.gender == "F" ? "elle" : "il"} sort son arme et se rue vers vous en criant sauvagement !`
+
+            const contextData = {
+                opponent: intelligentBeing,
+                introMessage: introMessage,
+                opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
+                rewardPhaseCallBack: regularRewardPhase
+            }
+
+            fight(contextData)
+
+            return
+        }
+        if (roll <= 15) {
+            const unbuffedBeing = structuredClone(intelligentBeing)
+            const introMessage = `${roll} !
+            Lorsque ${beingNameWithDeterminantDefini(unbuffedBeing, true)} arrive à votre hauteur, ${unbuffedBeing.gender == "F" ? "elle" : "il"} vous lance un grognement bourru. Vous ${unbuffedBeing.gender == "F" ? "la" : "le"} saluez en retour ce qui, surprenamment, à pour effet de faire entrer ${beingNameWithDeterminantDefini(unbuffedBeing, true)} dans une rage folle. `
+
+            intelligentBeing.traits.push(getStrongTrait())
+
+            const contextData = {
+                opponent: intelligentBeing,
+                introMessage: introMessage,
+                opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
+                rewardPhaseCallBack: regularRewardPhase
+            }
+
+            fight(contextData)
+
+            return
+        }
+        if (roll <= 18) {
+            allowedToRerollEnvironmentRoll = true
+            player.experiencePoints++
+            stepCompleted()
+
+            gameMessage(`${roll} !
+                ${beingNameWithDeterminantDefini(intelligentBeing, false)} vous salue amicalement et vous fait part d'un malencontreux événement qui lui est arrivé sur sa route. Vous prenez bonnes notes de ces précieuses informations. Qui sait, peut-être réussirez-vous, grâce à ces dernières, à déjouer les périls du chemin ardu qui vous attend ?
+                - Vous gagnez 1XP et la possibilité d'annuler votre prochain lancé de dé d'environnement et de le relancer.`)
+
+            btn1.innerText = "Continuer"
+            btn1.onclick = () => { nextAdventure() }
+            return
+        }
+        if (roll <= 20) {
+            gameMessage(`${roll} !
+                Vous réalisez que ${beingNameWithDeterminantDefini(intelligentBeing, true)} est en fait ${intelligentBeing.gender == "F" ? "une marchande itinérante" : "un marchand itinérant"}.
+                
+                Que choisissez-vous de faire ?
+                    - Faire affaire avec ${intelligentBeing.gender == "F" ? "la marchande" : "le marchand"}
+                    - Attaquer ${intelligentBeing.gender == "F" ? "la marchande" : "le marchand"}`)
+
+            activateButton(btn2)
+            btn1.innerText = "Voir la marchandise"
+            btn1.onclick = () => {
+                visitShop(
+                    `Vous faites signe ${intelligentBeing.gender == "F" ? "à la marchande" : "au marchand"} de vous montrer sa marchandise.`,
+                    `Vous remerciez ${intelligentBeing.gender == "F" ? "la marchande" : "le marchand"} pour son temps et continuez votre route.`,
+                    `${intelligentBeing.gender == "F" ? "La marchande" : "Le marchand"} vous fait part que, malheureusement, tout son stock est vide`,
+                    `${player.gender == "F" ? "Déçue" : "Déçu"}, vous faites comprendre ${intelligentBeing.gender == "F" ? "à la marchande" : "au marchand"} que ça ne fait rien avant de continuer votre route.`,
+                    2)
+            }
+            btn2.innerText = "Attaquer"
+            btn1.onclick = () => {
+                const contextData = {
+                    opponent: intelligentBeing,
+                    introMessage: `Sans aucune sommation, vous dégainez et brandissez votre arme dans la direction ${intelligentBeing.gender == "F" ? "de la marchande" : "du marchand"}. ${intelligentBeing.gender == "F" ? "Cette dernière" : "Ce dernier"} lâche un cris d'effroi et sort une arme de son sac-à-dos.`,
+                    opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
+                    rewardPhaseCallBack: regularRewardPhase
+                }
+
+                fight(contextData)
+            }
+        }
+
+        return
 
         function letBeingGo() {
             hideAllGenericButtons()
@@ -1852,6 +2061,23 @@ function intelligentBeingEncounter() {
 
             stepCompleted()
             player.experiencePoints++
+
+            activateButton(btn1)
+            btn1.innerText = "Continuer"
+            btn1.onclick = () => {
+                nextAdventure()
+            }
+        }
+
+        function giveGold(amount) {
+            hideAllGenericButtons()
+
+            gameMessage(`Vous donnez ${amount}PO ${intelligentBeing.gender == "F" ? "à la racketteuse" : "au racketteur"} et continuez votre route.
+                - Vous gagnez 1XP.`)
+
+            player.goldCoins -= amount
+            player.experiencePoints++
+            stepCompleted()
 
             activateButton(btn1)
             btn1.innerText = "Continuer"
@@ -1904,22 +2130,28 @@ function villageEncounter() {
     if (player.goldCoins < innPrice) btn2.disabled = true
 }
 
-function visitShop() {
+function visitShop(
+    introMessage = "Vous entrez dans le magasin.",
+    leaveMessage = "Vous sortez du magasin et continuez votre route.",
+    noCardsMessage = "Vous arrivez devant le magasin mais réalisez avec déception que celui-ci est fermé",
+    noCardsLeaveMessage = "Vous sortez du village avec déception.Mais vous repensez à votre quête et retrouvez du baume au cœur car seul vous pouvez arrêter le Mal et ce dernier n'attend pas.",
+    maxCards = 4
+) {
     hideAllGenericButtons()
 
     if (scopaDeck.length <= 0) {
-        gameMessage("Vous arrivez devant le magasin mais réalisez avec déception que celui-ci est fermé (il n'y a plus de carte dans la pioche).");
+        gameMessage(`${noCardsMessage} (il n'y a plus de carte dans la pioche).`);
         activateButton(btn1)
         btn1.innerText = "Partir"
         btn1.onclick = () => {
             stepCompleted()
-            nextAdventure("Vous sortez du village avec déception. Mais vous repensez à votre quête et retrouvez du baume au cœur car seul vous pouvez arrêter le Mal et ce dernier n'attend pas.")
+            nextAdventure(`${noCardsLeaveMessage}`)
         }
         return;
     }
 
-    gameMessage(`Vous entrez dans le magasin.
-        Tirez 4 cartes pour voir quels objets sont en vente (les cartes 'Pièces' ne correspondent à aucun objet achetable).`);
+    gameMessage(`${introMessage}
+        Tirez ${maxCards} cartes pour voir quels objets sont en vente (les cartes 'Pièces' ne correspondent à aucun objet achetable).`);
 
     let cardsDrawn = []
 
@@ -1937,6 +2169,7 @@ function visitShop() {
 
         if (deck.length <= 0) {
             gameMessage("La pioche est vide.");
+            // TODO : manage situation 
             return;
         }
 
@@ -1946,7 +2179,7 @@ function visitShop() {
 
         if (isAllowedToDrawMore()) {
             gameMessage(`${cardDrawn.description}.
-                Tirez encore ${4 - cardsDrawn.length} ${cardsDrawn.length == 3 ? "carte" : "cartes"}.`)
+                Tirez encore ${maxCards - cardsDrawn.length} ${cardsDrawn.length == maxCards - 1 ? "carte" : "cartes"}.`)
 
             allowedToDraw = true
 
@@ -1985,14 +2218,14 @@ function visitShop() {
 
         // Deploy shop
         gameMessage(`${cardDrawn.description}.
-            C'est bon. Appuyez sur continuer pour voir l'objet, ou les objets, disponible(s) dans le magasin.`)
+            C'est bon. Appuyez sur continuer pour voir l'objet, ou les objets, disponible(s).`)
 
         activateButton(btn1)
         btn1.innerText = "Continuer"
         btn1.onclick = () => { deployShop() }
 
         function isAllowedToDrawMore() {
-            if (cardsDrawn.length >= 4) {
+            if (cardsDrawn.length >= maxCards) {
                 return false
             }
 
@@ -2005,6 +2238,7 @@ function visitShop() {
 
         if (deck.length <= 0) {
             gameMessage("La pioche est vide.");
+            // TODO : manage situation 
             return;
         }
 
@@ -2020,7 +2254,7 @@ function visitShop() {
 
         cardsDrawn.push(cardDrawn)
         gameMessage(`${cardDrawn.description}.
-            C'est bon. Appuyez sur continuer pour voir l'objet, ou les objets, disponible(s) dans le magasin.`)
+            C'est bon. Appuyez sur continuer pour voir l'objet, ou les objets, disponible(s).`)
 
         btn1.innerText = "Continuer"
         btn1.onclick = () => { deployShop() }
@@ -2034,7 +2268,7 @@ function visitShop() {
             allowedToSellItems = false
             stepCompleted()
             clearCardsDisplayZone()
-            nextAdventure("Vous sortez du magasin et continuez votre route.")
+            nextAdventure(`${leaveMessage}`)
         }
 
         cardsDrawn.forEach(card => {

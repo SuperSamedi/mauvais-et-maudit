@@ -19,25 +19,180 @@ class Being {
         }
 
         // Add traits
-        for (let i = 0; i < this.traits.length; i++) {
-            // Check if first trait
-            if (i == 0) {
-                name += ` `
+        if (this.traits.length == 3) {
+            // Special case strongissime trait 3x identical traits
+            if (this.traits[0].name.accordMasculin == this.traits[1].name.accordMasculin
+                && this.traits[0].name.accordMasculin == this.traits[2].name.accordMasculin) {
+                // return name += ` ultra ${this.gender == "F" ? this.traits[i].name.accordFeminin.toLowerCase() : this.traits[i].name.accordMasculin.toLowerCase()}`
+                return name += ` ${this.gender == "F" ? getStrongissimeVersion(this.traits[0]).name.accordFeminin.toLowercase() : getStrongissimeVersion(this.traits[0]).name.accordMasculin.toLowercase()}`
             }
-            // check if it's not the first trait and there are still more
-            if (i > 0 && i + 1 < this.traits.length) {
-                name += `, `
-            }
-            // check if it's not the first but is the last
-            if (i > 0 && i + 1 == this.traits.length) {
-                name += ` et `
-            }
+        }
 
-            name += `${this.gender == "F" ? this.traits[i].name.accordFeminin.toLowerCase() : this.traits[i].name.accordMasculin.toLowerCase()}`
+        // Special case ultra trait 2x identical traits (exemple : Taupe super géante, immense et rusée)
+        const allTraitsNames = []
+        const duplicateNames = []
+        let uniqueNames = []
+        const elementTracker = {}
+
+        this.traits.forEach(trait => {
+            allTraitsNames.push(this.gender == "F" ? trait.name.accordFeminin : trait.name.accordMasculin)
+        });
+
+        // Put all names that have at least 2 iteration in duplicateNames array
+        allTraitsNames.forEach(name => {
+            if (elementTracker[name]) {
+                if (duplicateNames.includes(name)) return
+
+                duplicateNames.push(name)
+            }
+            else {
+                elementTracker[name] = true
+            }
+        })
+
+        // remove duplicate names from uniqueNames array
+        uniqueNames = structuredClone(allTraitsNames)
+        allTraitsNames.forEach(name => {
+            if (duplicateNames.includes(name)) {
+                uniqueNames.splice(uniqueNames.indexOf(name), 1)
+            }
+        })
+
+        // console.log("all Names :");
+        // console.log(allTraitsNames);
+        // console.log("duplicates :");
+        // console.log(duplicateNames);
+        // console.log("uniques :");
+        // console.log(uniqueNames);
+        // if we have super traits
+        if (duplicateNames.length > 0) {
+            for (let i = 0; i < duplicateNames.length; i++) {
+                // Check if first trait
+                if (i == 0) {
+                    name += ` `
+                }
+                // check if it's not the first trait and there are still more
+                if (i > 0 && (i + 1 < duplicateNames.length || uniqueNames.length > 0)) {
+                    name += `, `
+                }
+                // check if it's not the first but is the last
+                if (i > 0 && i + 1 == duplicateNames.length && uniqueNames.length == 0) {
+                    name += ` et `
+                }
+
+                name += `super ${duplicateNames[i].toLowerCase()}`
+            }
+        }
+        // if we have unique traits
+        if (uniqueNames.length > 0) {
+            for (let i = 0; i < uniqueNames.length; i++) {
+                // Check if first trait
+                if (i == 0 && duplicateNames.length == 0) {
+                    name += ` `
+                }
+                // check if it's not the first trait and there are still more
+                if (i > 0 && i + 1 < uniqueNames.length) {
+                    name += `, `
+                }
+                // check if it's not the first but is the last
+                if ((i > 0 || duplicateNames.length > 0) && i + 1 == uniqueNames.length) {
+                    name += ` et `
+                }
+
+                name += `${uniqueNames[i].toLowerCase()}`
+            }
         }
 
         return name
+
+
+        function getStrongissimeVersion(trait) {
+            switch (trait.name.accordMasculin) {
+                case "Géant":
+                    return structuredClone(strongissimeTraitsTable[0])
+
+                case "Puissant":
+                    return structuredClone(strongissimeTraitsTable[1])
+                    break;
+
+                case "Agile":
+                    return structuredClone(strongissimeTraitsTable[2])
+                    break;
+
+                case "Rusé":
+                    return structuredClone(strongissimeTraitsTable[3])
+                    break;
+
+                case "Immense":
+                    return structuredClone(strongissimeTraitsTable[4])
+                    break;
+
+                case "Costaud":
+                    return structuredClone(strongissimeTraitsTable[5])
+                    break;
+
+                case "Alerte":
+                    return structuredClone(strongissimeTraitsTable[6])
+                    break;
+
+                case "Véloce":
+                    return structuredClone(strongissimeTraitsTable[7])
+                    break;
+
+                case "Magique":
+                    return structuredClone(strongissimeTraitsTable[8])
+                    break;
+
+                case "Maudit":
+                    return structuredClone(strongissimeTraitsTable[9])
+                    break;
+
+                case "Rapide":
+                    return structuredClone(strongissimeTraitsTable[10])
+                    break;
+
+                case "Enchanté":
+                    return structuredClone(strongissimeTraitsTable[11])
+                    break;
+
+                case "Agressif":
+                    return structuredClone(strongissimeTraitsTable[12])
+                    break;
+
+                case "Savant":
+                    return structuredClone(strongissimeTraitsTable[13])
+                    break;
+
+                case "Svelte":
+                    return structuredClone(strongissimeTraitsTable[14])
+                    break;
+
+                case "Dément":
+                    return structuredClone(strongissimeTraitsTable[15])
+                    break;
+
+                case "Bestial":
+                    return structuredClone(strongissimeTraitsTable[16])
+                    break;
+
+                case "Massif":
+                    return structuredClone(strongissimeTraitsTable[17])
+                    break;
+
+                case "Gigantesque":
+                    return structuredClone(strongissimeTraitsTable[18])
+                    break;
+
+                case "Mutant":
+                    return structuredClone(strongissimeTraitsTable[19])
+                    break;
+
+                default:
+                    break;
+            }
+        }
     }
+
 
     get hitPoints() {
         return this.#hitPoints;

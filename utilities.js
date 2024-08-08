@@ -105,7 +105,6 @@ function generateTraits() {
     case 4:
       traits.push(getStrongTrait(d20.roll()))
       traits.push(getStrongTrait(d20.roll()))
-      traits = mergeIntoStrongissimeTrait(traits)
       break;
 
     default:
@@ -115,153 +114,7 @@ function generateTraits() {
 
   return traits
 
-  function mergeIntoStrongissimeTrait(traits) {
-    // if we have different traits, no need to merge into strongissime trait.
-    if (traits[0].name.accordMasculin != traits[1].name.accordMasculin) return traits
 
-    switch (traits[0].name.accordMasculin) {
-      case "Géant":
-        traits = []
-        traits.push(structuredClone(strongissimeTraitsTable[0]))
-        break;
-
-      case "Puissant":
-        traits = []
-        traits.push(structuredClone(strongissimeTraitsTable[1]))
-        break;
-
-      case "Agile":
-        traits = []
-        traits.push(structuredClone(strongissimeTraitsTable[2]))
-        break;
-
-      case "Rusé":
-        traits = []
-        traits.push(structuredClone(strongissimeTraitsTable[3]))
-        break;
-
-      case "Immense":
-        traits = []
-        traits.push(structuredClone(strongissimeTraitsTable[4]))
-        break;
-
-      case "Costaud":
-        traits = []
-        traits.push(structuredClone(strongissimeTraitsTable[5]))
-        break;
-
-      case "Alerte":
-        traits = []
-        traits.push(structuredClone(strongissimeTraitsTable[6]))
-        break;
-
-      case "Véloce":
-        traits = []
-        traits.push(structuredClone(strongissimeTraitsTable[7]))
-        break;
-
-      case "Magique":
-        traits = []
-        traits.push(structuredClone(strongissimeTraitsTable[8]))
-        break;
-
-      case "Maudit":
-        traits = []
-        traits.push(structuredClone(strongissimeTraitsTable[9]))
-        break;
-
-      case "Rapide":
-        traits = []
-        traits.push(structuredClone(strongissimeTraitsTable[10]))
-        break;
-
-      case "Enchanté":
-        traits = []
-        traits.push(structuredClone(strongissimeTraitsTable[11]))
-        break;
-
-      case "Agressif":
-        traits = []
-        traits.push(structuredClone(strongissimeTraitsTable[12]))
-        break;
-
-      case "Savant":
-        traits = []
-        traits.push(structuredClone(strongissimeTraitsTable[13]))
-        break;
-
-      case "Svelte":
-        traits = []
-        traits.push(structuredClone(strongissimeTraitsTable[14]))
-        break;
-
-      case "Dément":
-        traits = []
-        traits.push(structuredClone(strongissimeTraitsTable[15]))
-        break;
-
-      case "Bestial":
-        traits = []
-        traits.push(structuredClone(strongissimeTraitsTable[16]))
-        break;
-
-      case "Massif":
-        traits = []
-        traits.push(structuredClone(strongissimeTraitsTable[17]))
-        break;
-
-      case "Gigantesque":
-        traits = []
-        traits.push(structuredClone(strongissimeTraitsTable[18]))
-        break;
-
-      case "Mutant":
-        // Combine everything into first trait and then delete the second one
-        if (traits[1].hitPoints) {
-          if (traits[0].hitPoints) {
-            traits[0].hitPoints += traits[1].hitPoints
-          }
-          else {
-            traits[0].hitPoints = traits[1].hitPoints
-          }
-        }
-        if (traits[1].strength) {
-          if (traits[0].strength) {
-            traits[0].strength += traits[1].strength
-          }
-          else {
-            traits[0].strength = traits[1].strength
-          }
-        }
-        if (traits[1].speed) {
-          if (traits[0].speed) {
-            traits[0].speed += traits[1].speed
-          }
-          else {
-            traits[0].speed = traits[1].speed
-          }
-        }
-        if (traits[1].magic) {
-          if (traits[0].magic) {
-            traits[0].magic += traits[1].magic
-          }
-          else {
-            traits[0].magic = traits[1].magic
-          }
-        }
-
-        traits[0].name.accordFeminin = "Mutantissime"
-        traits[0].name.accordMasculin = "Mutantissime"
-        generateDescription(traits[0])
-        traits.pop()
-        break;
-
-      default:
-        break;
-    }
-
-    return traits
-  }
 }
 
 function getWeakTrait(roll) {
@@ -397,7 +250,6 @@ function getCupsItem(id) {
 
   return item;
 }
-
 
 function isBeingDead(being) {
   if (being.hitPoints <= 0) {
