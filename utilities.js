@@ -260,15 +260,23 @@ function isBeingDead(being) {
 }
 
 function hideAllGenericButtons() {
-  btn1.style.display = "none"
-  btn2.style.display = "none"
-  btn3.style.display = "none"
-  btn4.style.display = "none"
-  btn5.style.display = "none"
-  btn6.style.display = "none"
+  hideButton(btn1)
+  hideButton(btn2)
+  hideButton(btn3)
+  hideButton(btn4)
+  hideButton(btn5)
+  hideButton(btn6)
 }
 
-function activateButton(btn) {
+function activateButton(btn, innerText, clickFunction) {
   btn.style.display = "block"
   btn.disabled = false
+  btn.innerText = innerText
+  btn.onclick = clickFunction
+}
+
+function hideButton(btn) {
+  btn.style.display = "none"
+  btn.disabled = true
+  btn.onclick = () => { }
 }

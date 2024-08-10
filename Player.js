@@ -22,6 +22,14 @@ txtPlayerTrait.addEventListener("mouseleave", (e) => {
   }
 });
 
+const characterSheetOverlayBackground = document.getElementById("character-sheet-screen")
+const characterSheetDiv = document.getElementById("character-sheet")
+
+characterSheetOverlayBackground.onclick = () => {
+  screenCharacterSheet.style.visibility = "hidden"
+}
+characterSheetDiv.onclick = (event) => { event.stopPropagation(); }
+
 
 class Player {
   #hitPoints;

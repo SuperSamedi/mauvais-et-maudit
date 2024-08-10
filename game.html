@@ -12,6 +12,238 @@
 
 <body>
     <div id="game">
+
+        <div id="main-screen">
+            <div id="main">
+                <div id="dungeon-master-text">xx</div>
+
+                <div id="controls">
+
+
+                    <div id="buttons">
+                        <div id="shop-buttons"></div>
+
+                        <button type="button" id="btn1">1</button>
+                        <button type="button" id="btn2">2</button>
+                        <button type="button" id="btn3">3</button>
+                        <button type="button" id="btn4">4</button>
+                        <button type="button" id="btn5">5</button>
+                        <button type="button" id="btn6">5</button>
+                        <button type="button" id="btn-race-roll">Lancez le dé pour la race de votre personnage</button>
+                        <button type="button" id="btn-card-draw">Pioche une carte</button>
+
+                        <!-- stats adjustment panel -->
+                        <div id="stats-adjustment-panel">
+                            <div>
+                                <div class="align-right bold">PV : </div>
+                                <button type="button" id="btn-remove-hit-point">-</button>
+                                <div id="stats-adjustment-hit-points" class="align-center bold">playerHitPints</div>
+                                <button type="button" id="btn-add-hit-point">+</button>
+                                <div class="align-right bold">FO : </div>
+                                <button type="button" id="btn-remove-strength">-</button>
+                                <div id="stats-adjustment-strength" class="align-center bold">playerStrength</div>
+                                <button type="button" id="btn-add-strength">+</button>
+                                <div class="align-right bold">VI : </div>
+                                <button type="button" id="btn-remove-speed">-</button>
+                                <div id="stats-adjustment-speed" class="align-center bold">playerSpeed</div>
+                                <button type="button" id="btn-add-speed">+</button>
+                                <div class="align-right bold">MA : </div>
+                                <button type="button" id="btn-remove-magic">-</button>
+                                <div id="stats-adjustment-magic" class="align-center bold">playerMagic</div>
+                                <button type="button" id="btn-add-magic">+</button>
+                            </div>
+                            <button type="button" id="btn-confirm-stats-adjustment" disabled>Confirmer</button>
+                        </div>
+                    </div>
+
+
+                    <div id="deck-and-cards">
+                        <div id="deck">
+                            <img id="btn-deck" src="assets/card-back-1.png" alt="Card Back">
+                        </div>
+                        <div id="cards-drawn"></div>
+                    </div>
+
+                    <div id="test-buttons">
+                        <button id="btn-unlock-deck" type="button">Unlock Deck</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div id="voyage-screen" class="full-screen">
+            <div id="voyage">
+                <h2 id="voyage-title">Voyage</h2>
+                <div id="environment0" class="environment">
+                    <span>1.</span><strong><span class="environment-name" data-number="0"></span></strong>
+                    <hr>
+                    <p>(Monstres faciles)</p>
+                    <p class="environment-description" data-number="0"></p>
+                    <div class="steps">
+                        <div class="step" data-number="0"></div>
+                        <div class="line"></div>
+                        <div class="step" data-number="1"></div>
+                        <div class="line"></div>
+                        <div class="step" data-number="2"></div>
+                        <div class="line"></div>
+                        <div class="step" data-number="3"></div>
+                        <div class="line hidden"></div>
+                        <div class="step hidden" data-number="4"></div>
+                    </div>
+                </div>
+                <div id="environment1" class="environment">
+                    <span>2.</span><strong><span class="environment-name" data-number="1"></span></strong>
+                    <hr>
+                    <p>(Monstres faciles)</p>
+                    <p class="environment-description" data-number="1"></p>
+                    <div class="steps">
+                        <div class="step" data-number="0"></div>
+                        <div class="line"></div>
+                        <div class="step" data-number="1"></div>
+                        <div class="line"></div>
+                        <div class="step" data-number="2"></div>
+                        <div class="line hidden"></div>
+                        <div class="step hidden" data-number="3"></div>
+                    </div>
+                </div>
+                <div id="environment2" class="environment">
+                    <span>3.</span><strong><span class="environment-name" data-number="2"></span></strong>
+                    <hr>
+                    <p>(Monstres normaux)</p>
+                    <p class="environment-description" data-number="2"></p>
+                    <div class="steps">
+                        <div class="step" data-number="0"></div>
+                        <div class="line"></div>
+                        <div class="step" data-number="1"></div>
+                        <div class="line"></div>
+                        <div class="step" data-number="2"></div>
+                        <div class="line"></div>
+                        <div class="step" data-number="3"></div>
+                        <div class="line hidden"></div>
+                        <div class="step hidden" data-number="4"></div>
+                    </div>
+                </div>
+                <div id="environment3" class="environment">
+                    <span>4.</span><strong><span class="environment-name" data-number="3"></span></strong>
+                    <hr>
+                    <p>(Monstres forts)</p>
+                    <p class="environment-description" data-number="3"></p>
+                    <div class="steps">
+                        <div class="step" data-number="0"></div>
+                        <div class="line"></div>
+                        <div class="step" data-number="1"></div>
+                        <div class="line"></div>
+                        <div class="step" data-number="2"></div>
+                        <div class="line hidden"></div>
+                        <div class="step hidden" data-number="3"></div>
+                    </div>
+                </div>
+                <div id="environment4" class="environment">
+                    <span>5.</span><strong><span class="environment-name" data-number="4"></span></strong>
+                    <hr>
+                    <p>(Monstres super forts)</p>
+                    <p class="environment-description" data-number="4"></p>
+                    <div class="steps">
+                        <div class="step" data-number="0"></div>
+                        <div class="line"></div>
+                        <div class="step" data-number="1"></div>
+                        <div class="line"></div>
+                        <div class="step" data-number="2"></div>
+                        <div class="line"></div>
+                        <div class="step" data-number="3"></div>
+                        <div class="line hidden"></div>
+                        <div class="step hidden" data-number="4"></div>
+                    </div>
+                </div>
+                <div id="environment5" class="environment">
+                    <span>6.</span><strong><span class="environment-name" data-number="5"></span></strong>
+                    <hr>
+                    <p>(Monstres super forts)</p>
+                    <p class="environment-description" data-number="5"></p>
+                    <div class="steps">
+                        <div class="step" data-number="0"></div>
+                        <div class="line"></div>
+                        <div class="step" data-number="1"></div>
+                        <div class="line"></div>
+                        <div class="step" data-number="2"></div>
+                        <div class="line hidden"></div>
+                        <div class="step hidden" data-number="3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="character-sheet-screen" class="full-screen">
+            <div id="character-sheet">
+                <h2>Fiche de Personnage</h2>
+                <section>
+                    <span>Nom : </span><strong><span id="player-name"></span></strong>
+                </section>
+
+                <section>
+                    <span>Race : </span><strong><span id="player-race">playerRace</span></strong><br>
+                    <span>Trait : </span><strong><span id="player-trait">playerTrait</span></strong>
+                </section>
+
+                <section id="player-stats">
+                    <h3 class="section-header">Caractéristiques</h3>
+                    <div class="align-right">PV : </div><strong>
+                        <div id="player-hit-points">playerHitPoints/playerMaxHitPoints</div>
+                    </strong>
+                    <div class="align-right">FO : </div><strong>
+                        <div id="player-strength">playerStrength</div>
+                    </strong>
+                    <div class="align-right">VI : </div><strong>
+                        <div id="player-speed">playerSpeed</div>
+                    </strong>
+                    <div class="align-right">MA : </div><strong>
+                        <div id="player-magic">playerMagic</div>
+                    </strong>
+                </section>
+
+                <section id="player-resources">
+                    <h3 class="section-header">Ressources</h3>
+                    <div>PO : </div><strong>
+                        <div id="gold-pieces">playerGoldCoins</div>
+                    </strong>
+                    <div>PA : </div><strong>
+                        <div id="action-points">playerActionPoints</div>
+                    </strong>
+                    <div>XP : </div><strong>
+                        <div id="experience-points">playerExperiencePoints</div>
+                    </strong>
+                </section>
+
+                <section id="inventory">
+                    <h3 class="section-header">Inventaire</h3>
+                    <div class="inventory-grid-item equipped-check-mark" data-number="0"></div>
+                    <div class="inventory-grid-item item" data-number="0"></div>
+                    <div class="inventory-grid-item equipped-check-mark" data-number="1"></div>
+                    <div class="inventory-grid-item item" data-number="1"></div>
+                    <div class="inventory-grid-item equipped-check-mark" data-number="2"></div>
+                    <div class="inventory-grid-item item" data-number="2"></div>
+                    <div class="inventory-grid-item equipped-check-mark" data-number="3"></div>
+                    <div class="inventory-grid-item item" data-number="3"></div>
+                    <div class="inventory-grid-item equipped-check-mark" data-number="4"></div>
+                    <div class="inventory-grid-item item" data-number="4"></div>
+                    <div class="inventory-grid-item equipped-check-mark" data-number="5"></div>
+                    <div class="inventory-grid-item item" data-number="5"></div>
+                    <div class="inventory-grid-item equipped-check-mark" data-number="6"></div>
+                    <div class="inventory-grid-item item" data-number="6"></div>
+                    <div class="inventory-grid-item equipped-check-mark" data-number="7"></div>
+                    <div class="inventory-grid-item item" data-number="7"></div>
+
+                </section>
+
+            </div>
+        </div>
+
+        <img id="btn-open-screen-character-sheet" src="assets/icons/icon-character-sheet.png"
+            alt="button open character sheet screen" class="btn-open-screen">
+        <img id="btn-open-screen-voyage" src="assets/icons/icon-voyage.png" alt="button open voyage screen"
+            class="btn-open-screen">
+
         <div id="item-details-view-background">
             <div id="item-details-view">
                 <div id="item-details-view-name">épée</div>
@@ -23,222 +255,8 @@
             </div>
         </div>
 
-        <div id="character-sheet">
-            <h2>Fiche de Personnage</h2>
-            <section>
-                <span>Nom : </span><strong><span id="player-name"></span></strong>
-            </section>
-
-            <section>
-                <span>Race : </span><strong><span id="player-race">playerRace</span></strong><br>
-                <span>Trait : </span><strong><span id="player-trait">playerTrait</span></strong>
-            </section>
-
-            <section id="player-stats">
-                <h3 class="section-header">Caractéristiques</h3>
-                <div class="align-right">Points de Vie : </div><strong>
-                    <div id="player-hit-points">playerHitPoints/playerMaxHitPoints</div>
-                </strong>
-                <div class="align-right">Force : </div><strong>
-                    <div id="player-strength">playerStrength</div>
-                </strong>
-                <div class="align-right">Vitesse : </div><strong>
-                    <div id="player-speed">playerSpeed</div>
-                </strong>
-                <div class="align-right">Magie : </div><strong>
-                    <div id="player-magic">playerMagic</div>
-                </strong>
-            </section>
-
-            <section id="player-resources">
-                <h3 class="section-header">Ressources</h3>
-                <div>PO : </div><strong>
-                    <div id="gold-pieces">playerGoldCoins</div>
-                </strong>
-                <div>PA : </div><strong>
-                    <div id="action-points">playerActionPoints</div>
-                </strong>
-                <div>XP : </div><strong>
-                    <div id="experience-points">playerExperiencePoints</div>
-                </strong>
-            </section>
-
-            <section id="inventory">
-                <h3 class="section-header">Inventaire</h3>
-                <div class="inventory-grid-item equipped-check-mark" data-number="0"></div>
-                <div class="inventory-grid-item item" data-number="0"></div>
-                <div class="inventory-grid-item equipped-check-mark" data-number="1"></div>
-                <div class="inventory-grid-item item" data-number="1"></div>
-                <div class="inventory-grid-item equipped-check-mark" data-number="2"></div>
-                <div class="inventory-grid-item item" data-number="2"></div>
-                <div class="inventory-grid-item equipped-check-mark" data-number="3"></div>
-                <div class="inventory-grid-item item" data-number="3"></div>
-                <div class="inventory-grid-item equipped-check-mark" data-number="4"></div>
-                <div class="inventory-grid-item item" data-number="4"></div>
-                <div class="inventory-grid-item equipped-check-mark" data-number="5"></div>
-                <div class="inventory-grid-item item" data-number="5"></div>
-                <div class="inventory-grid-item equipped-check-mark" data-number="6"></div>
-                <div class="inventory-grid-item item" data-number="6"></div>
-                <div class="inventory-grid-item equipped-check-mark" data-number="7"></div>
-                <div class="inventory-grid-item item" data-number="7"></div>
-
-            </section>
-        </div>
-
-        <div id="voyage">
-            <h3 class="section-header">Voyage</h3>
-            <div id="environment0" class="environment">
-                <span>1.</span><strong><span class="environment-name" data-number="0"></span></strong>
-                <hr>
-                <p>(Monstres faciles)</p>
-                <p class="environment-description" data-number="0"></p>
-                <div class="steps">
-                    <div class="step" data-number="0"></div>
-                    <div class="line"></div>
-                    <div class="step" data-number="1"></div>
-                    <div class="line"></div>
-                    <div class="step" data-number="2"></div>
-                    <div class="line"></div>
-                    <div class="step" data-number="3"></div>
-                    <div class="line hidden"></div>
-                    <div class="step hidden" data-number="4"></div>
-                </div>
-            </div>
-            <div id="environment1" class="environment">
-                <span>2.</span><strong><span class="environment-name" data-number="1"></span></strong>
-                <hr>
-                <p>(Monstres faciles)</p>
-                <p class="environment-description" data-number="1"></p>
-                <div class="steps">
-                    <div class="step" data-number="0"></div>
-                    <div class="line"></div>
-                    <div class="step" data-number="1"></div>
-                    <div class="line"></div>
-                    <div class="step" data-number="2"></div>
-                    <div class="line hidden"></div>
-                    <div class="step hidden" data-number="3"></div>
-                </div>
-            </div>
-            <div id="environment2" class="environment">
-                <span>3.</span><strong><span class="environment-name" data-number="2"></span></strong>
-                <hr>
-                <p>(Monstres normaux)</p>
-                <p class="environment-description" data-number="2"></p>
-                <div class="steps">
-                    <div class="step" data-number="0"></div>
-                    <div class="line"></div>
-                    <div class="step" data-number="1"></div>
-                    <div class="line"></div>
-                    <div class="step" data-number="2"></div>
-                    <div class="line"></div>
-                    <div class="step" data-number="3"></div>
-                    <div class="line hidden"></div>
-                    <div class="step hidden" data-number="4"></div>
-                </div>
-            </div>
-            <div id="environment3" class="environment">
-                <span>4.</span><strong><span class="environment-name" data-number="3"></span></strong>
-                <hr>
-                <p>(Monstres forts)</p>
-                <p class="environment-description" data-number="3"></p>
-                <div class="steps">
-                    <div class="step" data-number="0"></div>
-                    <div class="line"></div>
-                    <div class="step" data-number="1"></div>
-                    <div class="line"></div>
-                    <div class="step" data-number="2"></div>
-                    <div class="line hidden"></div>
-                    <div class="step hidden" data-number="3"></div>
-                </div>
-            </div>
-            <div id="environment4" class="environment">
-                <span>5.</span><strong><span class="environment-name" data-number="4"></span></strong>
-                <hr>
-                <p>(Monstres super forts)</p>
-                <p class="environment-description" data-number="4"></p>
-                <div class="steps">
-                    <div class="step" data-number="0"></div>
-                    <div class="line"></div>
-                    <div class="step" data-number="1"></div>
-                    <div class="line"></div>
-                    <div class="step" data-number="2"></div>
-                    <div class="line"></div>
-                    <div class="step" data-number="3"></div>
-                    <div class="line hidden"></div>
-                    <div class="step hidden" data-number="4"></div>
-                </div>
-            </div>
-            <div id="environment5" class="environment">
-                <span>6.</span><strong><span class="environment-name" data-number="5"></span></strong>
-                <hr>
-                <p>(Monstres super forts)</p>
-                <p class="environment-description" data-number="5"></p>
-                <div class="steps">
-                    <div class="step" data-number="0"></div>
-                    <div class="line"></div>
-                    <div class="step" data-number="1"></div>
-                    <div class="line"></div>
-                    <div class="step" data-number="2"></div>
-                    <div class="line hidden"></div>
-                    <div class="step hidden" data-number="3"></div>
-                </div>
-            </div>
-        </div>
-
-        <div id="main">
-            <div id="dungeon-master-text">xx</div>
-
-            <div id="controls">
-
-                <div>
-                    <img id="deck" class="card" src="assets/card-back-1.png" alt="Card Back">
-                </div>
-
-                <div id="cards-drawn">
-
-                </div>
-
-                <div id="shop-buttons">
-
-                </div>
-
-                <div id="buttons">
-                    <button type="button" id="btn1">1</button>
-                    <button type="button" id="btn2">2</button>
-                    <button type="button" id="btn3">3</button>
-                    <button type="button" id="btn4">4</button>
-                    <button type="button" id="btn5">5</button>
-                    <button type="button" id="btn6">5</button>
-                    <button type="button" id="btn-race-roll">Lance le dé pour la race de ton personnage</button>
-                    <button type="button" id="btn-card-draw">Pioche une carte</button>
-                    <button type="button" id="btn-fight-monster">Combat</button>
-                    <button type="button" id="btn-visit-shop">Visiter le magasin</button>
-                    <button type="button" id="btn-next-adventure">Aventure</button>
-
-                    <!-- stats adjustment panel -->
-                    <div id="stats-adjustment-panel">
-                        <div class="align-right bold">PV : </div>
-                        <button type="button" id="btn-remove-hit-point">-</button>
-                        <div id="stats-adjustment-hit-points" class="align-center bold">playerHitPints</div>
-                        <button type="button" id="btn-add-hit-point">+</button>
-                        <div class="align-right bold">FO : </div>
-                        <button type="button" id="btn-remove-strength">-</button>
-                        <div id="stats-adjustment-strength" class="align-center bold">playerStrength</div>
-                        <button type="button" id="btn-add-strength">+</button>
-                        <div class="align-right bold">VI : </div>
-                        <button type="button" id="btn-remove-speed">-</button>
-                        <div id="stats-adjustment-speed" class="align-center bold">playerSpeed</div>
-                        <button type="button" id="btn-add-speed">+</button>
-                        <div class="align-right bold">MA : </div>
-                        <button type="button" id="btn-remove-magic">-</button>
-                        <div id="stats-adjustment-magic" class="align-center bold">playerMagic</div>
-                        <button type="button" id="btn-add-magic">+</button>
-                    </div>
-                    <button type="button" id="btn-confirm-stats-adjustment" disabled>Confirmer</button>
-                </div>
-
-
-            </div>
+        <div id="loading-screen" class="full-screen">
+            Ça charge ...
         </div>
     </div>
 
@@ -252,6 +270,7 @@
     <script src="Being.js"></script>
     <script src="Player.js"></script>
     <script src="voyage.js"></script>
+    <script src="data.js"></script>
     <script src="game.js"></script>
 </body>
 

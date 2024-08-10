@@ -45,16 +45,20 @@ class Item {
 
     sell() {
         if (!allowedToSellItems) return
-        player.inventory.remove(this)
-        player.updateStatsVisuals()
-        player.goldCoins += this.sellValue
-        shop.add(this)
-        shop.updateDisplay()
+
+        // if we manage to remove the item from the inventory
+        if (player.inventory.remove(this)) {
+            player.updateStatsVisuals()
+            player.goldCoins += this.sellValue
+            shop.add(this)
+            shop.updateDisplay()
+        }
     }
 
     drop() {
-        player.inventory.remove(this)
-        player.updateStatsVisuals()
+        if (player.inventory.remove(this)) {
+            player.updateStatsVisuals()
+        }
     }
 
 }

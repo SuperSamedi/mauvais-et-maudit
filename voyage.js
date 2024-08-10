@@ -14,6 +14,13 @@ const environment4Elements = environment4.querySelectorAll("div.steps div.step")
 const environment5 = document.querySelector("#environment5")
 const environment5Elements = environment5.querySelectorAll("div.steps div.step")
 
+const voyageOverlayBackground = document.getElementById("voyage-screen")
+const voyageDiv = document.getElementById("voyage")
+
+voyageOverlayBackground.onclick = () => {
+    screenVoyage.style.visibility = "hidden"
+}
+voyageDiv.onclick = (event) => { event.stopPropagation(); }
 
 let environments = [
     {

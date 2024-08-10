@@ -7,39 +7,73 @@
   display: none;
 }
 
+#loading-screen {
+  width: 100%;
+  height: 100%;
+  background-color: rgb(0, 0, 0);
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: white;
+}
+
 #game {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   flex-direction: row;
-  padding: 15px;
   gap: 15px;
+  overflow-x: hidden;
+}
+
+.btn-open-screen {
+  width: 3rem;
+  height: 3rem;
+  position: fixed;
+  background-color: white;
+  border: 2px solid black;
+  border-left: none;
+  border-radius: 0 1rem 1rem 0;
+  top: 0.5rem;
+  transform: translateX(-0.25rem);
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.144);
+}
+#btn-open-screen-voyage {
+  top: 4rem;
+}
+
+.full-screen {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#character-sheet-screen {
+  background-color: rgba(0, 0, 0, 0.24);
+  display: flex;
+  justify-content: left;
+  align-items: start;
 }
 
 #character-sheet {
   background-color: white;
   padding: 10px;
-  width: 300px;
-}
-
-#main {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-#dungeon-master-text {
-  width: 800px;
-  min-height: 200px;
+  width: 20rem;
+  max-width: 400px;
   border: 2px solid black;
-  background-color: rgb(100, 100, 100);
-  padding: 10px;
-  color: rgb(243, 243, 243);
-  font-size: 1.25rem;
-}
-
-#controls {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
+  margin-left: 3rem;
+  margin-top: 0.5rem;
+  margin-right: 0.5rem;
 }
 
 section {
@@ -83,15 +117,15 @@ section {
   padding: 0 5px;
 }
 
-#player-resources {
+#player-stats {
   display: grid;
-  grid-template-columns: 30px auto;
+  grid-template-columns: 2.5rem auto;
   gap: 3px;
 }
 
-#player-stats {
+#player-resources {
   display: grid;
-  grid-template-columns: 100px auto;
+  grid-template-columns: 30px auto;
   gap: 3px;
 }
 
@@ -107,15 +141,35 @@ section {
   font-weight: bold;
 }
 
-#stats-adjustment-panel {
+#stats-adjustment-panel > div {
   display: grid;
   grid-template-columns: 40px 30px 30px 30px;
   align-items: center;
 }
 
+/* Cards */
+#deck-and-cards {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 1rem;
+  margin-top: 20px;
+}
 #deck {
   width: 150px;
   height: 250px;
+  display: block;
+}
+#btn-deck {
+  width: 150px;
+  height: 250px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.753);
+  border-radius: 10px;
+  border-right-color: rgb(127, 127, 112);
+  border-bottom-color: rgb(91, 91, 87);
+  border-style: solid;
+  border-top: none;
+  border-left: none;
 }
 .card {
   /* aspect-ratio: 256 / 427; */
@@ -123,12 +177,22 @@ section {
   height: 250px;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.753);
   border-radius: 10px;
+  position: absolute;
+  /* border-color: beige; */
+  border-right-color: rgb(127, 127, 112);
+  border-bottom-color: rgb(91, 91, 87);
+  border-width: 1px;
+  border-style: solid;
+  border-top: none;
+  border-left: none;
 }
-
 #cards-drawn {
-  display: flex;
-  flex-direction: row;
-  gap: 5px;
+  /* display: flex; */
+  /* flex-direction: row; */
+  /* gap: 5px; */
+  flex-grow: 1;
+  position: relative;
+  height: 250px;
 }
 
 /* Overlay Item Details */
@@ -161,4 +225,37 @@ section {
   text-align: center;
   margin-bottom: 10px;
   font-size: 1.33rem;
+}
+
+/*********  Main View *************/
+#main-screen {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+#main {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 1rem;
+  width: 100%;
+}
+
+#dungeon-master-text {
+  max-width: 60rem;
+  min-height: 12rem;
+  border: 2px solid black;
+  background-color: rgb(100, 100, 100);
+  padding: 10px;
+  color: rgb(243, 243, 243);
+  font-size: 1.25rem;
+  margin-left: 3rem;
+  margin-right: 0.5rem;
+}
+
+#controls {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }

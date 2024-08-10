@@ -1,8 +1,17 @@
+#voyage-screen {
+  background-color: rgba(0, 0, 0, 0.24);
+  justify-content: left;
+  align-items: start;
+}
 #voyage {
   border: 2px solid black;
-  width: 400px;
+  background-color: white;
+  margin-left: 3rem;
+  margin-top: 0.5rem;
 }
-
+#voyage-title {
+  padding: 0.5rem;
+}
 #voyage hr {
   width: 250px;
   margin-left: 15px;
@@ -24,8 +33,8 @@
 }
 
 .step {
-  width: 25px;
-  height: 25px;
+  width: 1.5rem;
+  height: 1.5rem;
   border: 2px solid black;
   border-radius: 50%;
   /* background-image: url("assets/icons/icon-fight.png"); */
@@ -38,8 +47,8 @@
 }
 
 .line {
-  width: 50px;
+  width: 2.5rem;
   height: 2px;
   background-color: black;
-  transform: translateY(13px);
+  transform: translateY(0.8rem);
 }
