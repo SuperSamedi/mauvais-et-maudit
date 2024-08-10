@@ -2,7 +2,8 @@
   {
     "type": "arme",
     "name": "Dague",
-    "preposition": "une ",
+    "isLegendary": false,
+    "gender": "F",
     "description": "FO +5, VI +5",
     "strength": 5,
     "speed": 5,
@@ -13,7 +14,8 @@
   {
     "type": "arme",
     "name": "Masse",
-    "preposition": "une ",
+    "isLegendary": false,
+    "gender": "F",
     "description": "FO +10",
     "strength": 10,
     "buyValue": 250,
@@ -23,7 +25,8 @@
   {
     "type": "arme",
     "name": "Hache",
-    "preposition": "une ",
+    "isLegendary": false,
+    "gender": "F",
     "description": "FO +15",
     "strength": 15,
     "buyValue": 350,
@@ -33,7 +36,8 @@
   {
     "type": "arme",
     "name": "Lance",
-    "preposition": "une ",
+    "isLegendary": false,
+    "gender": "F",
     "description": "FO +10, VI +5",
     "strength": 10,
     "speed": 5,
@@ -44,7 +48,8 @@
   {
     "type": "arme",
     "name": "Épée",
-    "preposition": "une ",
+    "isLegendary": false,
+    "gender": "F",
     "description": "FO +15, VI +5",
     "strength": 15,
     "speed": 5,
@@ -55,7 +60,8 @@
   {
     "type": "arme",
     "name": "Bâton Magique",
-    "preposition": "un ",
+    "isLegendary": false,
+    "gender": "M",
     "description": "MA +15",
     "magic": 15,
     "buyValue": 450,
@@ -65,7 +71,8 @@
   {
     "type": "arme",
     "name": "Espadon",
-    "preposition": "un ",
+    "isLegendary": false,
+    "gender": "M",
     "description": "FO +25, VI -5",
     "strength": 25,
     "speed": -5,
@@ -76,7 +83,8 @@
   {
     "type": "arme",
     "name": "Sabre Stellaire",
-    "preposition": "le ",
+    "isLegendary": true,
+    "gender": "M",
     "description": "FO +25, VI +5",
     "strength": 25,
     "speed": 5,
@@ -87,7 +95,8 @@
   {
     "type": "arme",
     "name": "Arc Spectral",
-    "preposition": "l'",
+    "isLegendary": true,
+    "gender": "M",
     "description": "FO +10, VI +25",
     "strength": 10,
     "speed": 25,
@@ -98,7 +107,8 @@
   {
     "type": "arme",
     "name": "Sceptre de la Nuit",
-    "preposition": "le ",
+    "isLegendary": true,
+    "gender": "M",
     "description": "VI +10, MA +25",
     "speed": 10,
     "magic": 25,

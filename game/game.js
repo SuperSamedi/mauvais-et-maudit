@@ -168,9 +168,6 @@ btnOpenScreenVoyage.onclick = () => {
     }
     screenVoyage.style.visibility = "hidden"
 }
-
-
-
 //#endregion
 
 const player = new Player();
@@ -315,6 +312,7 @@ function choosePlayerRace() {
         }
 
         function checkNonBeingStability(being) {
+            hideAllGenericButtons()
             const totalStats = being.hitPoints + being.strength + being.speed + being.magic;
             console.log(`Total Non-Être stats : ${totalStats}`);
 
@@ -796,7 +794,7 @@ function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpRewar
         reward = new SwordsItem(structuredClone(swordsItemsTable[cardDrawn.value - 1]));
         player.inventory.add(reward);
         feedbackMessage += ` 
-        Vous recevez ${reward.preposition}${reward.name} (${reward.description})`;
+        Vous recevez ${reward.isLegendary ? beingNameWithDeterminantDefini(reward, false) : reward.gender == "F" ? "une" : "un"}${reward.name} (${reward.description})`;
         //console.log(inventory);
     }
 
@@ -2427,7 +2425,8 @@ function updateDeckVisual() {
     // Looks weird with 1px per card
     // Looks okay with 12px for 40cards
     const pixelPerCard = 12 / 40
-    imgDeck.style.transform = `translateY(-${Math.round(scopaDeck.length * pixelPerCard)}px)`
+    imgDeck.style.transform = `translate(-${Math.round(scopaDeck.length * pixelPerCard)}px, -${Math.round(scopaDeck.length * pixelPerCard)}px)`
+    // imgDeck.style.transform = `translateX(-${Math.round(scopaDeck.length * pixelPerCard)}px)`
     imgDeck.style.borderRight = `${Math.round(scopaDeck.length * pixelPerCard)}px solid rgb(127, 127, 112)`
     imgDeck.style.borderBottom = `${Math.round(scopaDeck.length * pixelPerCard)}px solid rgb(91, 91, 87)`
 

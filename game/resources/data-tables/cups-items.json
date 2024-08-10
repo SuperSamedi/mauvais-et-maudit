@@ -2,7 +2,8 @@
   {
     "type": "consommable",
     "name": "Potion",
-    "preposition": "la ",
+    "isLegendary": false,
+    "gender": "F",
     "description": "Restaure 20PV à l'utilisateur.",
     "buyValue": 200,
     "sellValue": 100,
@@ -11,7 +12,8 @@
   {
     "type": "consommable",
     "name": "Éther",
-    "preposition": "l'",
+    "isLegendary": false,
+    "gender": "M",
     "description": "L'utilisateur récupère 1PA.",
     "buyValue": 200,
     "sellValue": 100,
@@ -20,7 +22,8 @@
   {
     "type": "consommable",
     "name": "Trèfle à 4 feuilles",
-    "preposition": "le ",
+    "isLegendary": false,
+    "gender": "M",
     "description": "Permet d'annuler un tirage de dé ou de carte, et de le recommencer.",
     "buyValue": 400,
     "sellValue": 150,
@@ -29,7 +32,8 @@
   {
     "type": "équipement",
     "name": "Armure Légère",
-    "preposition": "l'",
+    "isLegendary": false,
+    "gender": "F",
     "description": "PV +15",
     "hitPoints": 15,
     "buyValue": 300,
@@ -39,7 +43,8 @@
   {
     "type": "équipement",
     "name": "Armure Lourde",
-    "preposition": "l'",
+    "isLegendary": false,
+    "gender": "F",
     "description": "PV +30, VI -5",
     "hitPoints": 30,
     "speed": -5,
@@ -50,7 +55,8 @@
   {
     "type": "équipement",
     "name": "Pendentif de la Lune",
-    "preposition": "le ",
+    "isLegendary": true,
+    "gender": "M",
     "description": "MA +15",
     "magic": 15,
     "buyValue": 450,
@@ -60,7 +66,8 @@
   {
     "type": "équipement",
     "name": "Bague d'Équilibre",
-    "preposition": "la ",
+    "isLegendary": false,
+    "gender": "F",
     "description": "PV +5, FO +5, VI +5, MA +5",
     "hitPoints": 5,
     "strength": 5,
@@ -73,7 +80,8 @@
   {
     "type": "consommable",
     "name": "Élixir de Vie",
-    "preposition": "l'",
+    "isLegendary": false,
+    "gender": "M",
     "description": "L'utilisateur récupère tous ses PV immédiatement.",
     "buyValue": 700,
     "sellValue": 300,
@@ -82,7 +90,8 @@
   {
     "type": "équipement",
     "name": "Manteau de Géant",
-    "preposition": "le ",
+    "isLegendary": false,
+    "gender": "M",
     "description": "PV +50",
     "hitPoints": 50,
     "buyValue": 1000,
@@ -92,7 +101,8 @@
   {
     "type": "équipement",
     "name": "Coupe Invidable",
-    "preposition": "la ",
+    "isLegendary": true,
+    "gender": "F",
     "description": "Donne 1PA au début de chaque combat, avant la détermination de l'initiative.",
     "magic": 15,
     "buyValue": 1200,
@@ -102,7 +112,8 @@
   {
     "type": "passif",
     "name": "Lanterne de Vision",
-    "preposition": "la ",
+    "isLegendary": true,
+    "gender": "F",
     "description": "Protège de certains événements, ainsi que des effets négatifs de la Grotte, du Marécage et des Étangs Putrides.",
     "buyValue": 900,
     "sellValue": 400,
@@ -111,7 +122,8 @@
   {
     "type": "passif",
     "name": "Compas des Anciens",
-    "preposition": "le ",
+    "isLegendary": true,
+    "gender": "M",
     "description": "Permet d'annuler le tirage de dé déterminant l'environnement en arrivant dans une nouvelle zone et de le recommencer immédiatement. (une fois par zone)",
     "buyValue": 600,
     "sellValue": 250,
@@ -120,7 +132,8 @@
   {
     "type": "consommable",
     "name": "Tablette de Pouvoir",
-    "preposition": "la ",
+    "isLegendary": false,
+    "gender": "F",
     "description": "Détruit instantanément votre adversaire. Dans le cas d'un boss, lui ôte instantanément 50PV.",
     "buyValue": 800,
     "sellValue": 400,
@@ -129,7 +142,8 @@
   {
     "type": "divers",
     "name": "Bout de Métal",
-    "preposition": "le ",
+    "isLegendary": false,
+    "gender": "M",
     "description": "Bout de métal inutile prenant de la place dans l'inventaire.",
     "buyValue": 100,
     "sellValue": 50,

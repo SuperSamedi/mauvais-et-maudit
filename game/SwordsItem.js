@@ -11,8 +11,6 @@ class SwordsItem extends EquippableItem {
         if (data.magic) {
             this.magic = data.magic
         }
-
-        this.preposition = data.preposition
     }
 
 }

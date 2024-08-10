@@ -2,6 +2,7 @@
   background-color: rgba(0, 0, 0, 0.24);
   justify-content: left;
   align-items: start;
+  position: fixed;
 }
 #voyage {
   border: 2px solid black;

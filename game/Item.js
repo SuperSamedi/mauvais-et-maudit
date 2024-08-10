@@ -11,6 +11,8 @@ class Item {
         this.#description = data.description
         this.#buyValue = data.buyValue
         this.#sellValue = data.sellValue
+        this.gender = data.gender
+        this.isLegendary = data.isLegendary
     }
 
     get type() {

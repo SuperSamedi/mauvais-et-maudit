@@ -15,10 +15,26 @@
   top: 0;
   left: 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  /* align-items: center; */
+  /* justify-content: center; */
   font-size: 2rem;
   color: white;
+  flex-direction: column;
+}
+.loading-screen__container {
+  width: 75%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.loading-screen__game-title {
+  aspect-ratio: 800/377;
+  background-image: url("assets/artworks/game-title.bmp");
+  background-size: contain;
+  margin-top: 40%;
+}
+.loading-screen__loading-text {
+  left: 0;
 }
 
 #game {
@@ -63,6 +79,7 @@
   display: flex;
   justify-content: left;
   align-items: start;
+  position: fixed;
 }
 
 #character-sheet {
@@ -163,7 +180,7 @@ section {
 #btn-deck {
   width: 150px;
   height: 250px;
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.753);
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.753);
   border-radius: 10px;
   border-right-color: rgb(127, 127, 112);
   border-bottom-color: rgb(91, 91, 87);
@@ -240,6 +257,7 @@ section {
   gap: 15px;
   padding: 1rem;
   width: 100%;
+  max-width: 60rem;
 }
 
 #dungeon-master-text {
@@ -249,7 +267,7 @@ section {
   background-color: rgb(100, 100, 100);
   padding: 10px;
   color: rgb(243, 243, 243);
-  font-size: 1.25rem;
+  font-size: 1em;
   margin-left: 3rem;
   margin-right: 0.5rem;
 }
