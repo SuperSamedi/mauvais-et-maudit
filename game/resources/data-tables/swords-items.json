@@ -7,6 +7,16 @@
     "description": "FO +5, VI +5",
     "strength": 5,
     "speed": 5,
+    "effects": [
+      {
+        "description": "Force +5",
+        "type": "bonus"
+      },
+      {
+        "description": "Vitesse +5",
+        "type": "bonus"
+      }
+    ],
     "buyValue": 250,
     "sellValue": 100,
     "equippable": true
@@ -18,6 +28,12 @@
     "gender": "F",
     "description": "FO +10",
     "strength": 10,
+    "effects": [
+      {
+        "description": "Force +10",
+        "type": "bonus"
+      }
+    ],
     "buyValue": 250,
     "sellValue": 100,
     "equippable": true
@@ -29,6 +45,12 @@
     "gender": "F",
     "description": "FO +15",
     "strength": 15,
+    "effects": [
+      {
+        "description": "Force +15",
+        "type": "bonus"
+      }
+    ],
     "buyValue": 350,
     "sellValue": 150,
     "equippable": true
@@ -41,6 +63,16 @@
     "description": "FO +10, VI +5",
     "strength": 10,
     "speed": 5,
+    "effects": [
+      {
+        "description": "Force +10",
+        "type": "bonus"
+      },
+      {
+        "description": "Vitesse +5",
+        "type": "bonus"
+      }
+    ],
     "buyValue": 350,
     "sellValue": 150,
     "equippable": true
@@ -53,6 +85,16 @@
     "description": "FO +15, VI +5",
     "strength": 15,
     "speed": 5,
+    "effects": [
+      {
+        "description": "Force +15",
+        "type": "bonus"
+      },
+      {
+        "description": "Vitesse +5",
+        "type": "bonus"
+      }
+    ],
     "buyValue": 420,
     "sellValue": 200,
     "equippable": true
@@ -64,6 +106,12 @@
     "gender": "M",
     "description": "MA +15",
     "magic": 15,
+    "effects": [
+      {
+        "description": "Magie +15",
+        "type": "bonus"
+      }
+    ],
     "buyValue": 450,
     "sellValue": 200,
     "equippable": true
@@ -76,6 +124,16 @@
     "description": "FO +25, VI -5",
     "strength": 25,
     "speed": -5,
+    "effects": [
+      {
+        "description": "Force +25",
+        "type": "bonus"
+      },
+      {
+        "description": "Vitesse -5",
+        "type": "malus"
+      }
+    ],
     "buyValue": 500,
     "sellValue": 250,
     "equippable": true
@@ -88,6 +146,16 @@
     "description": "FO +25, VI +5",
     "strength": 25,
     "speed": 5,
+    "effects": [
+      {
+        "description": "Force +25",
+        "type": "bonus"
+      },
+      {
+        "description": "Vitesse +5",
+        "type": "bonus"
+      }
+    ],
     "buyValue": 750,
     "sellValue": 350,
     "equippable": true
@@ -100,6 +168,16 @@
     "description": "FO +10, VI +25",
     "strength": 10,
     "speed": 25,
+    "effects": [
+      {
+        "description": "Force +10",
+        "type": "bonus"
+      },
+      {
+        "description": "Vitesse +25",
+        "type": "bonus"
+      }
+    ],
     "buyValue": 750,
     "sellValue": 350,
     "equippable": true
@@ -112,6 +190,16 @@
     "description": "VI +10, MA +25",
     "speed": 10,
     "magic": 25,
+    "effects": [
+      {
+        "description": "Vitesse +10",
+        "type": "bonus"
+      },
+      {
+        "description": "Magie +25",
+        "type": "bonus"
+      }
+    ],
     "buyValue": 800,
     "sellValue": 350,
     "equippable": true

@@ -14,6 +14,7 @@
 <body>
     <div id="game">
 
+        <!-- Main Screen -->
         <div id="main-screen">
             <div id="main">
                 <div id="dungeon-master-text">xx</div>
@@ -65,14 +66,15 @@
                         <div id="cards-drawn"></div>
                     </div>
 
-                    <div id="test-buttons">
+                    <!-- <div id="test-buttons">
                         <button id="btn-unlock-deck" type="button">Unlock Deck</button>
-                    </div>
+                    </div> -->
 
                 </div>
             </div>
         </div>
 
+        <!-- Voyage Screen -->
         <div id="voyage-screen" class="full-screen">
             <div id="voyage">
                 <h2 id="voyage-title">Voyage</h2>
@@ -175,6 +177,7 @@
             </div>
         </div>
 
+        <!-- Character Sheet Sceeen -->
         <div id="character-sheet-screen" class="full-screen">
             <div id="character-sheet">
                 <h2>Fiche de Personnage</h2>
@@ -240,28 +243,35 @@
             </div>
         </div>
 
+        <!-- Buttons Open Screens -->
         <img id="btn-open-screen-character-sheet" src="assets/icons/icon-character-sheet.png"
             alt="button open character sheet screen" class="btn-open-screen">
         <img id="btn-open-screen-voyage" src="assets/icons/icon-voyage.png" alt="button open voyage screen"
             class="btn-open-screen">
 
+        <!-- Item Details Screen -->
         <div id="item-details-view-background">
             <div id="item-details-view">
-                <div id="item-details-view-name">épée</div>
-                <hr>
-                <div id="item-details-view-description">Force +15, Vitesse +5</div>
-                <div id="item-details-view-sell-value">valeur : 100PO</div>
-                <button type="button" id="item-details-view-btn-sell">Vendre</button>
-                <button type="button" id="item-details-view-btn-drop">Jeter</button>
+                <div id="item-details-view__name">épée</div>
+                <p id="item-details-view__item-type">arme non</p>
+                <hr id="item-details-view__separation-bar">
+                <div id="item-details-view__bottom-container">
+                    <div id="item-details-view__description">Force +15, Vitesse +5</div>
+                    <div id="item-details-view__sell-value">valeur : 100PO</div>
+                    <button type="button" id="item-details-view__btn-equip"
+                        class="item-details-view__btn">Équiper</button>
+                    <button type="button" id="item-details-view__btn-sell"
+                        class="item-details-view__btn">Vendre</button>
+                    <button type="button" id="item-details-view__btn-drop" class="item-details-view__btn">Jeter</button>
+                </div>
             </div>
         </div>
 
+        <!-- Loading Screen -->
         <div id="loading-screen" class="full-screen">
             <div class="loading-screen__container">
-                <div class="loading-screen__game-title"> </div>
-                <p class="loading-screen__loading-text">
-                    Ça charge ...
-                </p>
+                <div class="loading-screen__game-title"></div>
+                <p class="loading-screen__loading-text">Ça charge...</p>
             </div>
         </div>
     </div>

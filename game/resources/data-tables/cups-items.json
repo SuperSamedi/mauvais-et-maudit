@@ -3,150 +3,265 @@
     "type": "consommable",
     "name": "Potion",
     "isLegendary": false,
-    "gender": "F",
-    "description": "Restaure 20PV à l'utilisateur.",
+    "description": "Soigne 20PV",
+    "effects": [
+      {
+        "description": "Restaure 20PV quand utilisé.",
+        "type": "bonus"
+      }
+    ],
     "buyValue": 200,
     "sellValue": 100,
+    "gender": "F",
     "equippable": false
   },
   {
     "type": "consommable",
     "name": "Éther",
     "isLegendary": false,
-    "gender": "M",
-    "description": "L'utilisateur récupère 1PA.",
+    "description": "Donne 1PA",
+    "effects": [
+      {
+        "description": "Donne 1PA quand utilisé.",
+        "type": "bonus"
+      }
+    ],
     "buyValue": 200,
     "sellValue": 100,
+    "gender": "M",
     "equippable": false
   },
   {
     "type": "consommable",
     "name": "Trèfle à 4 feuilles",
     "isLegendary": false,
-    "gender": "M",
-    "description": "Permet d'annuler un tirage de dé ou de carte, et de le recommencer.",
+    "description": "Permet de recommencer un tirage de dé ou de carte",
+    "effects": [
+      {
+        "description": "Permet d'annuler un tirage de dé ou de carte, et de le recommencer.",
+        "type": "bonus"
+      }
+    ],
     "buyValue": 400,
     "sellValue": 150,
+    "gender": "M",
     "equippable": false
   },
   {
     "type": "équipement",
     "name": "Armure Légère",
     "isLegendary": false,
-    "gender": "F",
     "description": "PV +15",
     "hitPoints": 15,
+    "effects": [
+      {
+        "description": "Points de Vie +15",
+        "type": "bonus"
+      }
+    ],
     "buyValue": 300,
     "sellValue": 150,
+    "gender": "F",
     "equippable": true
   },
   {
     "type": "équipement",
     "name": "Armure Lourde",
     "isLegendary": false,
-    "gender": "F",
     "description": "PV +30, VI -5",
     "hitPoints": 30,
     "speed": -5,
+    "effects": [
+      {
+        "description": "Points de Vie +30",
+        "type": "bonus"
+      },
+      {
+        "description": "Vitesse -5",
+        "type": "malus"
+      }
+    ],
     "buyValue": 500,
     "sellValue": 200,
+    "gender": "F",
     "equippable": true
   },
   {
     "type": "équipement",
     "name": "Pendentif de la Lune",
     "isLegendary": true,
-    "gender": "M",
-    "description": "MA +15",
     "magic": 15,
+    "description": "MA +15",
+    "effects": [
+      {
+        "description": "Magie +15",
+        "type": "bonus"
+      }
+    ],
     "buyValue": 450,
     "sellValue": 200,
+    "gender": "M",
     "equippable": true
   },
   {
     "type": "équipement",
     "name": "Bague d'Équilibre",
     "isLegendary": false,
-    "gender": "F",
     "description": "PV +5, FO +5, VI +5, MA +5",
     "hitPoints": 5,
     "strength": 5,
     "speed": 5,
     "magic": 5,
+    "effects": [
+      {
+        "description": "Points de Vie +5",
+        "type": "bonus"
+      },
+      {
+        "description": "Force +5",
+        "type": "bonus"
+      },
+      {
+        "description": "Vitesse +5",
+        "type": "bonus"
+      },
+      {
+        "description": "Magie +5",
+        "type": "bonus"
+      }
+    ],
     "buyValue": 550,
     "sellValue": 250,
+    "gender": "F",
     "equippable": true
   },
   {
     "type": "consommable",
     "name": "Élixir de Vie",
     "isLegendary": false,
-    "gender": "M",
-    "description": "L'utilisateur récupère tous ses PV immédiatement.",
+    "description": "Restaure tous les PV",
+    "effects": [
+      {
+        "description": "Restaure tous les PV quand utilisé.",
+        "type": "bonus"
+      }
+    ],
     "buyValue": 700,
     "sellValue": 300,
+    "gender": "M",
     "equippable": false
   },
   {
     "type": "équipement",
     "name": "Manteau de Géant",
     "isLegendary": false,
-    "gender": "M",
     "description": "PV +50",
     "hitPoints": 50,
+    "effects": [
+      {
+        "description": "Points de Vie +50.",
+        "type": "bonus"
+      }
+    ],
     "buyValue": 1000,
     "sellValue": 450,
+    "gender": "M",
     "equippable": true
   },
   {
     "type": "équipement",
     "name": "Coupe Invidable",
     "isLegendary": true,
-    "gender": "F",
-    "description": "Donne 1PA au début de chaque combat, avant la détermination de l'initiative.",
-    "magic": 15,
+    "description": "+1PA à chaque combat",
+    "effects": [
+      {
+        "description": "Donne 1PA au début de chaque combat.",
+        "type": "bonus"
+      }
+    ],
     "buyValue": 1200,
     "sellValue": 600,
+    "gender": "F",
     "equippable": true
   },
   {
     "type": "passif",
     "name": "Lanterne de Vision",
     "isLegendary": true,
-    "gender": "F",
-    "description": "Protège de certains événements, ainsi que des effets négatifs de la Grotte, du Marécage et des Étangs Putrides.",
+    "description": "Protège de certains événements et environnements",
+    "effects": [
+      {
+        "description": "Protège de certains événements.",
+        "type": "bonus"
+      },
+      {
+        "description": "Protège des effets négatifs de l’environnement 'Grotte'.",
+        "type": "bonus"
+      },
+      {
+        "description": "Protège des effets négatifs de l’environnement 'Marécage'.",
+        "type": "bonus"
+      },
+      {
+        "description": "Protège des effets négatifs de l’environnement 'Étangs Putrides'.",
+        "type": "bonus"
+      }
+    ],
     "buyValue": 900,
     "sellValue": 400,
+    "gender": "F",
     "equippable": false
   },
   {
     "type": "passif",
     "name": "Compas des Anciens",
     "isLegendary": true,
-    "gender": "M",
-    "description": "Permet d'annuler le tirage de dé déterminant l'environnement en arrivant dans une nouvelle zone et de le recommencer immédiatement. (une fois par zone)",
+    "description": "Recommencer le tirage des environnements",
+    "effects": [
+      {
+        "description": "Permet d'annuler le tirage de dé déterminant l'environnement en arrivant dans une nouvelle zone et de le recommencer immédiatement (une fois par zone).",
+        "type": "bonus"
+      }
+    ],
     "buyValue": 600,
     "sellValue": 250,
+    "gender": "M",
     "equippable": false
   },
   {
     "type": "consommable",
     "name": "Tablette de Pouvoir",
     "isLegendary": false,
-    "gender": "F",
-    "description": "Détruit instantanément votre adversaire. Dans le cas d'un boss, lui ôte instantanément 50PV.",
+    "description": "Détruit un adversaire",
+    "effects": [
+      {
+        "description": "Détruit instantanément les adversaires non-boss.",
+        "type": "bonus"
+      },
+      {
+        "description": "Ôte instantanément 50PV aux adversaires boss.",
+        "type": "bonus"
+      }
+    ],
     "buyValue": 800,
     "sellValue": 400,
+    "gender": "F",
     "equippable": false
   },
   {
     "type": "divers",
     "name": "Bout de Métal",
     "isLegendary": false,
-    "gender": "M",
-    "description": "Bout de métal inutile prenant de la place dans l'inventaire.",
+    "description": "Inutile et encombrant",
+    "effects": [
+      {
+        "description": "Bout de métal inutile prenant de la place dans l'inventaire.",
+        "type": "malus"
+      }
+    ],
     "buyValue": 100,
     "sellValue": 50,
+    "gender": "M",
     "equippable": false
   }
 ]

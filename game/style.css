@@ -23,6 +23,7 @@
 }
 .loading-screen__container {
   width: 75%;
+  max-width: 800px;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -31,7 +32,7 @@
   aspect-ratio: 800/377;
   background-image: url("assets/artworks/game-title.bmp");
   background-size: contain;
-  margin-top: 40%;
+  margin-top: 20%;
 }
 .loading-screen__loading-text {
   left: 0;
@@ -189,13 +190,11 @@ section {
   border-left: none;
 }
 .card {
-  /* aspect-ratio: 256 / 427; */
   width: 150px;
   height: 250px;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.753);
   border-radius: 10px;
   position: absolute;
-  /* border-color: beige; */
   border-right-color: rgb(127, 127, 112);
   border-bottom-color: rgb(91, 91, 87);
   border-width: 1px;
@@ -204,9 +203,6 @@ section {
   border-left: none;
 }
 #cards-drawn {
-  /* display: flex; */
-  /* flex-direction: row; */
-  /* gap: 5px; */
   flex-grow: 1;
   position: relative;
   height: 250px;
@@ -223,25 +219,83 @@ section {
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  cursor: pointer;
 }
 #item-details-view {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  height: 400px;
+  min-height: 400px;
   width: 250px;
   background-color: rgba(0, 0, 0, 0.788);
   padding: 15px;
   color: rgb(255, 251, 243);
   border: 2px solid rgba(255, 255, 255, 0.767);
+  display: flex;
+  flex-direction: column;
 }
-#item-details-view-name {
+#item-details-view__name {
+  text-align: center;
+  font-size: 1.33rem;
+}
+.normal {
+  color: bisque;
+}
+.legendary {
+  color: coral;
+}
+#item-details-view__item-type {
   color: bisque;
   text-align: center;
-  margin-bottom: 10px;
-  font-size: 1.33rem;
+}
+#item-details-view__separation-bar {
+  margin: 0.75em 0;
+}
+#item-details-view__bottom-container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+#item-details-view__description {
+  color: cornflowerblue;
+  text-align: center;
+  flex-grow: 1;
+}
+#item-details-view__sell-value {
+  margin: 1em 0;
+}
+.item-details-view__btn {
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 2px;
+  padding: 0.5em;
+  background-color: rgba(0, 0, 0, 0);
+  margin: 0.25em 0;
+}
+.item-details-view__btn:hover {
+  cursor: pointer;
+}
+#item-details-view__btn-equip {
+  border-color: white;
+  color: white;
+}
+#item-details-view__btn-equip:disabled {
+  border-color: dimgray;
+  color: dimgray;
+  cursor: default;
+}
+#item-details-view__btn-sell {
+  border-color: goldenrod;
+  color: goldenrod;
+}
+#item-details-view__btn-sell:disabled {
+  border-color: dimgray;
+  color: dimgray;
+  cursor: default;
+}
+#item-details-view__btn-drop {
+  color: crimson;
+  border-color: crimson;
 }
 
 /*********  Main View *************/

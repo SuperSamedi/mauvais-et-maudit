@@ -40,101 +40,6 @@ const btnConfirmStatsAdjustment = document.getElementById("btn-confirm-stats-adj
 const btnFightMonster = document.getElementById("btn-fight-monster");
 const btnVisitShop = document.getElementById("btn-visit-shop");
 const btnNextAdventure = document.getElementById("btn-next-adventure");
-
-// Test Buttons
-const btnUnlockDeck = document.getElementById("btn-unlock-deck")
-//#endregion
-
-//#region TESTS
-
-//#region ReducedRoll Tests
-// Reduced roll algorithm test
-// let roll = 1
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 2
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 3
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 4
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 5
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 6
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 7
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 8
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 9
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 10
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 11
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 12
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 13
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 14
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 15
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 16
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 17
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 18
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 19
-// console.log(d20.reducedRoll(roll, 4));
-// roll = 20
-// console.log(d20.reducedRoll(roll, 4));
-//#endregion
-
-//#region Test gender equity
-// let males = 0
-// let females = 0
-
-// for (let i = 0; i < 10000; i++) {
-//     const being = generateIntelligentBeing()
-//     if (being.gender == "F") {
-//         females++
-//         continue
-//     }
-//     if (being.gender == "M") {
-//         males++
-//     }
-// }
-
-// console.log(`males: ${males}`);
-// console.log(`females: ${females}`);
-//#endregion
-
-//#region Tests Strongissime trait
-// setTimeout(function () {
-//     // console.log(strongTraitsTable);
-//     // const testTraits = [getStrongTrait(3), getStrongTrait(3), getStrongTrait(3)]
-//     // const testTraits = [getStrongTrait(20), getStrongTrait(1), getStrongTrait(20), getStrongTrait(1), getStrongTrait(5)]
-//     // const testTraits = [getStrongTrait(19), getStrongTrait(1), getStrongTrait(19)]
-//     const testTraits = [getStrongTrait(15), getStrongTrait(15)]
-//     const being = generateIntelligentBeing(20, testTraits)
-//     console.log(being.name);
-// }, 200);
-//#endregion
-
-//#region Tests Card Draw
-// Test Buttons TOREMOVE
-btnUnlockDeck.onclick = () => {
-    imgDeck.onclick = () => {
-        drawTest()
-        updateDeckVisual()
-    }
-}
-
-function drawTest() {
-    addCardToDisplayZone(scopaDeck.shift())
-}
-//#endregion
 //#endregion
 
 // =====> START
@@ -197,7 +102,114 @@ function start() {
     screenVoyage.style.visibility = "hidden"
     detailsViewOverlay.style.display = "none"
     screenLoader.style.visibility = "hidden"
+    // tests()
 }
+
+
+//#region TESTS
+function tests() {
+    // Test Buttons
+    // const btnUnlockDeck = document.getElementById("btn-unlock-deck")
+
+    //#region ReducedRoll Tests
+    // Reduced roll algorithm test
+    // let roll = 1
+    // console.log(d20.reducedRoll(roll, 4));
+    // roll = 2
+    // console.log(d20.reducedRoll(roll, 4));
+    // roll = 3
+    // console.log(d20.reducedRoll(roll, 4));
+    // roll = 4
+    // console.log(d20.reducedRoll(roll, 4));
+    // roll = 5
+    // console.log(d20.reducedRoll(roll, 4));
+    // roll = 6
+    // console.log(d20.reducedRoll(roll, 4));
+    // roll = 7
+    // console.log(d20.reducedRoll(roll, 4));
+    // roll = 8
+    // console.log(d20.reducedRoll(roll, 4));
+    // roll = 9
+    // console.log(d20.reducedRoll(roll, 4));
+    // roll = 10
+    // console.log(d20.reducedRoll(roll, 4));
+    // roll = 11
+    // console.log(d20.reducedRoll(roll, 4));
+    // roll = 12
+    // console.log(d20.reducedRoll(roll, 4));
+    // roll = 13
+    // console.log(d20.reducedRoll(roll, 4));
+    // roll = 14
+    // console.log(d20.reducedRoll(roll, 4));
+    // roll = 15
+    // console.log(d20.reducedRoll(roll, 4));
+    // roll = 16
+    // console.log(d20.reducedRoll(roll, 4));
+    // roll = 17
+    // console.log(d20.reducedRoll(roll, 4));
+    // roll = 18
+    // console.log(d20.reducedRoll(roll, 4));
+    // roll = 19
+    // console.log(d20.reducedRoll(roll, 4));
+    // roll = 20
+    // console.log(d20.reducedRoll(roll, 4));
+    //#endregion
+
+    //#region Test gender equity
+    // let males = 0
+    // let females = 0
+
+    // for (let i = 0; i < 10000; i++) {
+    //     const being = generateIntelligentBeing()
+    //     if (being.gender == "F") {
+    //         females++
+    //         continue
+    //     }
+    //     if (being.gender == "M") {
+    //         males++
+    //     }
+    // }
+
+    // console.log(`males: ${males}`);
+    // console.log(`females: ${females}`);
+    //#endregion
+
+    //#region Tests Strongissime trait
+    // setTimeout(function () {
+    //     // console.log(strongTraitsTable);
+    //     // const testTraits = [getStrongTrait(3), getStrongTrait(3), getStrongTrait(3)]
+    //     // const testTraits = [getStrongTrait(20), getStrongTrait(1), getStrongTrait(20), getStrongTrait(1), getStrongTrait(5)]
+    //     // const testTraits = [getStrongTrait(19), getStrongTrait(1), getStrongTrait(19)]
+    //     const testTraits = [getStrongTrait(15), getStrongTrait(15)]
+    //     const being = generateIntelligentBeing(20, testTraits)
+    //     console.log(being.name);
+    // }, 200);
+    //#endregion
+
+    //#region Tests Card Draw
+    // Test Buttons TOREMOVE
+    // btnUnlockDeck.onclick = () => {
+    //     imgDeck.onclick = () => {
+    //         drawTest()
+    //         updateDeckVisual()
+    //     }
+    // }
+
+    // function drawTest() {
+    //     addCardToDisplayZone(scopaDeck.shift())
+    // }
+    //#endregion
+
+    //#region Item details screen V2 
+    console.log("TESTING");
+    player.inventory.add(new SwordsItem(structuredClone(swordsItemsTable[3])))
+    player.inventory.add(new SwordsItem(structuredClone(swordsItemsTable[9])))
+    player.inventory.add(new Item(structuredClone(cupsItemsTable[0])))
+    player.inventory.add(new Item(structuredClone(cupsItemsTable[1])))
+    player.goldCoins += 200
+    //#endregion
+}
+//#endregion
 
 
 function choosePlayerGender(params) {
@@ -794,7 +806,7 @@ function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpRewar
         reward = new SwordsItem(structuredClone(swordsItemsTable[cardDrawn.value - 1]));
         player.inventory.add(reward);
         feedbackMessage += ` 
-        Vous recevez ${reward.isLegendary ? beingNameWithDeterminantDefini(reward, false) : reward.gender == "F" ? "une" : "un"}${reward.name} (${reward.description})`;
+        Vous recevez ${reward.isLegendary ? beingNameWithDeterminantDefini(reward, false) : reward.gender == "F" ? `une ${reward.name}` : `un ${reward.name}`} (${reward.description})`;
         //console.log(inventory);
     }
 
@@ -1759,13 +1771,6 @@ function specialEncounter() {
     specialEncounters[getRandomInt(specialEncounters.length)]()
 
     function event01() {
-        // TEST
-        // const potion = structuredClone(cupsItemsTable[0])
-        // const ether = structuredClone(cupsItemsTable[1])
-        // player.inventory.add(potion)
-        // player.inventory.add(ether)
-        // player.goldCoins += 200
-
         gameMessage(`Vous rencontrez un voyageur dont l'enfant est gravement malade. Il vous supplie de l'aider.
         --- Si vous avez une potion ou un ether, vous pouvez lui donner.
         --- Si vous avez 200PO vous pouvez lui donner pour qu'il achète un remède.
@@ -2426,7 +2431,6 @@ function updateDeckVisual() {
     // Looks okay with 12px for 40cards
     const pixelPerCard = 12 / 40
     imgDeck.style.transform = `translate(-${Math.round(scopaDeck.length * pixelPerCard)}px, -${Math.round(scopaDeck.length * pixelPerCard)}px)`
-    // imgDeck.style.transform = `translateX(-${Math.round(scopaDeck.length * pixelPerCard)}px)`
     imgDeck.style.borderRight = `${Math.round(scopaDeck.length * pixelPerCard)}px solid rgb(127, 127, 112)`
     imgDeck.style.borderBottom = `${Math.round(scopaDeck.length * pixelPerCard)}px solid rgb(91, 91, 87)`
 

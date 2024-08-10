@@ -10,8 +10,21 @@ a {
   flex-direction: column;
   align-items: center;
 }
-.game-title__image {
-  margin: 1em;
+.main__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: calc(100% - 2em);
+  max-width: 800px;
+  padding: 1em;
+}
+.game-title {
+  width: 100%;
+  aspect-ratio: 800/377;
+  background-image: url("game/assets/artworks/game-title-colored-light.png");
+  background-size: contain;
+  margin-top: 10%;
+  margin-bottom: 1em;
 }
 
 .subtitle,

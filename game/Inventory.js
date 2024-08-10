@@ -4,11 +4,13 @@ const inventorySlots = Array.from(document.getElementsByClassName("item"));
 // Item details pop-out view
 const detailsViewOverlay = document.getElementById("item-details-view-background");
 const detailsView = document.getElementById("item-details-view");
-const detailsViewName = document.getElementById("item-details-view-name");
-const detailsViewDescription = document.getElementById("item-details-view-description");
-const detailsViewSellValue = document.getElementById("item-details-view-sell-value");
-const detailsViewBtnSell = document.getElementById("item-details-view-btn-sell");
-const detailsViewBtnDrop = document.getElementById("item-details-view-btn-drop");
+const detailsViewName = document.getElementById("item-details-view__name");
+const detailsViewItemType = document.getElementById("item-details-view__item-type")
+const detailsViewDescription = document.getElementById("item-details-view__description");
+const detailsViewSellValue = document.getElementById("item-details-view__sell-value");
+const detailsViewBtnEquip = document.getElementById("item-details-view__btn-equip")
+const detailsViewBtnSell = document.getElementById("item-details-view__btn-sell");
+const detailsViewBtnDrop = document.getElementById("item-details-view__btn-drop");
 
 
 btnInventoryCheckMarks.forEach((checkMark) => {
@@ -29,22 +31,48 @@ inventorySlots.forEach((slot) => {
     slot.addEventListener("click", (e) => {
         const item = player.inventory.slots[e.target.dataset["number"]]
         if (item) {
-            console.log("allowedToSellItems = " + allowedToSellItems);
+            // console.log("allowedToSellItems = " + allowedToSellItems);
             detailsViewName.innerText = `${item.name}`
-            detailsViewDescription.innerText = `${item.description}`
+            detailsViewName.classList.remove('legendary')
+            detailsViewName.classList.add('normal')
+            if (item.isLegendary) {
+                detailsViewName.classList.remove('normal')
+                detailsViewName.classList.add('legendary')
+            }
+            detailsViewItemType.innerText = `${item.type}${item.isLegendary ? ` légendaire` : ``}`
+            generateDetailsDescription(item)
+            // detailsViewDescription.innerText = `${item.description}`
             detailsViewSellValue.innerText = `Valeur : ${item.sellValue}PO`
+            // Equip button set up
+            detailsViewBtnEquip.style.display = "none"
+            detailsViewBtnEquip.disabled = true
+            detailsViewBtnEquip.onclick = () => { }
+            if (item instanceof EquippableItem) {
+                detailsViewBtnEquip.style.display = "block"
+                detailsViewBtnEquip.disabled = false
+                detailsViewBtnEquip.innerText = `${item.isEquipped ? `Déséquiper` : `Équiper`}`
+                detailsViewBtnEquip.onclick = () => {
+                    if (item.isEquipped) {
+                        item.unequip()
+                        detailsViewOverlay.style.display = "none"
+                        return
+                    }
+                    item.equip()
+                    detailsViewOverlay.style.display = "none"
+                }
+            }
+            console.log(player.inventory.isAnotherItemEquipped(item));
+            if (player.inventory.isAnotherItemEquipped(item)) detailsViewBtnEquip.disabled = true
             detailsViewBtnSell.onclick = () => {
                 item.sell()
                 detailsViewOverlay.style.display = "none"
             }
+            detailsViewBtnSell.disabled = false
             if (allowedToSellItems == false) {
                 detailsViewBtnSell.disabled = true
-            } else {
-                detailsViewBtnSell.disabled = false
             }
             detailsViewBtnDrop.onclick = () => {
-                item.drop()
-                detailsViewOverlay.style.display = "none"
+                if (item.drop()) detailsViewOverlay.style.display = "none"
             }
             detailsViewOverlay.style.display = "block"
         }
@@ -53,6 +81,23 @@ inventorySlots.forEach((slot) => {
 
 detailsViewOverlay.onclick = () => { detailsViewOverlay.style.display = "none" }
 detailsView.onclick = (event) => { event.stopPropagation(); }
+
+function generateDetailsDescription(item) {
+    if (!item) {
+        console.error("Trying to generate detailed description for unidentified object.");
+    }
+
+    detailsViewDescription.innerHTML = ``
+
+    if (item.effects) {
+        item.effects.forEach(effect => {
+            const effectElement = document.createElement("p")
+            effectElement.innerText = effect.description
+            effectElement.classList.add(`${effect.type == "malus" ? "malus" : "bonus"}`)
+            detailsViewDescription.appendChild(effectElement)
+        });
+    }
+}
 
 
 class Inventory {
@@ -151,5 +196,22 @@ class Inventory {
         }
 
         return check
+    }
+
+    isAnotherItemEquipped(item) {
+        if (!this.contains(item)) throw new Error("Item tested is not in inventory.")
+        if (item.isEquipped) return false
+
+        for (let i = 0; i < 8; i++) {
+            if (!this.slots[i]) continue;
+            if (!this.slots[i] instanceof EquippableItem) continue
+            if (this.slots[i].type != item.type) continue
+
+            if (this.slots[i].isEquipped) {
+                return true
+            }
+        }
+
+        return false
     }
 }

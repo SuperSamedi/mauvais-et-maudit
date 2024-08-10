@@ -13,6 +13,7 @@ class Item {
         this.#sellValue = data.sellValue
         this.gender = data.gender
         this.isLegendary = data.isLegendary
+        this.effects = data.effects
     }
 
     get type() {
@@ -60,7 +61,9 @@ class Item {
     drop() {
         if (player.inventory.remove(this)) {
             player.updateStatsVisuals()
+            return true
         }
+        return false
     }
 
 }
