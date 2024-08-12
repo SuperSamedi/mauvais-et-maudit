@@ -22,11 +22,12 @@ txtPlayerTrait.addEventListener("mouseleave", (e) => {
   }
 });
 
-const characterSheetOverlayBackground = document.getElementById("character-sheet-screen")
+const characterSheetOverlayBackground = document.getElementById("character-sheet-background")
 const characterSheetDiv = document.getElementById("character-sheet")
 
 characterSheetOverlayBackground.onclick = () => {
-  screenCharacterSheet.style.visibility = "hidden"
+  screenCharacterSheet.style.display = "none"
+  screenCharacterSheetBackground.style.display = "none"
 }
 characterSheetDiv.onclick = (event) => { event.stopPropagation(); }
 
@@ -300,46 +301,46 @@ class Player {
 
 
   // Level ups
-  levelUpHitPoints() {
+  levelUpHitPoints(amount = 1) {
     if (!allowedToLevelUp) return
-    if (this.experiencePoints <= 0) return
+    if (this.experiencePoints < amount) return
 
-    this.experiencePoints--
-    this.levelUpStats.hitPoints += 5
+    this.experiencePoints -= 1 * amount
+    this.levelUpStats.hitPoints += 5 * amount
 
     this.restoreHitPoints()
     this.updateExperiencePointsVisuals()
     this.updateHitPointsVisuals()
   }
 
-  levelUpStrength() {
+  levelUpStrength(amount = 1) {
     if (!allowedToLevelUp) return
-    if (this.experiencePoints <= 0) return
+    if (this.experiencePoints < amount) return
 
-    this.experiencePoints--
-    this.levelUpStats.strength += 5
+    this.experiencePoints -= 1 * amount
+    this.levelUpStats.strength += 5 * amount
 
     this.updateExperiencePointsVisuals()
     this.updateStrengthVisuals()
   }
 
-  levelUpSpeed() {
+  levelUpSpeed(amount = 1) {
     if (!allowedToLevelUp) return
-    if (this.experiencePoints <= 0) return
+    if (this.experiencePoints < amount) return
 
-    this.experiencePoints--
-    this.levelUpStats.speed += 5
+    this.experiencePoints -= 1 * amount
+    this.levelUpStats.speed += 5 * amount
 
     this.updateExperiencePointsVisuals()
     this.updateSpeedVisuals()
   }
 
-  levelUpMagic() {
+  levelUpMagic(amount = 1) {
     if (!allowedToLevelUp) return
-    if (this.experiencePoints <= 0) return
+    if (this.experiencePoints < amount) return
 
-    this.experiencePoints--
-    this.levelUpStats.magic += 5
+    this.experiencePoints -= 1 * amount
+    this.levelUpStats.magic += 5 * amount
 
     this.updateExperiencePointsVisuals()
     this.updateMagicVisuals()

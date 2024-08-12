@@ -1,7 +1,9 @@
 //#region DOM links
 const screenLoader = document.getElementById("loading-screen")
-const screenCharacterSheet = document.getElementById("character-sheet-screen")
-const screenVoyage = document.getElementById("voyage-screen")
+const screenCharacterSheetBackground = document.getElementById("character-sheet-background")
+const screenCharacterSheet = document.getElementById("character-sheet")
+const screenVoyageBackground = document.getElementById("voyage-background")
+const screenVoyage = document.getElementById("voyage")
 const btnOpenScreenCharacterSheet = document.getElementById("btn-open-screen-character-sheet")
 const btnOpenScreenVoyage = document.getElementById("btn-open-screen-voyage")
 
@@ -58,20 +60,26 @@ imgDeck.onclick = () => {
 };
 
 btnOpenScreenCharacterSheet.onclick = () => {
-    if (screenCharacterSheet.style.visibility == "hidden") {
-        screenVoyage.style.visibility = "hidden"
-        screenCharacterSheet.style.visibility = "visible"
+    if (screenCharacterSheet.style.display == "none") {
+        screenVoyage.style.display = "none"
+        screenVoyageBackground.style.display = "none"
+        screenCharacterSheet.style.display = "block"
+        screenCharacterSheetBackground.style.display = "block"
         return
     }
-    screenCharacterSheet.style.visibility = "hidden"
+    screenCharacterSheetBackground.style.display = "none"
+    screenCharacterSheet.style.display = "none"
 }
 btnOpenScreenVoyage.onclick = () => {
-    if (screenVoyage.style.visibility == "hidden") {
-        screenCharacterSheet.style.visibility = "hidden"
-        screenVoyage.style.visibility = "visible"
+    if (screenVoyage.style.display == "none") {
+        screenCharacterSheet.style.display = "none"
+        screenCharacterSheetBackground.style.display = "none"
+        screenVoyage.style.display = "block"
+        screenVoyageBackground.style.display = "block"
         return
     }
-    screenVoyage.style.visibility = "hidden"
+    screenVoyageBackground.style.display = "none"
+    screenVoyage.style.display = "none"
 }
 //#endregion
 
@@ -93,13 +101,15 @@ const adventureBeginsMessage = `Vous contemplez les plaines de votre campagne na
 loadJSONS();
 
 function start() {
-    updateDeckVisual()
     console.log("Starting Game");
+    updateDeckVisual()
     hideAllGenericButtons()
     panelStatsAdjustment.style.display = "none"
     btnCardDraw.style.display = "none"
-    screenCharacterSheet.style.visibility = "hidden"
-    screenVoyage.style.visibility = "hidden"
+    screenCharacterSheetBackground.style.display = "none"
+    screenCharacterSheet.style.display = "none"
+    screenVoyageBackground.style.display = "none"
+    screenVoyage.style.display = "none"
     detailsViewOverlay.style.display = "none"
     screenLoader.style.visibility = "hidden"
     // tests()
@@ -108,6 +118,7 @@ function start() {
 
 //#region TESTS
 function tests() {
+    console.log("TESTING ACTIVATED");
     // Test Buttons
     // const btnUnlockDeck = document.getElementById("btn-unlock-deck")
 
@@ -201,12 +212,23 @@ function tests() {
     //#endregion
 
     //#region Item details screen V2 
-    console.log("TESTING");
-    player.inventory.add(new SwordsItem(structuredClone(swordsItemsTable[3])))
-    player.inventory.add(new SwordsItem(structuredClone(swordsItemsTable[9])))
-    player.inventory.add(new Item(structuredClone(cupsItemsTable[0])))
-    player.inventory.add(new Item(structuredClone(cupsItemsTable[1])))
-    player.goldCoins += 200
+    // player.inventory.add(new SwordsItem(structuredClone(swordsItemsTable[3])))
+    // player.inventory.add(new SwordsItem(structuredClone(swordsItemsTable[9])))
+    // player.inventory.add(new Item(structuredClone(cupsItemsTable[0])))
+    // player.inventory.add(new Item(structuredClone(cupsItemsTable[1])))
+    // player.goldCoins += 200
+    //#endregion
+
+    //#region test Fight Boss
+    const btnFightBoss = document.getElementById("btn-fight-boss");
+    btnFightBoss.onclick = () => { finalAdventure() }
+
+    allowedToLevelUp = true
+    player.experiencePoints += 1_000_000
+    player.levelUpHitPoints(1000)
+    player.levelUpStrength(1000)
+    player.levelUpSpeed(1000)
+    player.levelUpMagic(1000)
     //#endregion
 }
 //#endregion
@@ -1082,14 +1104,27 @@ function generateMonster(roll = d20.roll(), traits = []) {
     return monster;
 }
 
+function generateBoss(roll = d20.roll()) {
+    let boss = new Being("Boss", [structuredClone(bossesTable[roll - 1])], undefined, undefined)
+    boss.restoreHitPoints();
+    return boss
+}
+
 function nextAdventure(customMessage = "") {
     hideAllGenericButtons()
+
     // If we start a new environment we choose it first
     if (isFirstStep() && currentEnvironment.name == "") {
         chooseNewEnvironment(customMessage)
         return
     }
 
+    // Is it Final Boss time ??
+    if (currentStep.isFinalBoss) {
+        gameMessage(customMessage)
+        activateButton(btn1, "Continuer", () => { finalAdventure() })
+        return
+    }
 
     gameMessage(`${customMessage}
         
@@ -1171,7 +1206,7 @@ function nextAdventure(customMessage = "") {
                     activateButton(buttons[i], "Coup de chance", () => { luckyEncounter() })
                     break;
                 default:
-                    console.console.error("Unknown adventure type !");
+                    console.error("Unknown adventure type !");
                     break;
             }
         }
@@ -1179,7 +1214,102 @@ function nextAdventure(customMessage = "") {
         gameMessage(`${message}
             Que choisissez-vous ?`)
     }
+
 }
+
+//#region Boss fight set up
+function finalAdventure() {
+    const roll = getRandomInt(bossesTable.length) + 1;
+    console.log(roll);
+    const boss = generateBoss(roll)
+    console.log("Boss généré :");
+    console.log(boss);
+
+    let message = `Ça y est ! Vous y êtes. Le repère du mal.
+        
+        - Lancez le D20 pour tirer le boss que vous allez affronter.`
+    gameMessage(message)
+    activateButton(btn1, "Lancer le D20", () => { chooseBoss(roll) })
+
+    function chooseBoss(roll) {
+        let message = `${roll} !
+        `;
+        let contextData = {}
+        contextData.opponent = boss
+
+        switch (boss.name) {
+            case "Vcrakusa, la déesse-vampire":
+                // Flavor text before the boss name is revealed
+                message += ` Vous êtes au pied d'une falaise au sommet de laquelle un château aux longues tours effilées est perché. Vous parvenez à gravir la falaise et trouver une entrée dérobée du château. Vous vous faufilez sans vous faire repérer par les gardes. Aux détours des couloirs et des escaliers vous parvenez enfin à trouver la salle d'incantation où se tisse l'origine du terrible maléfice qui s'est abattu sur l'ensemble des régions voisines. Une telle malédiction est certainement l'oeuvre d'une créature très puissante. Vous prenez tout votre courage à bras le corps et pénétrez dans l'antre du mal.`
+
+                const vcrakusaPreparationPhase = (ctx) => {
+                    let message
+
+                    // Check if odd fight turn 
+                    if (ctx.fightTurn % 2 != 0) {
+                        // Vcrakusa does nothing
+                        message = `${boss.name} ne fait rien.`
+                        checkNextPhase()
+                        return
+                    }
+
+                    // Vcrakusa casts 'Soin' amplified
+                    const amount = 20 + d100.roll()
+                    ctx.opponent.hitPoints += amount
+                    message = `${ctx.opponent.name} lance le sort 'Soin' amplifié et récupère ${amount}PV.`
+                    checkNextPhase()
+
+                    function checkNextPhase() {
+                        // If player already prepared we go to the player's attack phase
+                        if (playerHasInitiative(ctx.opponent)) {
+                            message += `
+
+                            --C'est à votre tour d'attaquer.`
+
+                            gameMessage(message);
+
+                            activateButton(btn1, "Attaquer", () => { playerAttackPhase(ctx) })
+                            return
+                        }
+
+                        // Otherwise, we go to its prepare phase
+                        message += `
+
+                        --C'est à votre tour de vous préparer.`
+
+                        gameMessage(message);
+
+                        activateButton(btn1, "Se préparer", () => { playerPreparationPhase(ctx) })
+                    }
+                }
+
+                contextData.introMessage = `Vous découvrez une large pièce circulaire. En son centre, throne un être décharné, assis sur une chaise en bois sombre aux sculptures élaborées. La créature, en remarquant votre entrée dans la pièce, commence à se lever lentement. Ses yeux, d'un noir sans reflet, vous regardent intensément pendant plusieurs secondes. Puis, soudain, la créature funeste ouvre grand la bouche, laissant apparaître deux fines canines d'une taille anormalement grande et se rue vers vous en poussant un cri glaçant.`
+                contextData.opponentPreparationPhaseCallBack = vcrakusaPreparationPhase
+                contextData.rewardPhaseCallBack = bossRewardPhase
+                break;
+
+            default:
+                console.error("Unknown boss name");
+                break;
+        }
+
+        gameMessage(message);
+        activateButton(btn1, "Continuer", () => { fight(contextData) })
+    }
+}
+
+function bossRewardPhase(ctx) {
+    hideAllGenericButtons()
+    stepCompleted()
+    gameMessage(`${ctx.opponent.name} est ${ctx.opponent.gender == "F" ? "terrassée" : "terrassé"} !
+        Félicitations ! Vous avez réussi. Grâce à vous et à votre détermination, la malédiction est brisée. Les régions aux alentours seront à nouveau libres et sereines. 
+        Il est maintenant temps pour vous de rentrer à la maison, cette campagne aux douces plaines que vous avez quitté il y a si longtemps déjà. Vous conterai vos exploits sur votre chemin pour qu'encore dans longtemps on chante vos aventures.
+        Fin.
+        
+        Merci d'avoir joué ! On espère que vous avez passé un bon moment pendant ce jeu de rôle.
+        Rechargez la page si vous voulez recommencer une nouvelle aventure. Et sinon, ben voilà, c'est fini, à la prochaine. Bisou ! `)
+}
+//#endregion
 
 //#region ENCOUNTERS
 function monsterEncounter() {
@@ -1865,7 +1995,7 @@ function specialEncounter() {
 
                     activateButton(btn1, "Continuer", () => { nextAdventure("") })
 
-                    message += `Le voyageur lance un sort de téléportation et disparaît avec sa fille, vous laissant ${player.gender == "F" ? "seule" : "seul"} au milieu du chemin.
+                    message += `Le voyageur lance le sort 'Téléportation' et disparaît avec sa fille, vous laissant ${player.gender == "F" ? "seule" : "seul"} au milieu du chemin.
                         
                         Le combat est terminé.`
                     if (player.hitPoints < player.maxHitPoints) {
@@ -2008,21 +2138,36 @@ function luckyEncounter() {
 
 //#region FIGHT
 /**
- * @param ctx Object - context data necessary for the fight.
- * @param ctx.opponent Object - opponent the player is facing in this fight
- * @param ctx.introMessage String - message displayed when the fight is about to start.
- * @param ctx.opponentPreparationPhaseCallBack CallBackFunction - run when the opponent is preparing for the turn.
- * @param ctx.rewardPhaseCallBack CallBackFunction - run when the fight is won.
+ * @param {object} ctx The Context data necessary for the fight.
+ * @param {object} ctx.opponent The opponent the player is facing in this fight
+ * @param {number} ctx.fightTurn The turn number of the fight.
+ * @param {string} ctx.introMessage Message displayed when the fight is about to start.
+ * @param {CallBackFn} ctx.opponentPreparationPhaseCallBack Run when the opponent is preparing for the turn.
+ * @param {CallBackFn} ctx.rewardPhaseCallBack Run when the fight is won.
  */
 function fight(ctx) {
     console.log(`Fight:`);
+    ctx.fightTurn = 1
     console.log(ctx);
 
     // Message d'intro
     let message = ctx.introMessage
+
+    // if fighting boss, put nothing in front of its name. Otherwise, put 'une' or 'un'
     message += `
     
-    ---- Un combat contre ${ctx.opponent.gender == "F" ? "une" : "un"} ${ctx.opponent.name} commence !`
+    ---- Un combat contre ${ctx.opponent.type == "Boss" ? "" : ctx.opponent.gender == "F" ? "une " : "un "}${ctx.opponent.name} commence !`
+
+    // if fighting boss and boss has at least one effect to mention to the player
+    if (ctx.opponent.type == "Boss" && ctx.opponent.races[0].effects.length > 0) {
+        message += `
+        ${ctx.opponent.races[0].effects.length == 1 ? "Effet" : "Effets"} du boss :`;
+        ctx.opponent.races[0].effects.forEach(effect => {
+            message += `
+            • ${effect.description}`
+        });
+    }
+
     gameMessage(message);
 
     hideAllGenericButtons()
@@ -2303,6 +2448,8 @@ function opponentAttackPhase(ctx) {
 }
 
 function newTurn(ctx) {
+    ctx.fightTurn++
+
     gameMessage(`Vous avez résisté à l'assault ${beingNameWithDeterminantDefiniContracte(ctx.opponent, "de")} mais ${ctx.opponent.gender == "F" ? "cette dernière" : "ce dernier"} est toujours debout et prêt${ctx.opponent.gender == "F" ? "e" : ""} à en découdre.
         
         -- Un nouveau tour de combat commence.`)
@@ -2311,6 +2458,7 @@ function newTurn(ctx) {
 }
 
 function regularRewardPhase(ctx) {
+    hideAllGenericButtons()
     stepCompleted();
     player.restoreHitPoints()
     player.experiencePoints++

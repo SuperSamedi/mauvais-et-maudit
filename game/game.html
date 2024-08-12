@@ -66,16 +66,19 @@
                         <div id="cards-drawn"></div>
                     </div>
 
-                    <!-- <div id="test-buttons">
-                        <button id="btn-unlock-deck" type="button">Unlock Deck</button>
-                    </div> -->
+                    <div id="test-buttons">
+                        <!-- <button id="btn-unlock-deck" type="button">Unlock Deck</button> -->
+                        <!-- <button id="btn-fight-boss" type="button">Fight Boss</button> -->
+                    </div>
 
                 </div>
             </div>
         </div>
 
         <!-- Voyage Screen -->
-        <div id="voyage-screen" class="full-screen">
+        <div id="voyage-background" class="full-screen">
+        </div>
+        <div id="voyage-container">
             <div id="voyage">
                 <h2 id="voyage-title">Voyage</h2>
                 <div id="environment0" class="environment">
@@ -178,19 +181,21 @@
         </div>
 
         <!-- Character Sheet Sceeen -->
-        <div id="character-sheet-screen" class="full-screen">
+        <div id="character-sheet-background" class="full-screen">
+        </div>
+        <div id="character-sheet-container">
             <div id="character-sheet">
                 <h2>Fiche de Personnage</h2>
-                <section>
+                <!-- <div class="character-sheet__section">
                     <span>Nom : </span><strong><span id="player-name"></span></strong>
-                </section>
+                </div> -->
 
-                <section>
+                <div class="character-sheet__section">
                     <span>Race : </span><strong><span id="player-race">playerRace</span></strong><br>
                     <span>Trait : </span><strong><span id="player-trait">playerTrait</span></strong>
-                </section>
+                </div>
 
-                <section id="player-stats">
+                <div class="character-sheet__section" id="player-stats">
                     <h3 class="section-header">Caractéristiques</h3>
                     <div class="align-right">PV : </div><strong>
                         <div id="player-hit-points">playerHitPoints/playerMaxHitPoints</div>
@@ -204,9 +209,9 @@
                     <div class="align-right">MA : </div><strong>
                         <div id="player-magic">playerMagic</div>
                     </strong>
-                </section>
+                </div>
 
-                <section id="player-resources">
+                <div class="character-sheet__section" id="player-resources">
                     <h3 class="section-header">Ressources</h3>
                     <div>PO : </div><strong>
                         <div id="gold-pieces">playerGoldCoins</div>
@@ -217,9 +222,9 @@
                     <div>XP : </div><strong>
                         <div id="experience-points">playerExperiencePoints</div>
                     </strong>
-                </section>
+                </div>
 
-                <section id="inventory">
+                <div class="character-sheet__section" id="inventory">
                     <h3 class="section-header">Inventaire</h3>
                     <div class="inventory-grid-item equipped-check-mark" data-number="0"></div>
                     <div class="inventory-grid-item item" data-number="0"></div>
@@ -238,8 +243,7 @@
                     <div class="inventory-grid-item equipped-check-mark" data-number="7"></div>
                     <div class="inventory-grid-item item" data-number="7"></div>
 
-                </section>
-
+                </div>
             </div>
         </div>
 

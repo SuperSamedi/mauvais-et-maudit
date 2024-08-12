@@ -1,0 +1,17 @@
+[
+  {
+    "name": {
+      "female": "Vcrakusa, la déesse-vampire"
+    },
+    "effects": [
+      {
+        "description": "Utilise le sort 'Soin' amplifié au début de chaque tour pair"
+      }
+    ],
+    "hitPoints": 210,
+    "strength": 70,
+    "speed": 60,
+    "magic": 110,
+    "gender": "F"
+  }
+]

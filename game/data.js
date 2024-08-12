@@ -6,6 +6,7 @@ let strongissimeTraitsTable = [];
 let monstersTable = [];
 let specialEncountersTable = [1];
 let environmentsTable = [];
+let bossesTable = [];
 
 let scopaDeck = [];
 let coinsItemsTable = [];
@@ -147,6 +148,18 @@ async function loadJSONS() {
         strongissimeTraitsTable = await responseStrongissimeTraits.json()
         console.log("Strongissime Traits Table LOADED");
         // console.log(strongissimeTraitsTable);
+
+
+        // Bosses Table
+        const responseBosses = await fetch("resources/data-tables/bosses.json")
+
+        if (responseBosses.status !== 200 && !responseBosses.ok) {
+            throw new Error(`${responseBosses.status}: Unable to fetch bosses.json`)
+        }
+
+        bossesTable = await responseBosses.json()
+        console.log("Bosses Table LOADED");
+        console.log(bossesTable);
 
 
         start()

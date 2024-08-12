@@ -106,6 +106,7 @@ class Being {
         return name
 
 
+        // TODO loop this with indexOf
         function getStrongissimeVersion(trait) {
             switch (trait.name.accordMasculin) {
                 case "Géant":
@@ -113,79 +114,60 @@ class Being {
 
                 case "Puissant":
                     return structuredClone(strongissimeTraitsTable[1])
-                    break;
 
                 case "Agile":
                     return structuredClone(strongissimeTraitsTable[2])
-                    break;
 
                 case "Rusé":
                     return structuredClone(strongissimeTraitsTable[3])
-                    break;
 
                 case "Immense":
                     return structuredClone(strongissimeTraitsTable[4])
-                    break;
 
                 case "Costaud":
                     return structuredClone(strongissimeTraitsTable[5])
-                    break;
 
                 case "Alerte":
                     return structuredClone(strongissimeTraitsTable[6])
-                    break;
 
                 case "Véloce":
                     return structuredClone(strongissimeTraitsTable[7])
-                    break;
 
                 case "Magique":
                     return structuredClone(strongissimeTraitsTable[8])
-                    break;
 
                 case "Maudit":
                     return structuredClone(strongissimeTraitsTable[9])
-                    break;
 
                 case "Rapide":
                     return structuredClone(strongissimeTraitsTable[10])
-                    break;
 
                 case "Enchanté":
                     return structuredClone(strongissimeTraitsTable[11])
-                    break;
 
                 case "Agressif":
                     return structuredClone(strongissimeTraitsTable[12])
-                    break;
 
                 case "Savant":
                     return structuredClone(strongissimeTraitsTable[13])
-                    break;
 
                 case "Svelte":
                     return structuredClone(strongissimeTraitsTable[14])
-                    break;
 
                 case "Dément":
                     return structuredClone(strongissimeTraitsTable[15])
-                    break;
 
                 case "Bestial":
                     return structuredClone(strongissimeTraitsTable[16])
-                    break;
 
                 case "Massif":
                     return structuredClone(strongissimeTraitsTable[17])
-                    break;
 
                 case "Gigantesque":
                     return structuredClone(strongissimeTraitsTable[18])
-                    break;
 
                 case "Mutant":
                     return structuredClone(strongissimeTraitsTable[19])
-                    break;
 
                 default:
                     break;

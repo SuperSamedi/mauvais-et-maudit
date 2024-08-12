@@ -14,11 +14,12 @@ const environment4Elements = environment4.querySelectorAll("div.steps div.step")
 const environment5 = document.querySelector("#environment5")
 const environment5Elements = environment5.querySelectorAll("div.steps div.step")
 
-const voyageOverlayBackground = document.getElementById("voyage-screen")
+const voyageOverlayBackground = document.getElementById("voyage-background")
 const voyageDiv = document.getElementById("voyage")
 
 voyageOverlayBackground.onclick = () => {
-    screenVoyage.style.visibility = "hidden"
+    screenVoyage.style.display = "none"
+    screenVoyageBackground.style.display = "none"
 }
 voyageDiv.onclick = (event) => { event.stopPropagation(); }
 
@@ -102,13 +103,20 @@ updateAllEnvironmentVisuals()
 function stepCompleted() {
     currentStep.isCompleted = true;
 
-    // Check if it was the last step of the environment
+    // Check if we just beat the final boss
+    if (isFinalStep) {
+        updateAllEnvironmentVisuals()
+        return
+    }
+
+    // Check if it was the last step of the environment => go to next environment
     if (isLastStep(currentStep, currentEnvironment)) {
         currentEnvironment = environments[environments.indexOf(currentEnvironment) + 1]
         currentStep = currentEnvironment.steps[0]
         updateAllEnvironmentVisuals()
         return
     }
+
     currentStep = currentEnvironment.steps[currentEnvironment.steps.indexOf(currentStep) + 1]
     updateAllEnvironmentVisuals()
 }
@@ -228,6 +236,13 @@ function isFirstStep(step = currentStep, environment = currentEnvironment) {
  * @param {object} environment (often used to evaluate the currentEnvironment)
  * @returns true if it is the last step of the environment
  * @returns false if it is not */
-function isLastStep(step, environment) {
+function isLastStep(step = currentStep, environment = currentEnvironment) {
     return environment.steps.indexOf(step) == environment.steps.length - 1 ? true : false
+}
+
+function isFinalStep() {
+    if (environments.indexOf(currentEnvironment) != environments.length - 1) return false
+    if (currentEnvironment.steps.indexOf(currentStep) != currentEnvironment.steps.length - 1) return false
+
+    return true
 }

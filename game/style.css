@@ -2,7 +2,6 @@
   margin: 0;
   padding: 0;
 }
-
 .hidden {
   display: none;
 }
@@ -46,6 +45,38 @@
   flex-direction: row;
   gap: 15px;
   overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+/* MAIN SCREEN */
+#main-screen {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+#main {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 1rem;
+  width: 100%;
+  max-width: 60rem;
+}
+#dungeon-master-text {
+  max-width: 60rem;
+  min-height: 12rem;
+  border: 2px solid black;
+  background-color: rgb(100, 100, 100);
+  padding: 10px;
+  color: rgb(243, 243, 243);
+  font-size: 1em;
+  margin-left: 3rem;
+  margin-right: 0.5rem;
+}
+#controls {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .btn-open-screen {
@@ -75,31 +106,35 @@
   align-items: center;
 }
 
-#character-sheet-screen {
+/* CHARACTER SHEET */
+#character-sheet-background {
   background-color: rgba(0, 0, 0, 0.24);
   display: flex;
   justify-content: left;
   align-items: start;
   position: fixed;
 }
-
+#character-sheet-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
 #character-sheet {
   background-color: white;
   padding: 10px;
-  width: 20rem;
-  max-width: 400px;
+  min-width: 18rem;
+  max-width: calc(95% - 3rem);
   border: 2px solid black;
   margin-left: 3rem;
   margin-top: 0.5rem;
   margin-right: 0.5rem;
+  margin-bottom: 1rem;
 }
-
-section {
+.character-sheet__section {
   border: 2px solid black;
   margin: 5px;
   padding: 3px;
 }
-
 .section-header {
   margin: 5px;
   font-weight: bold;
@@ -107,7 +142,6 @@ section {
   grid-column-start: 1;
   grid-column-end: 3;
 }
-
 #inventory {
   display: grid;
   grid-template-columns: 30px auto;
@@ -296,38 +330,4 @@ section {
 #item-details-view__btn-drop {
   color: crimson;
   border-color: crimson;
-}
-
-/*********  Main View *************/
-#main-screen {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-#main {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  padding: 1rem;
-  width: 100%;
-  max-width: 60rem;
-}
-
-#dungeon-master-text {
-  max-width: 60rem;
-  min-height: 12rem;
-  border: 2px solid black;
-  background-color: rgb(100, 100, 100);
-  padding: 10px;
-  color: rgb(243, 243, 243);
-  font-size: 1em;
-  margin-left: 3rem;
-  margin-right: 0.5rem;
-}
-
-#controls {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
 }
