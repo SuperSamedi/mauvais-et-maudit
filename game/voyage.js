@@ -26,7 +26,14 @@ voyageDiv.onclick = (event) => { event.stopPropagation(); }
 let environments = [
     {
         name: "Plaines",
-        description: "Le joueur a toujours l'initiative pendant les combats.",
+        effects: [
+            {
+                description: "Monstres faciles"
+            },
+            {
+                description: "Le·La joueur·euse a toujours l'initiative pendant les combats."
+            }
+        ],
         monstersLevel: 1,
         steps: [
             { isCompleted: false },
@@ -37,7 +44,11 @@ let environments = [
     },
     {
         name: "",
-        description: "",
+        effects: [
+            {
+                description: "Monstres faciles"
+            }
+        ],
         monstersLevel: 1,
         steps: [
             { isCompleted: false },
@@ -47,18 +58,32 @@ let environments = [
     },
     {
         name: "",
-        description: "",
+        effects: [
+            {
+                description: "Monstres normaux"
+            },
+            {
+                description: "La dernière étape de cette zone est un combat contre un monstre super fort."
+            }
+        ],
         monstersLevel: 2,
         steps: [
             { isCompleted: false },
             { isCompleted: false },
             { isCompleted: false },
-            { isCompleted: false }
+            {
+                isMiniBoss: true,
+                isCompleted: false
+            }
         ]
     },
     {
         name: "",
-        description: "",
+        effects: [
+            {
+                description: "Monstres forts"
+            }
+        ],
         monstersLevel: 3,
         steps: [
             { isCompleted: false },
@@ -68,7 +93,11 @@ let environments = [
     },
     {
         name: "",
-        description: "",
+        effects: [
+            {
+                description: "Monstres super forts"
+            }
+        ],
         monstersLevel: 4,
         steps: [
             { isCompleted: false },
@@ -79,12 +108,22 @@ let environments = [
     },
     {
         name: "",
-        description: "",
+        effects: [
+            {
+                description: "Monstres super forts"
+            },
+            {
+                description: "La dernière étape de cette zone est un combat contre un boss."
+            }
+        ],
         monstersLevel: 4,
         steps: [
             { isCompleted: false },
             { isCompleted: false },
-            { isCompleted: false }
+            {
+                isFinalBoss: true,
+                isCompleted: false
+            }
         ]
     },
 ]
@@ -94,7 +133,15 @@ let currentStep = currentEnvironment.steps[0];
 
 
 updateAllEnvironmentVisuals()
-// stepCompleted()
+stepCompleted()
+stepCompleted()
+stepCompleted()
+stepCompleted()
+stepCompleted()
+stepCompleted()
+stepCompleted()
+stepCompleted()
+stepCompleted()
 
 /**
  * Sets the currentStep as completed.
@@ -104,7 +151,8 @@ function stepCompleted() {
     currentStep.isCompleted = true;
 
     // Check if we just beat the final boss
-    if (isFinalStep) {
+    if (isFinalStep()) {
+        console.log("final step");
         updateAllEnvironmentVisuals()
         return
     }
@@ -129,7 +177,19 @@ function updateAllEnvironmentVisuals() {
     });
 
     txtEnvironmentDescriptions.forEach(description => {
-        description.innerText = environments[description.dataset["number"]].description
+        let text = ""
+
+        for (let i = 0; i < environments[description.dataset["number"]].effects.length; i++) {
+            text += `• ${environments[description.dataset["number"]].effects[i].description}`
+
+            // if there are remaining effects
+            if (i + 1 < environments[description.dataset["number"]].effects.length) {
+                text += `
+                `;
+            }
+        }
+
+        description.innerText = text
     });
 
     environment0Elements.forEach(element => {
@@ -242,6 +302,7 @@ function isLastStep(step = currentStep, environment = currentEnvironment) {
 
 function isFinalStep() {
     if (environments.indexOf(currentEnvironment) != environments.length - 1) return false
+    console.log("is last environment");
     if (currentEnvironment.steps.indexOf(currentStep) != currentEnvironment.steps.length - 1) return false
 
     return true

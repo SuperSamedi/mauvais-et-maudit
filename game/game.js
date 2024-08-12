@@ -741,29 +741,42 @@ function chooseNewEnvironment(customMessage) {
     let message = customMessage
     gameMessage(`${customMessage}
         
-        Vous arrivez dans un nouvel environement.
-        Lancez le D20 pour tirer celui-ci.`)
+        Vous arrivez dans un nouvel environnement.
+        - Lancez le D20 pour tirer celui-ci.`)
 
     hideAllGenericButtons()
-    activateButton(btn1, "Lancer le D20", () => { newEnvironmentResult(d20.roll()) })
+    activateButton(
+        btn1,
+        "Lancer le D20",
+        () => {
+            clearCardsDisplayZone()
+            newEnvironmentResult(getRandomInt(environmentsTable.length + 1))
+        })
 
     function newEnvironmentResult(roll) {
         const newEnvironment = environmentsTable[roll - 1]
 
         // Pass data to the currentEnvironment of voyage.js
         currentEnvironment.name = newEnvironment.name
-        currentEnvironment.description = newEnvironment.description
+        newEnvironment.effects.forEach(effect => {
+            currentEnvironment.effects.push(effect)
+        });
         if (newEnvironment.statsModifiers) currentEnvironment.statsModifiers = newEnvironment.statsModifiers
         if (newEnvironment.shopModifiers) currentEnvironment.shopModifiers = newEnvironment.shopModifiers
         if (newEnvironment.InnModifiers) currentEnvironment.InnModifiers = newEnvironment.InnModifiers
 
         let message = `${roll} ! ${newEnvironment.name}.
-        - Effet : ${newEnvironment.description}`
+        ${newEnvironment.effects.length > 1 ? "Effects" : "Effet"} de cette zone :`
+
+        for (let i = 0; i < newEnvironment.effects.length; i++) {
+            message += `
+            - ${newEnvironment.effects[i].description}`
+        }
 
         if (allowedToRerollEnvironmentRoll) {
             gameMessage(`${message}
                 
-                Durant votre voyage vous avez gagné la possibilité d'annuler votre prochain jet d'environnement. Voulez-vous annuler ce jet et relancer le dé ?`)
+                Durant votre voyage vous avez gagné la possibilité d'annuler votre prochain jet d'environnement.Voulez - vous annuler ce jet et relancer le dé ? `)
 
             allowedToRerollEnvironmentRoll = false
 
@@ -783,10 +796,10 @@ function chooseNewEnvironment(customMessage) {
         }
 
         updateAllEnvironmentVisuals()
+        player.restoreHitPoints()
         player.updateStatsVisuals()
 
-        gameMessage(`${roll} ! ${newEnvironment.name}.
-            - Effet : ${newEnvironment.description}`)
+        gameMessage(message)
 
         activateButton(btn1, "Continuer", () => { nextAdventure("") })
     }
@@ -799,8 +812,7 @@ function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpRewar
     allowedToDraw = false;
 
     if (deck.length <= 0) {
-        gameMessage("La pioche est vide...");
-        activateButton(btn1, "Continuer", () => { nextAdventure("") })
+        nextAdventure("La pioche est vide...")
         return;
     }
 
@@ -865,16 +877,7 @@ function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpRewar
         return
     }
 
-    gameMessage(feedbackMessage);
-
-    activateButton(
-        btn1,
-        "Continuer",
-        () => {
-            clearCardsDisplayZone()
-            nextAdventure()
-        }
-    )
+    nextAdventure(feedbackMessage)
 }
 
 function generateIntelligentBeing(roll = d20.roll(), traits = []) {
@@ -1112,6 +1115,8 @@ function generateBoss(roll = d20.roll()) {
 
 function nextAdventure(customMessage = "") {
     hideAllGenericButtons()
+    console.log("current step: ");
+    console.log(currentStep);
 
     // If we start a new environment we choose it first
     if (isFirstStep() && currentEnvironment.name == "") {
@@ -1119,22 +1124,45 @@ function nextAdventure(customMessage = "") {
         return
     }
 
+    // Mini boss time !
+    if (currentStep.isMiniBoss) {
+        gameMessage(customMessage)
+        activateButton(
+            btn1,
+            "Continuer",
+            () => {
+                clearCardsDisplayZone()
+                miniBossAdventure()
+            })
+        return
+    }
+
     // Is it Final Boss time ??
     if (currentStep.isFinalBoss) {
         gameMessage(customMessage)
-        activateButton(btn1, "Continuer", () => { finalAdventure() })
+        activateButton(
+            btn1,
+            "Continuer",
+            () => {
+                clearCardsDisplayZone()
+                finalAdventure()
+            })
+
         return
     }
 
     gameMessage(`${customMessage}
         
         Une nouvelle étape de votre voyage commence.
-        Lancez un D100 pour voir quelles péripéties vous attendent.`)
+        - Lancez un D100 pour voir quelles péripéties vous attendent.`)
 
     activateButton(
         btn1,
         "Lancer le D100",
-        () => { chooseNextAdventure(d100.roll()) })
+        () => {
+            clearCardsDisplayZone()
+            chooseNextAdventure(d100.roll())
+        })
 
     function chooseNextAdventure(roll) {
         hideAllGenericButtons()
@@ -1215,6 +1243,26 @@ function nextAdventure(customMessage = "") {
             Que choisissez-vous ?`)
     }
 
+}
+
+// Fight vs super strong monster
+function miniBossAdventure() {
+    const introMessage = `La nuit est en train de tomber. Vous êtes à la recherche d'un endroit où poser vos affaires pour passer une nuit à la belle étoile. Vous êtes tellement ${player.gender == "F" ? "distraite" : "distrait"} à scruter la pénombre de part et d'autre du chemin, que vous ne remarquez pas une ombre imposante se dresser au milieu de celui-ci. Vous percutez la créature de plein fouet. Elle-même, n'ayant pas décelé votre présence jusque là, bondit et se prépare à vous attaquer.`
+
+    const traits = []
+    traits.push(getStrongTrait())
+    traits.push(getStrongTrait())
+
+    const monster = generateMonster(d20.roll(), traits)
+
+    const contextData = {
+        opponent: monster,
+        introMessage: introMessage,
+        opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
+        rewardPhaseCallBack: regularRewardPhase
+    }
+
+    fight(contextData)
 }
 
 //#region Boss fight set up
@@ -1504,6 +1552,7 @@ function intelligentBeingEncounter() {
             Lorsque ${beingNameWithDeterminantDefini(unbuffedBeing, true)} arrive à votre hauteur, ${unbuffedBeing.gender == "F" ? "elle" : "il"} vous lance un grognement bourru. Vous ${unbuffedBeing.gender == "F" ? "la" : "le"} saluez en retour ce qui, surprenamment, à pour effet de faire entrer ${beingNameWithDeterminantDefini(unbuffedBeing, true)} dans une rage folle. `
 
             intelligentBeing.traits.push(getStrongTrait(d20.roll()))
+            intelligentBeing.restoreHitPoints()
 
             const contextData = {
                 opponent: intelligentBeing,
@@ -1519,19 +1568,11 @@ function intelligentBeingEncounter() {
         if (roll <= 18) {
             allowedToRerollEnvironmentRoll = true
             player.experiencePoints++
-
-            gameMessage(`${roll} !
+            stepCompleted()
+            nextAdventure(`${roll} !
                 ${beingNameWithDeterminantDefini(intelligentBeing, false)} vous salue amicalement et vous fait part d'un malencontreux événement qui lui est arrivé sur sa route. Vous prenez bonnes notes de ces précieuses informations. Qui sait, peut-être réussirez-vous, grâce à ces dernières, à déjouer les périls du chemin ardu qui vous attend ?
                 - Vous gagnez 1XP et la possibilité d'annuler votre prochain lancé de dé d'environnement et de le relancer.`)
 
-            activateButton(
-                btn1,
-                "Continuer",
-                () => {
-                    stepCompleted()
-                    nextAdventure()
-                }
-            )
             return
         }
         if (roll <= 20) {
@@ -1573,13 +1614,12 @@ function intelligentBeingEncounter() {
         function letBeingGo() {
             hideAllGenericButtons()
 
-            gameMessage(`Vous continuez votre route.
-                - Vous gagnez 1XP.`)
+            let outroMessage = `Vous continuez votre route.
+                - Vous gagnez 1XP.`
 
-            stepCompleted()
             player.experiencePoints++
-
-            activateButton(btn1, "Continuer", () => { nextAdventure() })
+            stepCompleted()
+            nextAdventure(outroMessage)
         }
 
         function giveGold(amount) {
@@ -1587,14 +1627,13 @@ function intelligentBeingEncounter() {
 
             hideAllGenericButtons()
 
-            gameMessage(`Vous donnez ${amount}PO ${intelligentBeing.gender == "F" ? "à la racketteuse" : "au racketteur"} et continuez votre route.
-                - Vous gagnez 1XP.`)
+            let outroMessage = `Vous donnez ${amount}PO ${intelligentBeing.gender == "F" ? "à la racketteuse" : "au racketteur"}, qui vous laisse passer. Vous continuez votre route.
+                - Vous gagnez 1XP.`
 
             player.goldCoins -= amount
             player.experiencePoints++
             stepCompleted()
-
-            activateButton(btn1, "Continuer", () => { nextAdventure() })
+            nextAdventure(outroMessage)
         }
     }
 }
@@ -1920,62 +1959,48 @@ function specialEncounter() {
 
         function givePotion() {
             const potion = player.inventory.containsItemWithName("Potion")
-            if (potion) {
-                gameMessage(`Vous donnez une Potion au voyageur.
+            if (!potion) return
+
+            player.inventory.remove(potion)
+            player.inventory.add(getCupsItem(6))
+            player.experiencePoints++
+            stepCompleted()
+            nextAdventure(`Vous donnez une Potion au voyageur.
                     Il vous remercie avec une voix pleine d'émotions et vous offre un objet en retour.
                     
                     Vous recevez le Pendentif de la Lune.
                     Vous recevez également 1XP.`)
 
-                player.inventory.remove(potion)
-                player.inventory.add(getCupsItem(6))
-                player.experiencePoints++
-
-                stepCompleted()
-
-                hideAllGenericButtons()
-                activateButton(btn1, "Continuer", () => { nextAdventure("") })
-            }
-
         }
 
         function giveEther() {
             const ether = player.inventory.containsItemWithName("Éther")
-            if (ether) {
-                gameMessage(`Vous donnez un Éther au voyageur.
+            if (!ether) return
+
+            player.inventory.remove(ether)
+            player.inventory.add(getCupsItem(6))
+            player.experiencePoints++
+            stepCompleted()
+            nextAdventure(`Vous donnez un Éther au voyageur.
                     Il vous remercie avec une voix pleine d'émotions et vous offre un objet en retour.
                                 
                     Vous recevez le Pendentif de la Lune.
                     Vous recevez également 1XP.`)
 
-                player.inventory.remove(ether)
-                player.inventory.add(getCupsItem(6))
-                player.experiencePoints++
-
-                stepCompleted()
-
-                hideAllGenericButtons()
-                activateButton(btn1, "Continuer", () => { nextAdventure("") })
-            }
         }
 
         function giveGold() {
             if (player.goldCoins < 200) return;
 
-            gameMessage(`Vous donnez 200PO au voyageur.
+            player.goldCoins -= 200
+            player.inventory.add(new SwordsItem(swordsItemsTable[0]))
+            player.experiencePoints++
+            stepCompleted();
+            nextAdventure(`Vous donnez 200PO au voyageur.
                 Il vous remercie chaleureusement et vous offre un objet en retour.
                 
                 Vous recevez une Dague.
                 Vous recevez également 1XP.`)
-
-            player.goldCoins -= 200
-            player.inventory.add(new SwordsItem(swordsItemsTable[0]))
-            player.experiencePoints++
-
-            stepCompleted();
-
-            hideAllGenericButtons()
-            activateButton(btn1, "Continuer", () => { nextAdventure("") })
         }
 
         function fightTraveler() {
@@ -1993,21 +2018,20 @@ function specialEncounter() {
                 if (roll >= 11) {
                     stepCompleted()
 
-                    activateButton(btn1, "Continuer", () => { nextAdventure("") })
-
                     message += `Le voyageur lance le sort 'Téléportation' et disparaît avec sa fille, vous laissant ${player.gender == "F" ? "seule" : "seul"} au milieu du chemin.
                         
                         Le combat est terminé.`
+
                     if (player.hitPoints < player.maxHitPoints) {
                         player.restoreHitPoints()
                         message += `
                         Vous vous soignez et continuez votre route.`
-                        gameMessage(message)
+                        nextAdventure(message)
                         return
                     }
 
                     message += ` Vous continuez votre route.`
-                    gameMessage(message)
+                    nextAdventure(message)
                     return
                 }
 
@@ -2038,9 +2062,6 @@ function specialEncounter() {
 
             const travelerRewardPhase = () => {
                 stepCompleted();
-
-                activateButton(btn1, "Continuer", () => { nextAdventure("") })
-
                 player.experiencePoints++;
 
                 let message = `Le voyageur est vaincu.
@@ -2048,12 +2069,11 @@ function specialEncounter() {
 
                 if (player.hitPoints < player.maxHitPoints) {
                     player.restoreHitPoints()
-                    gameMessage(`${message}.
+                    nextAdventure(`${message}.
                     Vous vous soignez et continuez votre route.`)
                     return
                 }
-
-                gameMessage(`${message} et continuez votre route.`)
+                nextAdventure(`${message} et continuez votre route.`)
             }
 
             const contextData = {
@@ -2067,15 +2087,10 @@ function specialEncounter() {
         }
 
         function leave() {
-            gameMessage(`Vous partagez votre sympathie au voyageur mais lui dites que vous ne pouvez pas l'aider.
-                Vous gagner 1Xp et continuer votre route.`)
-
             player.experiencePoints++;
-
             stepCompleted()
-
-            hideAllGenericButtons()
-            activateButton(btn1, "Continuer", () => { nextAdventure("") })
+            nextAdventure(`Vous partagez votre sympathie au voyageur mais lui dites que vous ne pouvez pas l'aider.
+                Vous gagner 1XP et continuer votre route.`)
         }
 
     }
@@ -2460,21 +2475,15 @@ function newTurn(ctx) {
 function regularRewardPhase(ctx) {
     hideAllGenericButtons()
     stepCompleted();
-    player.restoreHitPoints()
     player.experiencePoints++
 
-    gameMessage(`${beingNameWithDeterminantDefini(ctx.opponent, false)} est terrassé${ctx.opponent.gender == "F" ? "e" : ""} !
-        Vous vous soignez et gagnez 1 point d'expérience.
-        Vous Pouvez aussi lancer un D20 pour acquérir une récompense potentielle.`)
+    gameMessage(`${beingNameWithDeterminantDefini(ctx.opponent, false)} est ${ctx.opponent.gender == "F" ? "terrassée" : "terrassé"} !
+        ${player.hitPoints < player.maxHitPoints ? "Vous vous soignez et" : "Vous"} gagnez 1 point d'expérience.
+        - Vous p ouvez aussi lancer le D20 pour acquérir une récompense potentielle.`)
 
-    activateButton(
-        btn1,
-        "Lancer un D20",
-        () => {
-            const roll = d20.roll();
-            fightReward(roll)
-        }
-    )
+    player.restoreHitPoints()
+
+    activateButton(btn1, "Lancer le D20", () => { fightReward(d20.roll()) })
 
     function fightReward(roll) {
         hideAllGenericButtons()
@@ -2483,9 +2492,9 @@ function regularRewardPhase(ctx) {
 
         switch (reducedRoll) {
             case 2:
-                gameMessage(`${roll} !
-                    Vous gagnez 1 point d'action.`)
                 player.actionPoints++
+                nextAdventure(`${roll} !
+                    Vous gagnez 1 point d'action.`)
                 break;
 
             case 3:
@@ -2509,12 +2518,10 @@ function regularRewardPhase(ctx) {
                 return
 
             default:
-                gameMessage(`${roll} !
+                nextAdventure(`${roll} !
                     Aucune récompense.Déso...`)
                 break;
         }
-
-        activateButton(btn1, "Continuer", () => { nextAdventure("") })
     }
 }
 

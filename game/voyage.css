@@ -53,7 +53,12 @@
   background-repeat: no-repeat;
   background-size: contain;
 }
-
+.step-mini-boss-fight {
+  background-image: url(assets/icons/icon-mini-boss.png);
+}
+.boss-fight-step {
+  background-image: url(assets/icons/icon-boss.png);
+}
 .completed {
   background-color: aquamarine;
 }

@@ -159,7 +159,7 @@ async function loadJSONS() {
 
         bossesTable = await responseBosses.json()
         console.log("Bosses Table LOADED");
-        console.log(bossesTable);
+        // console.log(bossesTable);
 
 
         start()

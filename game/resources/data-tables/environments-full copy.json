@@ -1,0 +1,289 @@
+[
+  {
+    "name": "Forêt",
+    "effects": [
+      {
+        "description": "1 PA gratuit pour le joueur au début de la zone."
+      }
+    ]
+  },
+  {
+    "name": "Grotte",
+    "effects": [
+      {
+        "description": "Le joueur gagne -10 VI pendant cette zone."
+      },
+      {
+        "description": "Les adversaires gagnent -10 VI et -10 PV pendant cette zone."
+      }
+    ],
+    "statsModifiers": {
+      "player": {
+        "speed": -10
+      },
+      "monsters": {
+        "hitPoints": -10,
+        "speed": -10
+      },
+      "intelligentBeings": {
+        "hitPoints": -10,
+        "speed": -10
+      }
+    }
+  },
+  {
+    "name": "Village de Brigands",
+    "effects": [
+      {
+        "description": "Tous les combats contre des monstres sont remplacés par des rencontres avec des creatures intelligentes."
+      },
+      {
+        "description": "Les prix des magasins sont diminués de 50PO."
+      },
+      {
+        "description": "Tous les magasins proposent l'objet 'Lanterne de Vision' en plus des objets normaux."
+      }
+    ],
+    "shopModifiers": {
+      "prices": -50,
+      "additionalItems": {
+        "cups": [10]
+      }
+    }
+  },
+  {
+    "name": "Ruines",
+    "effects": [
+      {
+        "description": "Possibilité de relancer le dé 1X à chaque jet de récompense effectué."
+      }
+    ]
+  },
+  {
+    "name": "Marécage",
+    "description": "Le joueur gagne -10 VI.",
+    "statsModifiers": {
+      "player": {
+        "speed": -10
+      }
+    }
+  },
+  {
+    "name": "Désert",
+    "effects": [
+      {
+        "description": "Tous les villages sont remplacés par des repos."
+      }
+    ]
+  },
+  {
+    "name": "Montagne",
+    "effects": [
+      {
+        "description": "Les monstres gagnent +10 FO pendant cette zone."
+      }
+    ],
+    "statsModifiers": {
+      "monsters": {
+        "strength": -10
+      }
+    }
+  },
+  {
+    "name": "Donjon",
+    "effects": [
+      {
+        "description": "Les adversaires intelligents ayant au moins 60MA peuvent utiliser le sort 'Soin' durant les combats."
+      },
+      {
+        "description": "Les monstres gagnent +10 FO pendant cette zone."
+      },
+      {
+        "description": "Possibilité de relancer le dé 1X à chaque jet de récompense effectué."
+      }
+    ],
+    "statsModifiers": {
+      "monsters": {
+        "strength": 10
+      }
+    }
+  },
+  {
+    "name": "Steppe",
+    "effects": [
+      {
+        "description": "Les adversaires gagnent +10 VI."
+      }
+    ],
+    "statsModifiers": {
+      "monsters": {
+        "speed": 10
+      },
+      "intelligentBeings": {
+        "speed": 10
+      }
+    }
+  },
+  {
+    "name": "Terre Maudite",
+    "effects": [
+      {
+        "description": "Les adversaires gagnent +10 MA."
+      }
+    ],
+    "statsModifiers": {
+      "monsters": {
+        "magic": 10
+      },
+      "intelligentBeings": {
+        "magic": 10
+      }
+    }
+  },
+  {
+    "name": "Vallée Empoisonnée",
+    "effects": [
+      {
+        "description": "-5 PV à la fin de chaque phase d'attaque pour l'attaquant."
+      },
+      {
+        "description": "À la fin des combats, le joueur ne peut récupérer que 70PV maximum."
+      }
+    ]
+  },
+  {
+    "name": "Caverne de Cristal",
+    "effects": [
+      {
+        "description": "Le joueur gagne +10 MA pendant cette zone."
+      }
+    ],
+    "statsModifiers": {
+      "player": {
+        "magic": 10
+      }
+    }
+  },
+  {
+    "name": "Mine d'Or",
+    "effects": [
+      {
+        "description": "Après chaque combat, à la place de la récompense normale, le joueur tire une carte et cette carte considérée comme étant du signe 'Pièces'."
+      },
+      {
+        "description": "Les prix des auberges et magasins sont diminués de 50PO."
+      }
+    ],
+    "shopModifiers": {
+      "prices": -50
+    },
+    "innModifiers": {
+      "price": -50
+    }
+  },
+  {
+    "name": "Étangs Putrides",
+    "effects": [
+      {
+        "description": "Se reposer ne donne qu'un seul PA."
+      },
+      {
+        "description": "Le joueur gagne -10 MA pendant cette zone."
+      }
+    ],
+    "statsModifiers": {
+      "player": {
+        "magic": -10
+      }
+    }
+  },
+  {
+    "name": "Labyrinthe Souterrain",
+    "effects": [
+      {
+        "description": "Cette zone contient une étape supplémentaire."
+      }
+    ]
+  },
+  {
+    "name": "Volcan",
+    "effects": [
+      {
+        "description": "Chaque coup physique porté lors d'un combat fait perdre 10 PV de plus."
+      }
+    ]
+  },
+  {
+    "name": "Canyon",
+    "effects": [
+      {
+        "description": "Les monstres gagnent +20 PV pendant cette zone."
+      }
+    ],
+    "statsModifiers": {
+      "monsters": {
+        "hitPoints": 20
+      }
+    }
+  },
+  {
+    "name": "Rivage",
+    "effects": [
+      {
+        "description": "Le joueur gagne +5 FO, +5 VI et +5 MA pendant cette zone."
+      }
+    ],
+    "statsModifiers": {
+      "player": {
+        "hitPoints": 5,
+        "strength": 5,
+        "speed": 5,
+        "magic": 5
+      }
+    }
+  },
+  {
+    "name": "Jungle",
+    "effects": [
+      {
+        "description": "1PA gratuit pour le joueur au début de la zone."
+      },
+      {
+        "description": "Les monstres gagnent +10 PV pendant cette zone."
+      },
+      {
+        "description": "Les adversaires intelligents gagnent +10 FO pendant cette zone."
+      }
+    ],
+    "statsModifiers": {
+      "monsters": {
+        "hitPoints": 10
+      },
+      "intelligentBeings": {
+        "strength": 10
+      }
+    }
+  },
+  {
+    "name": "Lande Reculée",
+    "effects": [
+      {
+        "description": "Toutes les rencontres avec des créatures intelligentes sont remplacées par des combats contre des monstres."
+      },
+      {
+        "description": "Les villages ne possèdent pas d'auberges."
+      },
+      {
+        "description": "Deux cartes seulement par magasin."
+      },
+      {
+        "description": "Les prix des magasins sont diminués de 50PO."
+      }
+    ],
+    "description": "Toutes les rencontres avec des créatures intelligentes sont remplacées par des combats. \nLes villages ne possèdent pas d'auberges.\nDeux cartes seulement par magasin. Les prix des magasins sont augmentés de 50PO.",
+    "shopModifiers": {
+      "prices": -50,
+      "cardsLimit": 2
+    }
+  }
+]

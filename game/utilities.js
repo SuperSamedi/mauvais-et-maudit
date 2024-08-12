@@ -117,11 +117,11 @@ function generateTraits() {
 
 }
 
-function getWeakTrait(roll) {
+function getWeakTrait(roll = d20.roll()) {
   return structuredClone(weakTraitsTable[d20.reducedRoll(roll, 4) - 1])
 }
 
-function getStrongTrait(roll) {
+function getStrongTrait(roll = d20.roll()) {
   let trait = structuredClone(strongTraitsTable[roll - 1])
 
   // Mutant special rule
