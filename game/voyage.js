@@ -133,15 +133,15 @@ let currentStep = currentEnvironment.steps[0];
 
 
 updateAllEnvironmentVisuals()
-stepCompleted()
-stepCompleted()
-stepCompleted()
-stepCompleted()
-stepCompleted()
-stepCompleted()
-stepCompleted()
-stepCompleted()
-stepCompleted()
+// stepCompleted()
+// stepCompleted()
+// stepCompleted()
+// stepCompleted()
+// stepCompleted()
+// stepCompleted()
+// stepCompleted()
+// stepCompleted()
+// stepCompleted()
 
 /**
  * Sets the currentStep as completed.
