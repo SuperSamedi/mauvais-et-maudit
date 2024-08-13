@@ -40,7 +40,6 @@
 #game {
   position: relative;
   width: 100vw;
-  height: 100vh;
   display: flex;
   flex-direction: row;
   gap: 15px;
@@ -123,7 +122,7 @@
   background-color: white;
   padding: 10px;
   min-width: 18rem;
-  max-width: calc(95% - 3rem);
+  max-width: calc(100% - 3.75rem);
   border: 2px solid black;
   margin-left: 3rem;
   margin-top: 0.5rem;

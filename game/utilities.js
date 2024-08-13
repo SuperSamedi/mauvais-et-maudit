@@ -280,3 +280,11 @@ function hideButton(btn) {
   btn.disabled = true
   btn.onclick = () => { }
 }
+
+function updateGameDivHeight(element) {
+  if (element === undefined) {
+    containerGame.removeAttribute("style")
+    return
+  }
+  containerGame.style.height = `${element.offsetHeight}px`
+}

@@ -1,11 +1,16 @@
 //#region DOM links
+const containerGame = document.getElementById("game")
 const screenLoader = document.getElementById("loading-screen")
+
 const screenCharacterSheetBackground = document.getElementById("character-sheet-background")
+const screenCharacterSheetContainer = document.getElementById("character-sheet-container")
 const screenCharacterSheet = document.getElementById("character-sheet")
-const screenVoyageBackground = document.getElementById("voyage-background")
-const screenVoyage = document.getElementById("voyage")
+
 const btnOpenScreenCharacterSheet = document.getElementById("btn-open-screen-character-sheet")
-const btnOpenScreenVoyage = document.getElementById("btn-open-screen-voyage")
+
+const panelPlayerName = document.getElementById("player-name-panel")
+const inputPlayerName = document.getElementById("player-name-input-field")
+const btnConfirmPlayerName = document.getElementById("btn-confirm-player-name-input-field")
 
 const txtDungeonMaster = document.getElementById("dungeon-master-text");
 
@@ -46,10 +51,10 @@ const btnNextAdventure = document.getElementById("btn-next-adventure");
 
 // =====> START
 //#region  Static Buttons Assignments
-btnRaceRoll.onclick = choosePlayerRace;
-btnCardDraw.onclick = () => {
-    allowedToDraw = true;
-};
+// btnRaceRoll.onclick = choosePlayerRace;
+// btnCardDraw.onclick = () => {
+//     allowedToDraw = true;
+// };
 
 imgDeck.onclick = () => {
     if (allowedToDraw) {
@@ -59,28 +64,30 @@ imgDeck.onclick = () => {
     }
 };
 
+screenCharacterSheetContainer.onclick = () => { closeCharacterSheet() }
+screenCharacterSheetBackground.onclick = () => { closeCharacterSheet() }
 btnOpenScreenCharacterSheet.onclick = () => {
-    if (screenCharacterSheet.style.display == "none") {
-        screenVoyage.style.display = "none"
-        screenVoyageBackground.style.display = "none"
-        screenCharacterSheet.style.display = "block"
-        screenCharacterSheetBackground.style.display = "block"
+    if (screenCharacterSheetContainer.style.display == "none") {
+        // OPEN
+        closeVoyage()
+        openCharacterSheet()
         return
     }
+    // CLOSE
+    closeCharacterSheet()
+}
+
+function openCharacterSheet() {
+    screenCharacterSheetContainer.style.display = "block"
+    screenCharacterSheetBackground.style.display = "block"
+    updateGameDivHeight(screenCharacterSheetContainer)
+}
+function closeCharacterSheet() {
+    screenCharacterSheetContainer.style.display = "none"
     screenCharacterSheetBackground.style.display = "none"
-    screenCharacterSheet.style.display = "none"
+    updateGameDivHeight(undefined)
 }
-btnOpenScreenVoyage.onclick = () => {
-    if (screenVoyage.style.display == "none") {
-        screenCharacterSheet.style.display = "none"
-        screenCharacterSheetBackground.style.display = "none"
-        screenVoyage.style.display = "block"
-        screenVoyageBackground.style.display = "block"
-        return
-    }
-    screenVoyageBackground.style.display = "none"
-    screenVoyage.style.display = "none"
-}
+
 //#endregion
 
 const player = new Player();
@@ -104,15 +111,15 @@ function start() {
     console.log("Starting Game");
     updateDeckVisual()
     hideAllGenericButtons()
+    panelPlayerName.style.display = "none"
     panelStatsAdjustment.style.display = "none"
-    btnCardDraw.style.display = "none"
-    screenCharacterSheetBackground.style.display = "none"
-    screenCharacterSheet.style.display = "none"
-    screenVoyageBackground.style.display = "none"
-    screenVoyage.style.display = "none"
+    // btnCardDraw.style.display = "none"
+    closeCharacterSheet()
+    closeVoyage()
     detailsViewOverlay.style.display = "none"
-    screenLoader.style.visibility = "hidden"
+    screenLoader.style.display = "none"
     // tests()
+    presentation()
 }
 
 
@@ -234,13 +241,19 @@ function tests() {
 //#endregion
 
 
-function choosePlayerGender(params) {
-    // TODO
+function presentation() {
+    gameMessage(`Vous êtes assis·e devant votre âtre, le feu crépite. Soudain il tremble imperceptiblement, et pendant un instant la lumière vacille. Les ombres s'allongent légèrement, et un frisson glacé vous parcourt. Vous savez ce que cela signifie. Vous vous emparez de votre ancienne arme, enfilez votre manteau, et ouvrez la porte de votre masure. À l'horizon le ciel se teint de rouge et de mauve. Le Mal est est revenu, et vous seul·e pouvez le vaincre...
+
+        Bienvenue dans Mauvais & Maudit "Édition Online" !
+        Vous êtes sur le point d'embarquer dans une aventure interactive textuelle. Durant cette quête, vous allez incarner un personnage dont vous allez tirer au hasard la race et le trait distinctif.
+        Commençons par la race de votre personnage :
+        - Appuyez sur "Lancer le D20" pour tirer au hasard votre race.`)
+
+    activateButton(btn1, "Lancer le D20", () => { choosePlayerRace(d20.roll()) })
 }
 
-function choosePlayerRace() {
-    hideButton(btnRaceRoll)
-    const roll = d20.roll();
+function choosePlayerRace(roll) {
+    hideAllGenericButtons()
 
     let hybridRaceA = {};
     let hybridRaceB = {};
@@ -274,7 +287,7 @@ function choosePlayerRace() {
 
         - Maintenant, lancez le D20 pour tirer votre trait.`)
 
-    activateButton(btn1, "Lancer le D20", () => { choosePlayerTrait() })
+    activateButton(btn1, "Lancer le D20", () => { choosePlayerTrait(d20.roll()) })
 
     //#region Non-Being Player Generation
     function generateNonBeingPlayer(being, isGeneratingHybrid) {
@@ -384,7 +397,7 @@ function choosePlayerRace() {
 
                 - Maintenant, lancez le D20 pour tirer votre trait.`)
 
-            activateButton(btn1, "Lancer le D20", () => { choosePlayerTrait() })
+            activateButton(btn1, "Lancer le D20", () => { choosePlayerTrait(d20.roll()) })
         }
 
         function adjustStats(being, amount, isAdding) {
@@ -622,7 +635,7 @@ function choosePlayerRace() {
 
                     - Maintenant, lancez le D20 pour tirer votre trait.`)
 
-                activateButton(btn1, "Lancer le D20", () => { choosePlayerTrait() })
+                activateButton(btn1, "Lancer le D20", () => { choosePlayerTrait(d20.roll()) })
             }
         }
     }
@@ -657,7 +670,7 @@ function choosePlayerRace() {
             
             Maintenant, lancez le D20 pour choisir votre trait.`)
 
-        activateButton(btn1, "Lancer le D20", () => { choosePlayerTrait() })
+        activateButton(btn1, "Lancer le D20", () => { choosePlayerTrait(d20.roll()) })
 
 
         function generateHybridPlayerFirstHalf() {
@@ -720,89 +733,80 @@ function choosePlayerRace() {
     //#endregion
 }
 
-function choosePlayerTrait() {
+function choosePlayerTrait(roll) {
     hideAllGenericButtons()
-    const roll = d20.roll();
 
     player.traits[0] = structuredClone(strongTraitsTable[roll - 1]);
 
     gameMessage(`${roll} ! - ${player.gender == "F" ? player.traits[0].name.accordFeminin : player.traits[0].name.accordMasculin} (${player.traits[0].description})
         
-        - Ensuite, tirez une carte du deck. Vous recevrez une récompense en fonction de la carte.`);
+        - Ensuite, choisissez le genre de votre personnage.`);
 
     player.restoreHitPoints();
     player.updateTraitVisuals();
     player.updateStatsVisuals();
 
-    allowedToDraw = true
+    activateButton(btn1, "Féminin", () => { choosePlayerGender("F") })
+    activateButton(btn2, "Masculin", () => { choosePlayerGender("M") })
 }
 
-function chooseNewEnvironment(customMessage) {
-    let message = customMessage
-    gameMessage(`${customMessage}
-        
-        Vous arrivez dans un nouvel environnement.
-        - Lancez le D20 pour tirer celui-ci.`)
-
+function choosePlayerGender(gender) {
     hideAllGenericButtons()
-    activateButton(
-        btn1,
-        "Lancer le D20",
-        () => {
-            clearCardsDisplayZone()
-            newEnvironmentResult(getRandomInt(environmentsTable.length + 1))
-        })
+    player.gender = gender
 
-    function newEnvironmentResult(roll) {
-        const newEnvironment = environmentsTable[roll - 1]
+    let message = `- Maintenant, choisissez un nom pour votre personnage.`
+    gameMessage(message)
 
-        // Pass data to the currentEnvironment of voyage.js
-        currentEnvironment.name = newEnvironment.name
-        newEnvironment.effects.forEach(effect => {
-            currentEnvironment.effects.push(effect)
-        });
-        if (newEnvironment.statsModifiers) currentEnvironment.statsModifiers = newEnvironment.statsModifiers
-        if (newEnvironment.shopModifiers) currentEnvironment.shopModifiers = newEnvironment.shopModifiers
-        if (newEnvironment.InnModifiers) currentEnvironment.InnModifiers = newEnvironment.InnModifiers
+    panelPlayerName.style.display = "block"
+    inputPlayerName.focus()
+    inputPlayerName.value = ``
 
-        let message = `${roll} ! ${newEnvironment.name}.
-        ${newEnvironment.effects.length > 1 ? "Effects" : "Effet"} de cette zone :`
+    btnConfirmPlayerName.onclick = () => {
+        // Remove white spaces at beginning and end
+        let inputName = inputPlayerName.value.trim()
+        // Replace white spaces in the middle with a single space char
+        inputName = inputName.replace(/\s\s+/g, ' ')
 
-        for (let i = 0; i < newEnvironment.effects.length; i++) {
-            message += `
-            - ${newEnvironment.effects[i].description}`
-        }
-
-        if (allowedToRerollEnvironmentRoll) {
+        if (isNameValid(inputName) === false) return
+        if (isNameValid(inputName) == "short") {
             gameMessage(`${message}
-                
-                Durant votre voyage vous avez gagné la possibilité d'annuler votre prochain jet d'environnement.Voulez - vous annuler ce jet et relancer le dé ? `)
-
-            allowedToRerollEnvironmentRoll = false
-
-            activateButton(
-                btn1,
-                "Garder ce lancé",
-                () => {
-                    updateAllEnvironmentVisuals()
-                    player.updateStatsVisuals()
-
-                    nextAdventure()
-                }
-            )
-            activateButton(btn2, "Relancer", () => { newEnvironmentResult(d20.roll()) })
-
+                Notez: le nom doit contenir au moins 1 caractère.`)
             return
         }
-
-        updateAllEnvironmentVisuals()
-        player.restoreHitPoints()
-        player.updateStatsVisuals()
-
-        gameMessage(message)
-
-        activateButton(btn1, "Continuer", () => { nextAdventure("") })
+        if (isNameValid(inputName) == "long") {
+            gameMessage(`${message}
+                Notez: le nom ne doit pas dépasser 32 caractères.`)
+            return
+        }
+        if (isNameValid(inputName) == "invalid") {
+            gameMessage(`${message}
+                Notez: le nom ne peut contenir que des lettres de l'alphabet, des espaces et des tirets.`)
+            return
+        }
+        choosePlayerName(inputName)
     }
+
+    function isNameValid(name = "") {
+        const namePattern = /^[a-zA-Z\s-]+$/
+
+        if (name.length < 1) return "short"
+        if (name.length > 32) return "long"
+        if (!namePattern.test(name)) return "invalid"
+
+        return "valid"
+    }
+}
+
+function choosePlayerName(name) {
+    hideAllGenericButtons()
+    panelPlayerName.style.display = "none"
+
+    player.name = name
+
+    gameMessage(`
+        - Enfin, tirez une carte du deck. Vous recevrez une récompense en fonction de la carte.`)
+
+    allowedToDraw = true
 }
 
 function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpReward = false) {
@@ -878,6 +882,74 @@ function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpRewar
     }
 
     nextAdventure(feedbackMessage)
+}
+
+function chooseNewEnvironment(customMessage) {
+    let message = customMessage
+    gameMessage(`${customMessage}
+        
+        Vous arrivez dans un nouvel environnement.
+        - Lancez le D20 pour tirer celui-ci.`)
+
+    hideAllGenericButtons()
+    activateButton(
+        btn1,
+        "Lancer le D20",
+        () => {
+            clearCardsDisplayZone()
+            newEnvironmentResult(getRandomInt(environmentsTable.length + 1))
+        })
+
+    function newEnvironmentResult(roll) {
+        const newEnvironment = environmentsTable[roll - 1]
+
+        // Pass data to the currentEnvironment of voyage.js
+        currentEnvironment.name = newEnvironment.name
+        newEnvironment.effects.forEach(effect => {
+            currentEnvironment.effects.push(effect)
+        });
+        if (newEnvironment.statsModifiers) currentEnvironment.statsModifiers = newEnvironment.statsModifiers
+        if (newEnvironment.shopModifiers) currentEnvironment.shopModifiers = newEnvironment.shopModifiers
+        if (newEnvironment.InnModifiers) currentEnvironment.InnModifiers = newEnvironment.InnModifiers
+
+        let message = `${roll} ! ${newEnvironment.name}.
+        ${newEnvironment.effects.length > 1 ? "Effects" : "Effet"} de cette zone :`
+
+        for (let i = 0; i < newEnvironment.effects.length; i++) {
+            message += `
+            - ${newEnvironment.effects[i].description}`
+        }
+
+        if (allowedToRerollEnvironmentRoll) {
+            gameMessage(`${message}
+                
+                Durant votre voyage vous avez gagné la possibilité d'annuler votre prochain jet d'environnement.Voulez - vous annuler ce jet et relancer le dé ? `)
+
+            allowedToRerollEnvironmentRoll = false
+
+            activateButton(
+                btn1,
+                "Garder ce lancé",
+                () => {
+                    updateAllEnvironmentVisuals()
+                    player.updateStatsVisuals()
+
+                    nextAdventure()
+                }
+            )
+            activateButton(btn2, "Relancer", () => { newEnvironmentResult(d20.roll()) })
+
+            return
+        }
+
+        updateAllEnvironmentVisuals()
+        player.restoreHitPoints()
+        player.updateStatsVisuals()
+
+        gameMessage(message)
+
+        activateButton(btn1, "Continuer", () => { nextAdventure("") })
+    }
 }
 
 function generateIntelligentBeing(roll = d20.roll(), traits = []) {
@@ -1115,8 +1187,8 @@ function generateBoss(roll = d20.roll()) {
 
 function nextAdventure(customMessage = "") {
     hideAllGenericButtons()
-    console.log("current step: ");
-    console.log(currentStep);
+    // console.log("current step: ");
+    // console.log(currentStep);
 
     // If we start a new environment we choose it first
     if (isFirstStep() && currentEnvironment.name == "") {
@@ -2519,7 +2591,7 @@ function regularRewardPhase(ctx) {
 
             default:
                 nextAdventure(`${roll} !
-                    Aucune récompense.Déso...`)
+                    Aucune récompense. Déso...`)
                 break;
         }
     }
@@ -2549,14 +2621,14 @@ function addCardToDisplayZone(card) {
     adjustCardsPosition(zoneWidth)
 
     function adjustCardsPosition() {
-        console.log("Zone width: ");
-        console.log(zoneWidth);
+        // console.log("Zone width: ");
+        // console.log(zoneWidth);
         const cardWidth = imgDeck.offsetWidth
         const gapWidth = 5;
 
         const cardsInZone = Array.from(document.querySelectorAll("#cards-drawn .card"))
-        console.log("Cards in the display zone: ");
-        console.log(cardsInZone);
+        // console.log("Cards in the display zone: ");
+        // console.log(cardsInZone);
 
         // If cards + their gaps are larger than their allowed zone => move them
         if ((cardWidth * cardsInZone.length) + (gapWidth * (cardsInZone.length - 1)) > zoneWidth) {

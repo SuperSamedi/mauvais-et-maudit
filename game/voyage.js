@@ -14,14 +14,24 @@ const environment4Elements = environment4.querySelectorAll("div.steps div.step")
 const environment5 = document.querySelector("#environment5")
 const environment5Elements = environment5.querySelectorAll("div.steps div.step")
 
-const voyageOverlayBackground = document.getElementById("voyage-background")
-const voyageDiv = document.getElementById("voyage")
+const btnOpenScreenVoyage = document.getElementById("btn-open-screen-voyage")
 
-voyageOverlayBackground.onclick = () => {
-    screenVoyage.style.display = "none"
-    screenVoyageBackground.style.display = "none"
+const screenVoyageBackground = document.getElementById("voyage-background")
+const screenVoyageContainer = document.getElementById("voyage-container")
+const screenVoyage = document.getElementById("voyage")
+
+screenVoyageBackground.onclick = () => { closeVoyage() }
+screenVoyageContainer.onclick = () => { closeVoyage() }
+screenVoyage.onclick = (event) => { event.stopPropagation(); }
+btnOpenScreenVoyage.onclick = () => {
+    if (screenVoyageContainer.style.display == "none") {
+        // OPEN
+        closeCharacterSheet()
+        openVoyage()
+        return
+    }
+    closeVoyage()
 }
-voyageDiv.onclick = (event) => { event.stopPropagation(); }
 
 let environments = [
     {
@@ -306,4 +316,16 @@ function isFinalStep() {
     if (currentEnvironment.steps.indexOf(currentStep) != currentEnvironment.steps.length - 1) return false
 
     return true
+}
+
+function openVoyage() {
+    screenVoyageContainer.style.display = "block"
+    screenVoyageBackground.style.display = "block"
+    updateGameDivHeight(screenVoyageContainer)
+}
+
+function closeVoyage() {
+    screenVoyageContainer.style.display = "none"
+    screenVoyageBackground.style.display = "none"
+    updateGameDivHeight(undefined)
 }

@@ -2,6 +2,30 @@
   margin: 0;
   padding: 0;
 }
+
+/* NAV */
+nav {
+  width: 100%;
+}
+nav ul {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  list-style-type: none;
+  gap: 3px;
+  padding: 1em;
+}
+.nav-btn {
+  padding: 0.5em 0.75em;
+  border: 2px solid black;
+  border-radius: 2px;
+  cursor: pointer;
+}
+#btn-about {
+  display: none;
+}
+
 a {
   text-decoration: none;
 }
@@ -23,7 +47,7 @@ a {
   aspect-ratio: 800/377;
   background-image: url("game/assets/artworks/game-title-colored-light.png");
   background-size: contain;
-  margin-top: 10%;
+  margin-top: 2em;
   margin-bottom: 1em;
 }
 
@@ -37,7 +61,7 @@ a {
   color: black;
   border: 2px solid black;
   border-radius: 2px;
-  padding: 10px;
+  padding: 0.75em 1em;
   font-size: 1.5em;
   margin: 2em;
 }

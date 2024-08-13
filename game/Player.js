@@ -1,3 +1,5 @@
+const txtPlayerName = document.getElementById("player-name");
+
 const txtPlayerRace = document.getElementById("player-race");
 const txtPlayerTrait = document.getElementById("player-trait");
 
@@ -33,6 +35,7 @@ characterSheetDiv.onclick = (event) => { event.stopPropagation(); }
 
 
 class Player {
+  #name;
   #hitPoints;
   #goldCoins;
   #actionPoints;
@@ -58,6 +61,15 @@ class Player {
     this.updateAllVisuals();
   }
 
+  get name() {
+    return this.#name
+  }
+
+  set name(value) {
+    this.#name = value
+    txtPlayerName.innerText = this.name
+  }
+
   get fullRaceName() {
     let name = ""
 
@@ -76,6 +88,12 @@ class Player {
 
   get gender() {
     return this.#gender;
+  }
+
+  set gender(value) {
+    this.#gender = value
+    this.updateRaceVisuals()
+    this.updateTraitVisuals()
   }
 
   get hitPoints() {
@@ -392,7 +410,7 @@ class Player {
     txtPlayerRace.innerText = this.fullRaceName;
   }
   updateTraitVisuals() {
-    txtPlayerTrait.innerText = this.traits[0].name.accordMasculin;
+    txtPlayerTrait.innerText = this.gender == "F" ? this.traits[0].name.accordFeminin : this.traits[0].name.accordMasculin;
   }
 
   //Stats

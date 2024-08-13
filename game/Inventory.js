@@ -61,7 +61,6 @@ inventorySlots.forEach((slot) => {
                     detailsViewOverlay.style.display = "none"
                 }
             }
-            console.log(player.inventory.isAnotherItemEquipped(item));
             if (player.inventory.isAnotherItemEquipped(item)) detailsViewBtnEquip.disabled = true
             detailsViewBtnSell.onclick = () => {
                 item.sell()
@@ -146,8 +145,8 @@ class Inventory {
 
     /**
      * Checks if an item is in the inventory based on its name.
-     * @param itemName String - The name of the item we are checking for.
-     * @returns the item if the item is in the inventory, undefined if it is not.
+     * @param {string} itemName The name of the item we are checking for.
+     * @returns {object} the item if the item is in the inventory, undefined if it is not.
      */
     containsItemWithName(itemName) {
         for (let i = 0; i < 8; i++) {
@@ -199,6 +198,7 @@ class Inventory {
     }
 
     isAnotherItemEquipped(item) {
+        if (!item) return
         if (!this.contains(item)) throw new Error("Item tested is not in inventory.")
         if (item.isEquipped) return false
 

@@ -10,7 +10,7 @@
   left: 0;
 }
 #voyage {
-  max-width: calc(95% - 3rem);
+  max-width: calc(100% - 3.75em);
   border: 2px solid black;
   background-color: white;
   margin-left: 3rem;

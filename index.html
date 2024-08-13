@@ -11,19 +11,33 @@
 </head>
 
 <body>
-    <div class="main">
-        <div class="main__container">
-            <div class="game-title"></div>
-            <!-- <h1>Mauvais & Maudit</h1> -->
-            <span>v.alpha.1.0</span>
-            <p class="subtitle">Un court jeu de rôle textuel pour un·e joueur·euse.</P>
-            <p class="mortis-ghost-credits">Conçu par <strong><a class="author-name"
-                        href="https://twitter.com/MortisGhost">Mortis Ghost</a></strong></p>
+    <nav>
+        <ul>
+            <li id="btn-home" class="nav-btn">Accueil</li>
+            <li id="btn-about" class="nav-btn">À Propos</li>
+            <li id="btn-patch-notes" class="nav-btn">Notes de Mises à Jour</li>
+        </ul>
+    </nav>
 
-            <button id="btn-begin" type="button">Commencer</button>
-        </div>
+    <div class="main">
+
+        <header class="main__container">
+            <div class="game-title"></div>
+            <h1 style="display: none;">Mauvais & Maudit Édition Online</h1>
+            <span id="app-version">v.alpha.2.0</span>
+            <p class="subtitle">Un court jeu de rôle textuel pour un·e joueur·euse.</P>
+            <p class="mortis-ghost-credits">
+                Conçu par
+                <strong>
+                    <a class="author-name" href="https://twitter.com/MortisGhost">MortisGhost</a>
+                </strong>
+            </p>
+        </header>
+
+        <button id="btn-begin" type="button">Commencer</button>
     </div>
 
+    <script src="nav.js"></script>
     <script src="index.js"></script>
 </body>
 
