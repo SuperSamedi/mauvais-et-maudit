@@ -1,3 +1,3 @@
 const btnBegin = document.getElementById("btn-begin")
 
-btnBegin.onclick = () => { window.location.href = 'game/game.html' }
+btnBegin.onclick = () => { window.location.href = 'game.html' }

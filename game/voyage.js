@@ -152,6 +152,16 @@ updateAllEnvironmentVisuals()
 // stepCompleted()
 // stepCompleted()
 // stepCompleted()
+// stepCompleted()
+// stepCompleted()
+// stepCompleted()
+// stepCompleted()
+// stepCompleted()
+// stepCompleted()
+// stepCompleted()
+// stepCompleted()
+// stepCompleted()
+// stepCompleted()
 
 /**
  * Sets the currentStep as completed.
@@ -163,6 +173,7 @@ function stepCompleted() {
     // Check if we just beat the final boss
     if (isFinalStep()) {
         console.log("final step");
+        currentStep = undefined
         updateAllEnvironmentVisuals()
         return
     }

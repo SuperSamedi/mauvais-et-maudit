@@ -61,7 +61,11 @@
   },
   {
     "name": "Marécage",
-    "description": "Le joueur gagne -10 VI.",
+    "effects": [
+      {
+        "description": "Le joueur gagne -10 VI pendant cette zone."
+      }
+    ],
     "statsModifiers": {
       "player": {
         "speed": -10

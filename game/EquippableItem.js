@@ -1,45 +1,30 @@
 class EquippableItem extends Item {
     constructor(data) {
         super(data)
+
+        if (data.hitPoints) {
+            this.hitPoints = data.hitPoints
+        }
+        if (data.strength) {
+            this.strength = data.strength
+        }
+        if (data.speed) {
+            this.speed = data.speed
+        }
+        if (data.magic) {
+            this.magic = data.magic
+        }
+
         this.isEquipped = false
     }
 
-
-    // Toggle equip-unequip
     equip() {
-        if (this.isEquipped == true) return false;
-
-        // Only one 'Weapon' can be equipped at the same time
-        if (this.type == "arme") {
-            let otherWeaponAlreadyEquipped = false;
-            // console.log("Is Weapon !");
-            player.inventory.slots.forEach((inventoryItem) => {
-                if (inventoryItem.type == "arme" && inventoryItem.isEquipped == true) {
-                    // console.log("Found another weapon already equipped.");
-                    otherWeaponAlreadyEquipped = true;
-                    return;
-                }
-            });
-
-            if (otherWeaponAlreadyEquipped == true) return false;
-        }
-
-        // Only one 'Equipment' can be equipped at the same time
-        if (this.type == "équipement") {
-            let otherEquipmentAlreadyEquipped = false;
-            // console.log("Is Equipment !");
-            player.inventory.slots.forEach((inventoryItem) => {
-                if (inventoryItem.type == "équipement" && inventoryItem.isEquipped == true) {
-                    // console.log("Found another equipment already equipped.");
-                    otherEquipmentAlreadyEquipped = true;
-                    return;
-                }
-            });
-
-            if (otherEquipmentAlreadyEquipped == true) return false;
-        }
+        if (player.inventory.isAnotherItemEquipped(this)) return false;
 
         this.isEquipped = true
+        console.log("Item equipped:");
+        console.log(this);
+        if (!isInCombat) player.restoreHitPoints()
         player.updateStatsVisuals();
         player.inventory.updateVisuals();
         return true
@@ -47,6 +32,7 @@ class EquippableItem extends Item {
 
     unequip() {
         this.isEquipped = false
+        if (!isInCombat) player.restoreHitPoints()
         player.updateStatsVisuals();
         player.inventory.updateVisuals();
     }

@@ -12,8 +12,7 @@
     ],
     "buyValue": 200,
     "sellValue": 100,
-    "gender": "F",
-    "equippable": false
+    "gender": "F"
   },
   {
     "type": "consommable",
@@ -28,8 +27,7 @@
     ],
     "buyValue": 200,
     "sellValue": 100,
-    "gender": "M",
-    "equippable": false
+    "gender": "M"
   },
   {
     "type": "consommable",
@@ -44,8 +42,7 @@
     ],
     "buyValue": 400,
     "sellValue": 150,
-    "gender": "M",
-    "equippable": false
+    "gender": "M"
   },
   {
     "type": "équipement",
@@ -61,8 +58,7 @@
     ],
     "buyValue": 300,
     "sellValue": 150,
-    "gender": "F",
-    "equippable": true
+    "gender": "F"
   },
   {
     "type": "équipement",
@@ -83,8 +79,7 @@
     ],
     "buyValue": 500,
     "sellValue": 200,
-    "gender": "F",
-    "equippable": true
+    "gender": "F"
   },
   {
     "type": "équipement",
@@ -100,8 +95,7 @@
     ],
     "buyValue": 450,
     "sellValue": 200,
-    "gender": "M",
-    "equippable": true
+    "gender": "M"
   },
   {
     "type": "équipement",
@@ -132,13 +126,12 @@
     ],
     "buyValue": 550,
     "sellValue": 250,
-    "gender": "F",
-    "equippable": true
+    "gender": "F"
   },
   {
     "type": "consommable",
     "name": "Élixir de Vie",
-    "isLegendary": false,
+    "isLegendary": true,
     "description": "Restaure tous les PV",
     "effects": [
       {
@@ -148,8 +141,7 @@
     ],
     "buyValue": 700,
     "sellValue": 300,
-    "gender": "M",
-    "equippable": false
+    "gender": "M"
   },
   {
     "type": "équipement",
@@ -165,11 +157,10 @@
     ],
     "buyValue": 1000,
     "sellValue": 450,
-    "gender": "M",
-    "equippable": true
+    "gender": "M"
   },
   {
-    "type": "équipement",
+    "type": "objet passif",
     "name": "Coupe Invidable",
     "isLegendary": true,
     "description": "+1PA à chaque combat",
@@ -181,11 +172,10 @@
     ],
     "buyValue": 1200,
     "sellValue": 600,
-    "gender": "F",
-    "equippable": true
+    "gender": "F"
   },
   {
-    "type": "passif",
+    "type": "objet passif",
     "name": "Lanterne de Vision",
     "isLegendary": true,
     "description": "Protège de certains événements et environnements",
@@ -209,11 +199,10 @@
     ],
     "buyValue": 900,
     "sellValue": 400,
-    "gender": "F",
-    "equippable": false
+    "gender": "F"
   },
   {
-    "type": "passif",
+    "type": "objet passif",
     "name": "Compas des Anciens",
     "isLegendary": true,
     "description": "Recommencer le tirage des environnements",
@@ -225,13 +214,12 @@
     ],
     "buyValue": 600,
     "sellValue": 250,
-    "gender": "M",
-    "equippable": false
+    "gender": "M"
   },
   {
     "type": "consommable",
     "name": "Tablette de Pouvoir",
-    "isLegendary": false,
+    "isLegendary": true,
     "description": "Détruit un adversaire",
     "effects": [
       {
@@ -245,11 +233,10 @@
     ],
     "buyValue": 800,
     "sellValue": 400,
-    "gender": "F",
-    "equippable": false
+    "gender": "F"
   },
   {
-    "type": "divers",
+    "type": "objet divers",
     "name": "Bout de Métal",
     "isLegendary": false,
     "description": "Inutile et encombrant",
@@ -261,7 +248,6 @@
     ],
     "buyValue": 100,
     "sellValue": 50,
-    "gender": "M",
-    "equippable": false
+    "gender": "M"
   }
 ]

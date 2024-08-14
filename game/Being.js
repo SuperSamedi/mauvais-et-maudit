@@ -175,7 +175,6 @@ class Being {
         }
     }
 
-
     get hitPoints() {
         return this.#hitPoints;
     }

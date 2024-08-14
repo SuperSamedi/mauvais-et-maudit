@@ -6,9 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mauvais & Maudit</title>
-    <link rel="icon" type="image/x-icon" href="assets/artworks/favicon.png">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="voyage.css">
+    <link rel="icon" type="image/x-icon" href="game/assets/artworks/favicon.png">
+    <link rel="stylesheet" href="game/style.css">
+    <link rel="stylesheet" href="game/voyage.css">
 </head>
 
 <body>
@@ -68,7 +68,7 @@
 
                     <div id="deck-and-cards">
                         <div id="deck">
-                            <img id="btn-deck" src="assets/card-back-1.png" alt="Card Back">
+                            <img id="btn-deck" src="game/assets/card-back-1.png" alt="Card Back">
                         </div>
                         <div id="cards-drawn"></div>
                     </div>
@@ -249,9 +249,9 @@
         </div>
 
         <!-- Buttons Open Screens -->
-        <img id="btn-open-screen-character-sheet" src="assets/icons/icon-character-sheet.png"
+        <img id="btn-open-screen-character-sheet" src="game/assets/icons/icon-character-sheet.png"
             alt="button open character sheet screen" class="btn-open-screen">
-        <img id="btn-open-screen-voyage" src="assets/icons/icon-voyage.png" alt="button open voyage screen"
+        <img id="btn-open-screen-voyage" src="game/assets/icons/icon-voyage.png" alt="button open voyage screen"
             class="btn-open-screen">
 
         <!-- Item Details Screen -->
@@ -265,6 +265,8 @@
                     <div id="item-details-view__sell-value">valeur : 100PO</div>
                     <button type="button" id="item-details-view__btn-equip"
                         class="item-details-view__btn">Équiper</button>
+                    <button type="button" id="item-details-view__btn-use"
+                        class="item-details-view__btn">Utiliser</button>
                     <button type="button" id="item-details-view__btn-sell"
                         class="item-details-view__btn">Vendre</button>
                     <button type="button" id="item-details-view__btn-drop" class="item-details-view__btn">Jeter</button>
@@ -281,18 +283,20 @@
         </div>
     </div>
 
-    <script src="utilities.js"></script>
-    <script src="Dice.js"></script>
-    <script src="Inventory.js"></script>
-    <script src="Item.js"></script>
-    <script src="EquippableItem.js"></script>
-    <script src="SwordsItem.js"></script>
-    <script src="Shop.js"></script>
-    <script src="Being.js"></script>
-    <script src="Player.js"></script>
-    <script src="voyage.js"></script>
-    <script src="data.js"></script>
-    <script src="game.js"></script>
+    <script src="game/utilities.js"></script>
+    <script src="game/Dice.js"></script>
+    <script src="game/Inventory.js"></script>
+    <script src="game/Item.js"></script>
+    <script src="game/EquippableItem.js"></script>
+    <script src="game/ConsumableItem.js"></script>
+    <script src="game/Potion.js"></script>
+    <script src="game/Ether.js"></script>
+    <script src="game/Shop.js"></script>
+    <script src="game/Being.js"></script>
+    <script src="game/Player.js"></script>
+    <script src="game/voyage.js"></script>
+    <script src="game/data.js"></script>
+    <script src="game/game.js"></script>
 </body>
 
 </html>

@@ -25,7 +25,11 @@
   },
   {
     "name": "Marécage",
-    "description": "Le joueur gagne -10 VI.",
+    "effects": [
+      {
+        "description": "Le joueur gagne -10 VI pendant cette zone."
+      }
+    ],
     "statsModifiers": {
       "player": {
         "speed": -10
@@ -89,14 +93,6 @@
         "magic": 10
       }
     }
-  },
-  {
-    "name": "Labyrinthe Souterrain",
-    "effects": [
-      {
-        "description": "Cette zone contient une étape supplémentaire."
-      }
-    ]
   },
   {
     "name": "Canyon",

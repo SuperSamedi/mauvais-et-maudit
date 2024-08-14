@@ -27,6 +27,9 @@ function clamp(number, min, max) {
   return number;
 }
 
+function capitalize(string) {
+  return `${string.charAt(0).toUpperCase()}${string.slice(1)}`
+}
 
 function beingNameWithDeterminantDefini(being, toLowerCase) {
   let name = being.name.toLowerCase()
@@ -34,6 +37,7 @@ function beingNameWithDeterminantDefini(being, toLowerCase) {
   if (
     name[0] == 'a' ||
     name[0] == 'e' ||
+    name[0] == 'é' ||
     name[0] == 'i' ||
     name[0] == 'o' ||
     name[0] == 'u' ||
@@ -190,14 +194,14 @@ function getStrongTrait(roll = d20.roll()) {
     }
 
     // construct description
-    generateDescription(trait)
+    trait.description = generateDescription(trait)
 
     return trait
   }
 }
 
 function generateDescription(trait) {
-  trait.description = ""
+  let description = ""
   let isFirstStat = true
   let numberOfStats = 0
   let statsTreated = 0
@@ -217,38 +221,62 @@ function generateDescription(trait) {
 
   if (trait.hitPoints) {
     statsTreated++
-    trait.description += `PV ${trait.hitPoints < 0 ? "" : "+"}${trait.hitPoints}${statsTreated < numberOfStats ? "," : ""}`
+    description += `PV ${trait.hitPoints < 0 ? "" : "+"}${trait.hitPoints}${statsTreated < numberOfStats ? "," : ""}`
     isFirstStat = false
   }
   if (trait.strength) {
     statsTreated++
-    trait.description += `${isFirstStat ? "" : " "}FO ${trait.strength < 0 ? "" : "+"}${trait.strength}${statsTreated < numberOfStats ? "," : ""}`
+    description += `${isFirstStat ? "" : " "}FO ${trait.strength < 0 ? "" : "+"}${trait.strength}${statsTreated < numberOfStats ? "," : ""}`
     isFirstStat = false
   }
   if (trait.speed) {
     statsTreated++
-    trait.description += `${isFirstStat ? "" : " "}VI ${trait.speed < 0 ? "" : "+"}${trait.speed}${statsTreated < numberOfStats ? "," : ""}`
+    description += `${isFirstStat ? "" : " "}VI ${trait.speed < 0 ? "" : "+"}${trait.speed}${statsTreated < numberOfStats ? "," : ""}`
     isFirstStat = false
   }
   if (trait.magic) {
-    trait.description += `${isFirstStat ? "" : " "}MA ${trait.strength < 0 ? "" : "+"}${trait.magic}`
+    description += `${isFirstStat ? "" : " "}MA ${trait.strength < 0 ? "" : "+"}${trait.magic}`
   }
+
+  return description
 }
 
 function getCupsItem(id) {
-  let item = {}
-
   switch (id) {
+    case 1:
+      // Potion
+      return new Potion()
+    case 2:
+      // Ether
+      return new Ether()
+    case 4:
+      // Ligth Armor
+      return new EquippableItem(structuredClone(cupsItemsTable[id - 1]))
+    case 5:
+      // Heavy Armor
+      return new EquippableItem(structuredClone(cupsItemsTable[id - 1]))
     case 6:
-      item = new EquippableItem(cupsItemsTable[5])
-      item.magic = 15
-      break;
+      // Moon Pendant
+      return new EquippableItem(structuredClone(cupsItemsTable[id - 1]))
+    case 7:
+      // Ring of Balance
+      return new EquippableItem(structuredClone(cupsItemsTable[id - 1]))
+    case 8:
+      // Elixir of Life
+      return new Potion(structuredClone(cupsItemsTable[id - 1]), Infinity)
+    case 9:
+      // Cloak of a Giant
+      return new EquippableItem(structuredClone(cupsItemsTable[id - 1]))
+    case 10:
+      // Bottomless Cup
+      return new Item(structuredClone(cupsItemsTable[id - 1]))
+    case 12:
+      // Compas of the Ancients
+      return new Item(structuredClone(cupsItemsTable[id - 1]))
 
     default:
       break;
   }
-
-  return item;
 }
 
 function isBeingDead(being) {
@@ -276,9 +304,9 @@ function activateButton(btn, innerText, clickFunction) {
 }
 
 function hideButton(btn) {
-  btn.style.display = "none"
-  btn.disabled = true
   btn.onclick = () => { }
+  btn.disabled = true
+  btn.style.display = "none"
 }
 
 function updateGameDivHeight(element) {
@@ -287,4 +315,8 @@ function updateGameDivHeight(element) {
     return
   }
   containerGame.style.height = `${element.offsetHeight}px`
+}
+
+function isAllowedToRerollEnvironment() {
+  return environmentRerolls > 0
 }

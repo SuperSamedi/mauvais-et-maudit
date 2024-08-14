@@ -9,6 +9,7 @@ const detailsViewItemType = document.getElementById("item-details-view__item-typ
 const detailsViewDescription = document.getElementById("item-details-view__description");
 const detailsViewSellValue = document.getElementById("item-details-view__sell-value");
 const detailsViewBtnEquip = document.getElementById("item-details-view__btn-equip")
+const detailsViewBtnUse = document.getElementById("item-details-view__btn-use")
 const detailsViewBtnSell = document.getElementById("item-details-view__btn-sell");
 const detailsViewBtnDrop = document.getElementById("item-details-view__btn-drop");
 
@@ -31,7 +32,7 @@ inventorySlots.forEach((slot) => {
     slot.addEventListener("click", (e) => {
         const item = player.inventory.slots[e.target.dataset["number"]]
         if (item) {
-            // console.log("allowedToSellItems = " + allowedToSellItems);
+            // Display Item name
             detailsViewName.innerText = `${item.name}`
             detailsViewName.classList.remove('legendary')
             detailsViewName.classList.add('normal')
@@ -39,10 +40,16 @@ inventorySlots.forEach((slot) => {
                 detailsViewName.classList.remove('normal')
                 detailsViewName.classList.add('legendary')
             }
-            detailsViewItemType.innerText = `${item.type}${item.isLegendary ? ` légendaire` : ``}`
+
+            // Display item type
+            detailsViewItemType.innerText = `${capitalize(item.type)}${item.isLegendary ? ` légendaire` : ``}`
+
+            // Display effects
             generateDetailsDescription(item)
-            // detailsViewDescription.innerText = `${item.description}`
+
+            // Display item value
             detailsViewSellValue.innerText = `Valeur : ${item.sellValue}PO`
+
             // Equip button set up
             detailsViewBtnEquip.style.display = "none"
             detailsViewBtnEquip.disabled = true
@@ -62,6 +69,22 @@ inventorySlots.forEach((slot) => {
                 }
             }
             if (player.inventory.isAnotherItemEquipped(item)) detailsViewBtnEquip.disabled = true
+
+            // Use button set up
+            detailsViewBtnUse.style.display = "none"
+            detailsViewBtnUse.disabled = true
+            detailsViewBtnUse.onclick = () => { }
+            if (item instanceof ConsumableItem) {
+                detailsViewBtnUse.style.display = "block"
+                detailsViewBtnUse.disabled = !item.isUsable
+                detailsViewBtnUse.onclick = () => {
+                    if (!item.isUsable) return
+                    item.use(player)
+                    detailsViewOverlay.style.display = "none"
+                }
+            }
+
+            // Button Sell set up
             detailsViewBtnSell.onclick = () => {
                 item.sell()
                 detailsViewOverlay.style.display = "none"
@@ -70,9 +93,13 @@ inventorySlots.forEach((slot) => {
             if (allowedToSellItems == false) {
                 detailsViewBtnSell.disabled = true
             }
+
+            // Button Drop set up
             detailsViewBtnDrop.onclick = () => {
                 if (item.drop()) detailsViewOverlay.style.display = "none"
             }
+
+            // Open Item Details View once everything is set up
             detailsViewOverlay.style.display = "block"
         }
     });
@@ -198,20 +225,21 @@ class Inventory {
     }
 
     isAnotherItemEquipped(item) {
-        if (!item) return
+        // We need to be checking an actual object
+        if (!item) throw new Error("Item tested is undefined.")
+        // The item needs to be in our inventory or it would not make sens to check it.
         if (!this.contains(item)) throw new Error("Item tested is not in inventory.")
+        // If it's already equipped there is no need to check it can remain equipped.
         if (item.isEquipped) return false
 
+        // If we find an item that is of the same type and is equipped we return TRUE -> An item of the same type already equipped was found
         for (let i = 0; i < 8; i++) {
-            if (!this.slots[i]) continue;
-            if (!this.slots[i] instanceof EquippableItem) continue
+            if (!this.slots[i]) continue
             if (this.slots[i].type != item.type) continue
-
-            if (this.slots[i].isEquipped) {
-                return true
-            }
+            if (this.slots[i].isEquipped) return true
         }
 
+        // Otherwise, we return FALSE -> No item of the same type that are already equipped were found
         return false
     }
 }

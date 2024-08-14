@@ -2,16 +2,6 @@
 const containerGame = document.getElementById("game")
 const screenLoader = document.getElementById("loading-screen")
 
-const screenCharacterSheetBackground = document.getElementById("character-sheet-background")
-const screenCharacterSheetContainer = document.getElementById("character-sheet-container")
-const screenCharacterSheet = document.getElementById("character-sheet")
-
-const btnOpenScreenCharacterSheet = document.getElementById("btn-open-screen-character-sheet")
-
-const panelPlayerName = document.getElementById("player-name-panel")
-const inputPlayerName = document.getElementById("player-name-input-field")
-const btnConfirmPlayerName = document.getElementById("btn-confirm-player-name-input-field")
-
 const txtDungeonMaster = document.getElementById("dungeon-master-text");
 
 // Generic buttons
@@ -22,8 +12,9 @@ const btn4 = document.getElementById("btn4");
 const btn5 = document.getElementById("btn5");
 const btn6 = document.getElementById("btn6");
 
-const btnRaceRoll = document.getElementById("btn-race-roll");
-const btnCardDraw = document.getElementById("btn-card-draw");
+const panelPlayerName = document.getElementById("player-name-panel")
+const inputPlayerName = document.getElementById("player-name-input-field")
+const btnConfirmPlayerName = document.getElementById("btn-confirm-player-name-input-field")
 
 const imgDeck = document.getElementById("btn-deck");
 const zoneCardsDrawn = document.getElementById("cards-drawn")
@@ -43,19 +34,9 @@ const btnRemoveSpeed = document.getElementById("btn-remove-speed");
 const btnAddMagic = document.getElementById("btn-add-magic");
 const btnRemoveMagic = document.getElementById("btn-remove-magic");
 const btnConfirmStatsAdjustment = document.getElementById("btn-confirm-stats-adjustment");
-
-const btnFightMonster = document.getElementById("btn-fight-monster");
-const btnVisitShop = document.getElementById("btn-visit-shop");
-const btnNextAdventure = document.getElementById("btn-next-adventure");
 //#endregion
 
 // =====> START
-//#region  Static Buttons Assignments
-// btnRaceRoll.onclick = choosePlayerRace;
-// btnCardDraw.onclick = () => {
-//     allowedToDraw = true;
-// };
-
 imgDeck.onclick = () => {
     if (allowedToDraw) {
         clearCardsDisplayZone();
@@ -64,42 +45,17 @@ imgDeck.onclick = () => {
     }
 };
 
-screenCharacterSheetContainer.onclick = () => { closeCharacterSheet() }
-screenCharacterSheetBackground.onclick = () => { closeCharacterSheet() }
-btnOpenScreenCharacterSheet.onclick = () => {
-    if (screenCharacterSheetContainer.style.display == "none") {
-        // OPEN
-        closeVoyage()
-        openCharacterSheet()
-        return
-    }
-    // CLOSE
-    closeCharacterSheet()
-}
-
-function openCharacterSheet() {
-    screenCharacterSheetContainer.style.display = "block"
-    screenCharacterSheetBackground.style.display = "block"
-    updateGameDivHeight(screenCharacterSheetContainer)
-}
-function closeCharacterSheet() {
-    screenCharacterSheetContainer.style.display = "none"
-    screenCharacterSheetBackground.style.display = "none"
-    updateGameDivHeight(undefined)
-}
-
-//#endregion
-
 const player = new Player();
 // console.log(player);
 const d20 = new Dice(20);
 const d100 = new Dice(100);
 let shop = new Shop();
 
+let environmentRerolls = 0
 let allowedToDraw = false;
 let allowedToSellItems = false;
 let allowedToLevelUp = false;
-let allowedToRerollEnvironmentRoll = false
+let isInCombat = false
 // Test Variable TOREMOVE
 let isDeckUnlocked = false
 
@@ -127,7 +83,7 @@ function start() {
 function tests() {
     console.log("TESTING ACTIVATED");
     // Test Buttons
-    // const btnUnlockDeck = document.getElementById("btn-unlock-deck")
+
 
     //#region ReducedRoll Tests
     // Reduced roll algorithm test
@@ -206,6 +162,7 @@ function tests() {
 
     //#region Tests Card Draw
     // Test Buttons TOREMOVE
+    // const btnUnlockDeck = document.getElementById("btn-unlock-deck")
     // btnUnlockDeck.onclick = () => {
     //     imgDeck.onclick = () => {
     //         drawTest()
@@ -219,30 +176,43 @@ function tests() {
     //#endregion
 
     //#region Item details screen V2 
-    // player.inventory.add(new SwordsItem(structuredClone(swordsItemsTable[3])))
-    // player.inventory.add(new SwordsItem(structuredClone(swordsItemsTable[9])))
+    // player.inventory.add(new EquippableItem(structuredClone(swordsItemsTable[3])))
+    // player.inventory.add(new EquippableItem(structuredClone(swordsItemsTable[9])))
     // player.inventory.add(new Item(structuredClone(cupsItemsTable[0])))
     // player.inventory.add(new Item(structuredClone(cupsItemsTable[1])))
     // player.goldCoins += 200
     //#endregion
 
     //#region test Fight Boss
-    const btnFightBoss = document.getElementById("btn-fight-boss");
-    btnFightBoss.onclick = () => { finalAdventure() }
+    // const btnFightBoss = document.getElementById("btn-fight-boss");
+    // btnFightBoss.onclick = () => { finalAdventure() }
 
-    allowedToLevelUp = true
-    player.experiencePoints += 1_000_000
-    player.levelUpHitPoints(1000)
-    player.levelUpStrength(1000)
-    player.levelUpSpeed(1000)
-    player.levelUpMagic(1000)
+    // allowedToLevelUp = true
+    // player.experiencePoints += 1_000_000
+    // player.levelUpHitPoints(1000)
+    // player.levelUpStrength(1000)
+    // player.levelUpSpeed(1000)
+    // player.levelUpMagic(1000)
+    //#endregion
+
+    //#region test Potion
+    // player.inventory.add(getCupsItem(1))
+    // player.inventory.add(getCupsItem(2))
+    // player.inventory.add(getCupsItem(4))
+    // player.inventory.add(getCupsItem(5))
+    // player.inventory.add(getCupsItem(6))
+    // player.inventory.add(getCupsItem(7))
+    // player.inventory.add(getCupsItem(8))
+    // player.inventory.add(getCupsItem(9))
+    // player.inventory.add(getCupsItem(10))
+    // player.inventory.add(getCupsItem(12))
     //#endregion
 }
 //#endregion
 
 
 function presentation() {
-    gameMessage(`Vous êtes assis·e devant votre âtre, le feu crépite. Soudain il tremble imperceptiblement, et pendant un instant la lumière vacille. Les ombres s'allongent légèrement, et un frisson glacé vous parcourt. Vous savez ce que cela signifie. Vous vous emparez de votre ancienne arme, enfilez votre manteau, et ouvrez la porte de votre masure. À l'horizon le ciel se teint de rouge et de mauve. Le Mal est est revenu, et vous seul·e pouvez le vaincre...
+    gameMessage(`Vous êtes assis·e devant votre âtre, le feu crépite. Soudain il tremble imperceptiblement, et pendant un instant la lumière vacille. Les ombres s'allongent légèrement, et un frisson glacé vous parcourt. Vous savez ce que cela signifie. Vous vous emparez de votre ancienne arme, enfilez votre manteau, et ouvrez la porte de votre masure. À l'horizon le ciel se teint de rouge et de mauve. Le Mal est revenu, et vous seul·e pouvez le vaincre...
 
         Bienvenue dans Mauvais & Maudit "Édition Online" !
         Vous êtes sur le point d'embarquer dans une aventure interactive textuelle. Durant cette quête, vous allez incarner un personnage dont vous allez tirer au hasard la race et le trait distinctif.
@@ -738,6 +708,90 @@ function choosePlayerTrait(roll) {
 
     player.traits[0] = structuredClone(strongTraitsTable[roll - 1]);
 
+    // Mutant special rule
+    if (player.traits[0].name.accordMasculin == "Mutant") {
+        gameMessage(`${roll} ! - ${player.gender == "F" ? player.traits[0].name.accordFeminin : player.traits[0].name.accordMasculin}
+            Votre mutation augmente grandement une de vos caractéristiques mais en diminue une autre.
+            - Choisissez une caractéristique à augmenter de 40 points.`)
+
+        activateButton(btn1, "Augmenter les Points de Vie (PV)", () => { chooseNerfedStat("hitPoints") })
+        activateButton(btn2, "Augmenter la Force (FO)", () => { chooseNerfedStat("strength") })
+        activateButton(btn3, "Augmenter la Vitesse (VI)", () => { chooseNerfedStat("speed") })
+        activateButton(btn4, "Augmenter la Magie (MA)", () => { chooseNerfedStat("magic") })
+
+        return
+
+        function chooseNerfedStat(buffedStat) {
+            gameMessage(`OK !
+                - Maintenant, choisissez une autre stat à diminuer de 20 points.`)
+
+            activateButton(btn1, "Diminuer les Points de Vie (PV)", () => { finishMutantTrait("hitPoints") })
+            activateButton(btn2, "Diminuer la Force (FO)", () => { finishMutantTrait("strength") })
+            activateButton(btn3, "Diminuer la Vitesse (VI)", () => { finishMutantTrait("speed") })
+            activateButton(btn4, "Diminuer la Magie (MA)", () => { finishMutantTrait("magic") })
+
+            switch (buffedStat) {
+                case "hitPoints":
+                    player.traits[0].hitPoints = 40
+                    btn1.disabled = true
+                    break;
+                case "strength":
+                    player.traits[0].strength = 40
+                    btn2.disabled = true
+                    break;
+                case "speed":
+                    player.traits[0].speed = 40
+                    btn3.disabled = true
+                    break;
+                case "magic":
+                    player.traits[0].magic = 40
+                    btn4.disabled = true
+                    break;
+
+                default:
+                    console.error("Player mutant trait generation : unknown buff stat.")
+                    break;
+            }
+
+            function finishMutantTrait(nerfedStat) {
+                // If the trait already has a value for the stat we do not validate
+                switch (nerfedStat) {
+                    case "hitPoints":
+                        if (player.traits[0].hitPoints) return
+                        player.traits[0].hitPoints = -20
+                        break;
+                    case "strength":
+                        if (player.traits[0].strength) return
+                        player.traits[0].strength = -20
+                        break;
+                    case "speed":
+                        if (player.traits[0].speed) return
+                        player.traits[0].speed = -20
+                        break;
+                    case "magic":
+                        if (player.traits[0].magic) return
+                        player.traits[0].magic = -20
+                        break;
+
+                    default:
+                        console.error("Player mutant trait generation : unknown nerf stat.")
+                        break;
+                }
+
+                hideAllGenericButtons()
+
+                player.traits[0].description = generateDescription(player.traits[0])
+                player.restoreHitPoints();
+                player.updateTraitVisuals();
+                player.updateStatsVisuals();
+
+                gameMessage(`- Ensuite, choisissez le genre de votre personnage.`);
+
+                activateButton(btn1, "Féminin", () => { choosePlayerGender("F") })
+                activateButton(btn2, "Masculin", () => { choosePlayerGender("M") })
+            }
+        }
+    }
     gameMessage(`${roll} ! - ${player.gender == "F" ? player.traits[0].name.accordFeminin : player.traits[0].name.accordMasculin} (${player.traits[0].description})
         
         - Ensuite, choisissez le genre de votre personnage.`);
@@ -828,6 +882,7 @@ function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpRewar
     feedbackMessage += `${cardDrawn.description} !`;
     let reward = {}
 
+    // COINS cards
     if (cardDrawn.suit == "coins" || allCardsCountAsCoins === true) {
         reward = structuredClone(coinsItemsTable[cardDrawn.value - 1]);
         player.goldCoins += reward.goldCoins;
@@ -840,8 +895,18 @@ function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpRewar
         }
     }
 
+    // SWORDS cards
     if (cardDrawn.suit == "swords" && allCardsCountAsCoins === false) {
-        reward = new SwordsItem(structuredClone(swordsItemsTable[cardDrawn.value - 1]));
+        reward = new EquippableItem(structuredClone(swordsItemsTable[cardDrawn.value - 1]));
+        player.inventory.add(reward);
+        feedbackMessage += ` 
+        Vous recevez ${reward.isLegendary ? beingNameWithDeterminantDefini(reward, false) : reward.gender == "F" ? `une ${reward.name}` : `un ${reward.name}`} (${reward.description})`;
+        //console.log(inventory);
+    }
+
+    // CUPS cards
+    if (cardDrawn.suit == "cups" && allCardsCountAsCoins === false) {
+        reward = getCupsItem(cardDrawn.value)
         player.inventory.add(reward);
         feedbackMessage += ` 
         Vous recevez ${reward.isLegendary ? beingNameWithDeterminantDefini(reward, false) : reward.gender == "F" ? `une ${reward.name}` : `un ${reward.name}`} (${reward.description})`;
@@ -885,7 +950,7 @@ function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpRewar
 }
 
 function chooseNewEnvironment(customMessage) {
-    let message = customMessage
+    if (player.inventory.containsItemWithName("Compas des Anciens")) environmentRerolls++
     gameMessage(`${customMessage}
         
         Vous arrivez dans un nouvel environnement.
@@ -897,11 +962,14 @@ function chooseNewEnvironment(customMessage) {
         "Lancer le D20",
         () => {
             clearCardsDisplayZone()
-            newEnvironmentResult(getRandomInt(environmentsTable.length + 1))
+            newEnvironmentResult(getRandomInt(environmentsTable.length) + 1)
         })
 
     function newEnvironmentResult(roll) {
+        console.log("New Environment roll : " + roll);
         const newEnvironment = environmentsTable[roll - 1]
+        console.log(newEnvironment);
+        if (!newEnvironment) console.error("New Environment is undefined.")
 
         // Pass data to the currentEnvironment of voyage.js
         currentEnvironment.name = newEnvironment.name
@@ -913,31 +981,36 @@ function chooseNewEnvironment(customMessage) {
         if (newEnvironment.InnModifiers) currentEnvironment.InnModifiers = newEnvironment.InnModifiers
 
         let message = `${roll} ! ${newEnvironment.name}.
-        ${newEnvironment.effects.length > 1 ? "Effects" : "Effet"} de cette zone :`
+        ${newEnvironment.effects.length > 1 ? "Effects" : "Effet"} :`
 
         for (let i = 0; i < newEnvironment.effects.length; i++) {
             message += `
             - ${newEnvironment.effects[i].description}`
         }
 
-        if (allowedToRerollEnvironmentRoll) {
+        if (isAllowedToRerollEnvironment()) {
             gameMessage(`${message}
                 
-                Durant votre voyage vous avez gagné la possibilité d'annuler votre prochain jet d'environnement.Voulez - vous annuler ce jet et relancer le dé ? `)
-
-            allowedToRerollEnvironmentRoll = false
+                Durant votre voyage vous avez gagné la possibilité d'annuler votre prochain jet d'environnement. Voulez-vous annuler ce jet et relancer le dé ? `)
 
             activateButton(
                 btn1,
                 "Garder ce lancé",
                 () => {
+                    environmentRerolls = 0
                     updateAllEnvironmentVisuals()
                     player.updateStatsVisuals()
 
                     nextAdventure()
                 }
             )
-            activateButton(btn2, "Relancer", () => { newEnvironmentResult(d20.roll()) })
+            activateButton(
+                btn2,
+                "Relancer",
+                () => {
+                    environmentRerolls--
+                    newEnvironmentResult(getRandomInt(environmentsTable.length + 1))
+                })
 
             return
         }
@@ -1421,6 +1494,9 @@ function finalAdventure() {
 function bossRewardPhase(ctx) {
     hideAllGenericButtons()
     stepCompleted()
+    player.restoreHitPoints()
+    isInCombat = false
+
     gameMessage(`${ctx.opponent.name} est ${ctx.opponent.gender == "F" ? "terrassée" : "terrassé"} !
         Félicitations ! Vous avez réussi. Grâce à vous et à votre détermination, la malédiction est brisée. Les régions aux alentours seront à nouveau libres et sereines. 
         Il est maintenant temps pour vous de rentrer à la maison, cette campagne aux douces plaines que vous avez quitté il y a si longtemps déjà. Vous conterai vos exploits sur votre chemin pour qu'encore dans longtemps on chante vos aventures.
@@ -1455,7 +1531,7 @@ function intelligentBeingEncounter() {
     console.log("intelligent being Encounter :");
     console.log(intelligentBeing);
 
-    gameMessage(`Alors que vous marchiez tranquillement sur le chemin, vous croisez ${intelligentBeing.gender == "F" ? "une" : "un"} ${intelligentBeing.name}. 
+    gameMessage(`Alors que vous marchez tranquillement sur le chemin, vous croisez ${intelligentBeing.gender == "F" ? "une" : "un"} ${intelligentBeing.name}. 
         Lancez le D20 pour voir quel attitude ${intelligentBeing.gender == "F" ? "elle" : "il"} va adopter.`)
 
     activateButton(
@@ -1638,7 +1714,7 @@ function intelligentBeingEncounter() {
             return
         }
         if (roll <= 18) {
-            allowedToRerollEnvironmentRoll = true
+            environmentRerolls++
             player.experiencePoints++
             stepCompleted()
             nextAdventure(`${roll} !
@@ -1869,7 +1945,7 @@ function visitShop(
         addCardToDisplayZone(cardDrawn)
 
         if (cardDrawn.suit == "coins") {
-            gameMessage(`${cardsDrawn.description}.
+            gameMessage(`${cardDrawn.description}.
                 Tirez à nouveau une carte.`)
             allowedToDraw = true
             return
@@ -1906,10 +1982,10 @@ function visitShop(
                     return
                     break;
                 case "cups":
-                    return
+                    shop.add(getCupsItem(card.value))
                     break;
                 case "swords":
-                    shop.add(new SwordsItem(structuredClone(swordsItemsTable[card.value - 1])));
+                    shop.add(new EquippableItem(structuredClone(swordsItemsTable[card.value - 1])));
                     break;
                 default:
                     console.error("Card suit unknown")
@@ -2065,7 +2141,7 @@ function specialEncounter() {
             if (player.goldCoins < 200) return;
 
             player.goldCoins -= 200
-            player.inventory.add(new SwordsItem(swordsItemsTable[0]))
+            player.inventory.add(new EquippableItem(swordsItemsTable[0]))
             player.experiencePoints++
             stepCompleted();
             nextAdventure(`Vous donnez 200PO au voyageur.
@@ -2135,6 +2211,7 @@ function specialEncounter() {
             const travelerRewardPhase = () => {
                 stepCompleted();
                 player.experiencePoints++;
+                isInCombat = false
 
                 let message = `Le voyageur est vaincu.
                 Vous recevez 1XP`
@@ -2233,12 +2310,32 @@ function luckyEncounter() {
  * @param {CallBackFn} ctx.rewardPhaseCallBack Run when the fight is won.
  */
 function fight(ctx) {
+    isInCombat = true
     console.log(`Fight:`);
     ctx.fightTurn = 1
     console.log(ctx);
 
     // Message d'intro
     let message = ctx.introMessage
+
+    // Special effect : Coupe Invidable
+    // Count how many we have
+    const bottomlessCups = []
+    for (let i = 0; i < 8; i++) {
+        if (!player.inventory.slots[i]) continue
+        if (!player.inventory.slots[i].name) continue
+        if (player.inventory.slots[i].name == "Coupe Invidable") {
+            bottomlessCups.push("Coupe Invidable")
+        }
+    }
+    // Apply effect
+    if (bottomlessCups.length > 0) {
+        player.actionPoints += bottomlessCups.length
+        message += `
+        
+        Vous sortez ${bottomlessCups.length == 1 ? "la Coupe Invidable" : `les Coupes Invidables`} de votre sac et en buvez ${bottomlessCups.length == 1 ? "une gorgée" : `une gorgée à chacune`} pour galvaniser vos forces avant ce combat.
+        Vous gagnez ${bottomlessCups.length}PA.`
+    }
 
     // if fighting boss, put nothing in front of its name. Otherwise, put 'une' or 'un'
     message += `
@@ -2551,9 +2648,10 @@ function regularRewardPhase(ctx) {
 
     gameMessage(`${beingNameWithDeterminantDefini(ctx.opponent, false)} est ${ctx.opponent.gender == "F" ? "terrassée" : "terrassé"} !
         ${player.hitPoints < player.maxHitPoints ? "Vous vous soignez et" : "Vous"} gagnez 1 point d'expérience.
-        - Vous p ouvez aussi lancer le D20 pour acquérir une récompense potentielle.`)
+        - Vous pouvez aussi lancer le D20 pour acquérir une récompense potentielle.`)
 
     player.restoreHitPoints()
+    isInCombat = false
 
     activateButton(btn1, "Lancer le D20", () => { fightReward(d20.roll()) })
 
@@ -2663,7 +2761,7 @@ function updateDeckVisual() {
 
     // Change visuals if deck is empty
     if (scopaDeck.length == 0) {
-        imgDeck.setAttribute('src', 'assets/artworks/empty-deck.png')
+        imgDeck.setAttribute('src', 'game/assets/artworks/empty-deck.png')
         imgDeck.style.boxShadow = "none"
         imgDeck.onclick = () => { }
     }

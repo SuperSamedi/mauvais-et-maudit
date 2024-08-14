@@ -304,14 +304,16 @@
   padding: 0.5em;
   background-color: rgba(0, 0, 0, 0);
   margin: 0.25em 0;
+  border-color: white;
+  color: white;
 }
 .item-details-view__btn:hover {
   cursor: pointer;
 }
-#item-details-view__btn-equip {
+/* #item-details-view__btn-equip {
   border-color: white;
   color: white;
-}
+} */
 #item-details-view__btn-equip:disabled {
   border-color: dimgray;
   color: dimgray;

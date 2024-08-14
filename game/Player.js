@@ -1,3 +1,10 @@
+
+const btnOpenScreenCharacterSheet = document.getElementById("btn-open-screen-character-sheet")
+
+const screenCharacterSheetBackground = document.getElementById("character-sheet-background")
+const screenCharacterSheetContainer = document.getElementById("character-sheet-container")
+const screenCharacterSheet = document.getElementById("character-sheet")
+
 const txtPlayerName = document.getElementById("player-name");
 
 const txtPlayerRace = document.getElementById("player-race");
@@ -24,14 +31,36 @@ txtPlayerTrait.addEventListener("mouseleave", (e) => {
   }
 });
 
-const characterSheetOverlayBackground = document.getElementById("character-sheet-background")
-const characterSheetDiv = document.getElementById("character-sheet")
+// Character Sheet set up
+// Background
+screenCharacterSheetContainer.onclick = () => { closeCharacterSheet() }
+screenCharacterSheetBackground.onclick = () => { closeCharacterSheet() }
 
-characterSheetOverlayBackground.onclick = () => {
-  screenCharacterSheet.style.display = "none"
-  screenCharacterSheetBackground.style.display = "none"
+// Side button
+btnOpenScreenCharacterSheet.onclick = () => {
+  if (screenCharacterSheetContainer.style.display == "none") {
+    // OPEN
+    closeVoyage()
+    openCharacterSheet()
+    return
+  }
+  // CLOSE
+  closeCharacterSheet()
 }
-characterSheetDiv.onclick = (event) => { event.stopPropagation(); }
+
+function openCharacterSheet() {
+  screenCharacterSheetContainer.style.display = "block"
+  screenCharacterSheetBackground.style.display = "block"
+  updateGameDivHeight(screenCharacterSheetContainer)
+}
+function closeCharacterSheet() {
+  screenCharacterSheetContainer.style.display = "none"
+  screenCharacterSheetBackground.style.display = "none"
+  updateGameDivHeight(undefined)
+}
+
+// Blocks clicks on the character sheet to go through to the container and close it
+screenCharacterSheet.onclick = (event) => { event.stopPropagation(); }
 
 
 class Player {
@@ -421,6 +450,7 @@ class Player {
     this.updateMagicVisuals()
   }
   updateHitPointsVisuals() {
+    if (this.hitPoints > this.maxHitPoints) this.hitPoints = this.maxHitPoints
     txtPlayerHitPoints.innerText = `${this.hitPoints}/${this.maxHitPoints}`;
   }
   updateStrengthVisuals() {

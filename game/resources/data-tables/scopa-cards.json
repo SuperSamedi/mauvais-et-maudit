@@ -2,121 +2,175 @@
   {
     "suit": "coins",
     "value": 1,
-    "imageURL": "assets/scopa-cards/coins-ace.png",
+    "imageURL": "game/assets/scopa-cards/coins-ace.png",
     "description": "As de Pièces"
   },
   {
     "suit": "coins",
     "value": 2,
-    "imageURL": "assets/scopa-cards/coins-two.png",
+    "imageURL": "game/assets/scopa-cards/coins-two.png",
     "description": "Deux de Pièces"
   },
   {
     "suit": "coins",
     "value": 3,
-    "imageURL": "assets/scopa-cards/coins-three.png",
+    "imageURL": "game/assets/scopa-cards/coins-three.png",
     "description": "Trois de Pièces"
   },
   {
     "suit": "coins",
     "value": 4,
-    "imageURL": "assets/scopa-cards/coins-four.png",
+    "imageURL": "game/assets/scopa-cards/coins-four.png",
     "description": "Quatre de Pièces"
   },
   {
     "suit": "coins",
     "value": 5,
-    "imageURL": "assets/scopa-cards/coins-five.png",
+    "imageURL": "game/assets/scopa-cards/coins-five.png",
     "description": "Cinq de Pièces"
   },
   {
     "suit": "coins",
     "value": 6,
-    "imageURL": "assets/scopa-cards/coins-six.png",
+    "imageURL": "game/assets/scopa-cards/coins-six.png",
     "description": "Six de Pièces"
   },
   {
     "suit": "coins",
     "value": 7,
-    "imageURL": "assets/scopa-cards/coins-seven.png",
+    "imageURL": "game/assets/scopa-cards/coins-seven.png",
     "description": "Sept de Pièces"
   },
   {
     "suit": "coins",
     "value": 8,
-    "imageURL": "assets/scopa-cards/coins-jack.png",
+    "imageURL": "game/assets/scopa-cards/coins-jack.png",
     "description": "Valet de Pièces"
   },
   {
     "suit": "coins",
     "value": 9,
-    "imageURL": "assets/scopa-cards/coins-knight.png",
+    "imageURL": "game/assets/scopa-cards/coins-knight.png",
     "description": "Cavalier de Pièces"
   },
   {
     "suit": "coins",
     "value": 10,
-    "imageURL": "assets/scopa-cards/coins-king.png",
+    "imageURL": "game/assets/scopa-cards/coins-king.png",
     "description": "Roi de Pièces"
   },
   {
     "suit": "swords",
     "value": 1,
-    "imageURL": "assets/scopa-cards/swords-ace.png",
+    "imageURL": "game/assets/scopa-cards/swords-ace.png",
     "description": "As d'Épées"
   },
   {
     "suit": "swords",
     "value": 2,
-    "imageURL": "assets/scopa-cards/swords-two.png",
+    "imageURL": "game/assets/scopa-cards/swords-two.png",
     "description": "Deux d'Épées"
   },
   {
     "suit": "swords",
     "value": 3,
-    "imageURL": "assets/scopa-cards/swords-three.png",
+    "imageURL": "game/assets/scopa-cards/swords-three.png",
     "description": "Trois d'Épées"
   },
   {
     "suit": "swords",
     "value": 4,
-    "imageURL": "assets/scopa-cards/swords-four.png",
+    "imageURL": "game/assets/scopa-cards/swords-four.png",
     "description": "Quatre d'Épées"
   },
   {
     "suit": "swords",
     "value": 5,
-    "imageURL": "assets/scopa-cards/swords-five.png",
+    "imageURL": "game/assets/scopa-cards/swords-five.png",
     "description": "Cinq d'Épées"
   },
   {
     "suit": "swords",
     "value": 6,
-    "imageURL": "assets/scopa-cards/swords-six.png",
+    "imageURL": "game/assets/scopa-cards/swords-six.png",
     "description": "Six d'Épées"
   },
   {
     "suit": "swords",
     "value": 7,
-    "imageURL": "assets/scopa-cards/swords-seven.png",
+    "imageURL": "game/assets/scopa-cards/swords-seven.png",
     "description": "Sept d'Épées"
   },
   {
     "suit": "swords",
     "value": 8,
-    "imageURL": "assets/scopa-cards/swords-jack.png",
+    "imageURL": "game/assets/scopa-cards/swords-jack.png",
     "description": "Valet d'Épées"
   },
   {
     "suit": "swords",
     "value": 9,
-    "imageURL": "assets/scopa-cards/swords-knight.png",
+    "imageURL": "game/assets/scopa-cards/swords-knight.png",
     "description": "Cavalier d'Épées"
   },
   {
     "suit": "swords",
     "value": 10,
-    "imageURL": "assets/scopa-cards/swords-king.png",
+    "imageURL": "game/assets/scopa-cards/swords-king.png",
     "description": "Roi d'Épées"
+  },
+  {
+    "suit": "cups",
+    "value": 1,
+    "imageURL": "game/assets/scopa-cards/cups-ace.png",
+    "description": "As de Coupes"
+  },
+  {
+    "suit": "cups",
+    "value": 2,
+    "imageURL": "game/assets/scopa-cards/cups-two.png",
+    "description": "Deux de Coupes"
+  },
+  {
+    "suit": "cups",
+    "value": 4,
+    "imageURL": "game/assets/scopa-cards/cups-four.png",
+    "description": "Quatre de Coupes"
+  },
+  {
+    "suit": "cups",
+    "value": 5,
+    "imageURL": "game/assets/scopa-cards/cups-five.png",
+    "description": "Cinq de Coupes"
+  },
+  {
+    "suit": "cups",
+    "value": 6,
+    "imageURL": "game/assets/scopa-cards/cups-six.png",
+    "description": "Six de Coupes"
+  },
+  {
+    "suit": "cups",
+    "value": 7,
+    "imageURL": "game/assets/scopa-cards/cups-seven.png",
+    "description": "Sept de Coupes"
+  },
+  {
+    "suit": "cups",
+    "value": 8,
+    "imageURL": "game/assets/scopa-cards/cups-jack.png",
+    "description": "Valet de Coupes"
+  },
+  {
+    "suit": "cups",
+    "value": 9,
+    "imageURL": "game/assets/scopa-cards/cups-knight.png",
+    "description": "Cavalier de Coupes"
+  },
+  {
+    "suit": "cups",
+    "value": 10,
+    "imageURL": "game/assets/scopa-cards/cups-king.png",
+    "description": "Roi de Coupes"
   }
 ]
