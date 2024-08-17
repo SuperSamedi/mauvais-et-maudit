@@ -1,19 +1,22 @@
 class Item {
     #type
     #name
+    #isLegendary
+    #description
+    #effects
     #buyValue
     #sellValue
-    #description
+    #gender
 
     constructor(data) {
         this.#type = data.type
         this.#name = data.name
+        this.#isLegendary = data.isLegendary
         this.#description = data.description
+        this.#effects = data.effects
         this.#buyValue = data.buyValue
         this.#sellValue = data.sellValue
-        this.gender = data.gender
-        this.isLegendary = data.isLegendary
-        this.effects = data.effects
+        this.#gender = data.gender
     }
 
     get type() {
@@ -24,8 +27,16 @@ class Item {
         return this.#name
     }
 
+    get isLegendary() {
+        return this.#isLegendary
+    }
+
     get description() {
         return this.#description
+    }
+
+    get effects() {
+        return this.#effects
     }
 
     get buyValue() {
@@ -34,6 +45,10 @@ class Item {
 
     get sellValue() {
         return this.#sellValue
+    }
+
+    get gender() {
+        return this.#gender
     }
 
     buy() {

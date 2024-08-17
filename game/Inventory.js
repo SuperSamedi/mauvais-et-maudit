@@ -6,10 +6,20 @@ const detailsViewOverlay = document.getElementById("item-details-view-background
 const detailsView = document.getElementById("item-details-view");
 const detailsViewName = document.getElementById("item-details-view__name");
 const detailsViewItemType = document.getElementById("item-details-view__item-type")
-const detailsViewDescription = document.getElementById("item-details-view__description");
+const detailsViewSpellMagicNeededContainer = document.getElementById("item-details-view__magic-needed")
+const detailsViewSpellMagicNeeded = document.getElementById("item-details-view__magic-needed__amount")
+const detailsViewSpellCostContainer = document.getElementById("item-details-view__spell-cost")
+const detailsViewSpellCost = document.getElementById("item-details-view__spell-cost__cost")
+const detailsViewDescription = document.getElementById("item-details-view__description__effects");
+const detailsViewAmplifiedSpellInfoContainer = document.getElementById("item-details-view__description__spell-amplify")
+const detailsViewSpellAmplifiedMagicNeeded = document.getElementById("item-details-view__description__magicNeeded")
+const detailsViewSpellAmplifiedAdditionalCost = document.getElementById("item-details-view__description__spell-amplify__additional-cost")
+const detailsViewAmplifiedSpellEffectsDescriptionDiv = document.getElementById("item-details-view__description__spell-amplify__effects")
 const detailsViewSellValue = document.getElementById("item-details-view__sell-value");
 const detailsViewBtnEquip = document.getElementById("item-details-view__btn-equip")
 const detailsViewBtnUse = document.getElementById("item-details-view__btn-use")
+const detailsViewBtnCast = document.getElementById("item-details-view__btn-cast")
+const detailsViewBtnCastAmplified = document.getElementById("item-details-view__btn-cast-amplified")
 const detailsViewBtnSell = document.getElementById("item-details-view__btn-sell");
 const detailsViewBtnDrop = document.getElementById("item-details-view__btn-drop");
 
@@ -45,15 +55,13 @@ inventorySlots.forEach((slot) => {
             detailsViewItemType.innerText = `${capitalize(item.type)}${item.isLegendary ? ` légendaire` : ``}`
 
             // Display effects
-            generateDetailsDescription(item)
+            generateDetailsEffectsDescription(item.effects, detailsViewDescription)
 
             // Display item value
             detailsViewSellValue.innerText = `Valeur : ${item.sellValue}PO`
 
             // Equip button set up
-            detailsViewBtnEquip.style.display = "none"
-            detailsViewBtnEquip.disabled = true
-            detailsViewBtnEquip.onclick = () => { }
+            hideButton(detailsViewBtnEquip)
             if (item instanceof EquippableItem) {
                 detailsViewBtnEquip.style.display = "block"
                 detailsViewBtnEquip.disabled = false
@@ -70,10 +78,50 @@ inventorySlots.forEach((slot) => {
             }
             if (player.inventory.isAnotherItemEquipped(item)) detailsViewBtnEquip.disabled = true
 
+            // Spells set up
+            hideButton(detailsViewBtnCast)
+            hideButton(detailsViewBtnCastAmplified)
+            detailsViewSpellMagicNeededContainer.style.display = "none"
+            detailsViewSpellCostContainer.style.display = "none"
+            detailsViewAmplifiedSpellInfoContainer.style.display = "none"
+            if (item instanceof Spell) {
+                // Spell info
+                detailsViewSpellMagicNeededContainer.style.display = "block"
+                detailsViewSpellCostContainer.style.display = "block"
+                detailsViewSpellMagicNeeded.innerText = item.magicNeeded
+                detailsViewSpellCost.innerText = item.cost
+                // Cast button
+                detailsViewBtnCast.style.display = "block"
+                detailsViewBtnCast.disabled = !player.isAllowedToCastSpell
+                // For spell that are only castable once per combat
+                if (player.isAllowedToCastSpell && item.isAllowedToBeCast !== undefined) {
+                    detailsViewBtnCast.disabled = !item.isAllowedToBeCast
+                }
+                detailsViewBtnCast.onclick = () => {
+                    detailsViewOverlay.style.display = "none"
+                    closeCharacterSheet()
+                    item.cast()
+                }
+                // For amplifiable spells
+                if (item.amplification) {
+                    // Amplified version info
+                    detailsViewAmplifiedSpellInfoContainer.style.display = "block"
+                    detailsViewSpellAmplifiedMagicNeeded.innerText = item.amplification.magicNeeded
+                    detailsViewSpellAmplifiedAdditionalCost.innerText = item.amplification.cost
+                    generateDetailsEffectsDescription(item.amplification.effects, detailsViewAmplifiedSpellEffectsDescriptionDiv)
+                    // Cast Amplified button
+                    detailsViewBtnCastAmplified.style.display = "block"
+                    detailsViewBtnCastAmplified.disabled = !player.isAllowedToCastSpell
+                    detailsViewBtnCastAmplified.onclick = () => {
+                        detailsViewOverlay.style.display = "none"
+                        closeCharacterSheet()
+                        item.castAmplified()
+                    }
+                }
+            }
+
             // Use button set up
-            detailsViewBtnUse.style.display = "none"
-            detailsViewBtnUse.disabled = true
-            detailsViewBtnUse.onclick = () => { }
+            hideButton(detailsViewBtnUse)
             if (item instanceof ConsumableItem) {
                 detailsViewBtnUse.style.display = "block"
                 detailsViewBtnUse.disabled = !item.isUsable
@@ -108,21 +156,23 @@ inventorySlots.forEach((slot) => {
 detailsViewOverlay.onclick = () => { detailsViewOverlay.style.display = "none" }
 detailsView.onclick = (event) => { event.stopPropagation(); }
 
-function generateDetailsDescription(item) {
-    if (!item) {
-        console.error("Trying to generate detailed description for unidentified object.");
+/**
+ * Generates <p> elements from a list of item effects and appends them to a <div>.
+ * @param {Array} effects The list of effects we are trying to get a description for.
+ * @param {DOMelement} divParent The div we are appending the generated effects description lines.*/
+function generateDetailsEffectsDescription(effects, divParent) {
+    if (!effects) {
+        console.error("Trying to generate detailed description for unidentified list of effects.");
     }
 
-    detailsViewDescription.innerHTML = ``
+    divParent.innerHTML = ``
 
-    if (item.effects) {
-        item.effects.forEach(effect => {
-            const effectElement = document.createElement("p")
-            effectElement.innerText = effect.description
-            effectElement.classList.add(`${effect.type == "malus" ? "malus" : "bonus"}`)
-            detailsViewDescription.appendChild(effectElement)
-        });
-    }
+    effects.forEach(effect => {
+        const effectElement = document.createElement("p")
+        effectElement.innerText = effect.description
+        effectElement.classList.add(`${effect.type == "malus" ? "malus" : "bonus"}`)
+        divParent.appendChild(effectElement)
+    });
 }
 
 
@@ -185,6 +235,19 @@ class Inventory {
         }
 
         return undefined;
+    }
+
+    getItemsOfType(type) {
+        const items = []
+        for (let i = 0; i < 8; i++) {
+            if (!this.slots[i]) continue;
+
+            if (this.slots[i].type === type) {
+                items.push(this.slots[i])
+            }
+        }
+
+        return items
     }
 
     updateVisuals() {

@@ -11,7 +11,7 @@ let bossesTable = [];
 let scopaDeck = [];
 let coinsItemsTable = [];
 let swordsItemsTable = [];
-// let clubsItemsTable = [];
+let clubsItemsTable = [];
 let cupsItemsTable = [];
 
 
@@ -63,7 +63,7 @@ async function loadJSONS() {
         scopaDeck = await responseScopaDeck.json()
         shuffle(scopaDeck)
         console.log("Scopa Deck LOADED");
-        // console.log(scopaDeck);
+        console.log(scopaDeck);
 
 
         // Coins Item Table
@@ -90,6 +90,30 @@ async function loadJSONS() {
         // console.log(swordsItemsTable);
 
 
+        // Clubs Items Table
+        const responseClubsItems = await fetch("game/resources/data-tables/clubs-items.json")
+
+        if (responseClubsItems.status !== 200 && !responseClubsItems.ok) {
+            throw new Error(`${responseClubsItems.status}: Unable to fetch clubs-items.json`)
+        }
+
+        clubsItemsTable = await responseClubsItems.json()
+        console.log("Clubs Items Table LOADED");
+        // console.log(clubsItemsTable);
+
+
+        // Cups Items Table
+        const responseCupsItems = await fetch("game/resources/data-tables/cups-items.json")
+
+        if (responseCupsItems.status !== 200 && !responseCupsItems.ok) {
+            throw new Error(`${responseCupsItems.status}: Unable to fetch cups-items.json`)
+        }
+
+        cupsItemsTable = await responseCupsItems.json()
+        console.log("Cups Items Table LOADED");
+        // console.log(cupsItemsTable);
+
+
         // Weak Traits Table
         const responseWeakTraits = await fetch("game/resources/data-tables/weak-traits.json")
 
@@ -112,18 +136,6 @@ async function loadJSONS() {
         encountersTable = await responseEncounters.json()
         console.log("Encounters Table LOADED");
         // console.log(encountersTable);
-
-
-        // Cups Items Table
-        const responseCupsItems = await fetch("game/resources/data-tables/cups-items.json")
-
-        if (responseCupsItems.status !== 200 && !responseCupsItems.ok) {
-            throw new Error(`${responseCupsItems.status}: Unable to fetch cups-items.json`)
-        }
-
-        cupsItemsTable = await responseCupsItems.json()
-        console.log("Cups Items Table LOADED");
-        // console.log(cupsItemsTable);
 
 
         // Environments Table

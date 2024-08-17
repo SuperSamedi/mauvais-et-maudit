@@ -61,16 +61,36 @@
   width: 100%;
   max-width: 60rem;
 }
-#dungeon-master-text {
+#dungeon-master {
   max-width: 60rem;
   min-height: 12rem;
   border: 2px solid black;
   background-color: rgb(100, 100, 100);
   padding: 10px;
-  color: rgb(243, 243, 243);
-  font-size: 1em;
   margin-left: 3rem;
   margin-right: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#dungeon-master__state {
+  width: 100%;
+  margin-right: 0.5rem;
+  text-align: center;
+  font-size: 1.15em;
+  color: bisque;
+}
+#dungeon-master__line {
+  margin: 0.5em 0;
+  height: 1px;
+  width: 50%;
+  background-color: bisque;
+}
+
+#dungeon-master__main {
+  width: 100%;
+  color: rgb(243, 243, 243);
+  font-size: 1em;
 }
 #controls {
   display: flex;
@@ -267,8 +287,12 @@
   display: flex;
   flex-direction: column;
 }
+#item-details-view__item-info-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 #item-details-view__name {
-  text-align: center;
   font-size: 1.33rem;
 }
 .normal {
@@ -281,7 +305,7 @@
   color: bisque;
   text-align: center;
 }
-#item-details-view__separation-bar {
+.item-details-view__separation-bar {
   margin: 0.75em 0;
 }
 #item-details-view__bottom-container {
@@ -290,12 +314,23 @@
   flex-grow: 1;
 }
 #item-details-view__description {
-  color: cornflowerblue;
   text-align: center;
   flex-grow: 1;
 }
+.bonus {
+  color: cornflowerblue;
+}
+.malus {
+  color: rgb(211, 106, 106);
+}
+#txt-amplification {
+  color: bisque;
+}
+#item-details-view__description__spell-amplify {
+  margin-top: 2em;
+}
 #item-details-view__sell-value {
-  margin: 1em 0;
+  margin: 1.5em 0 0.75em 0;
 }
 .item-details-view__btn {
   border-style: solid;
@@ -309,6 +344,11 @@
 }
 .item-details-view__btn:hover {
   cursor: pointer;
+}
+.item-details-view__btn:disabled {
+  border-color: dimgray;
+  color: dimgray;
+  cursor: default;
 }
 /* #item-details-view__btn-equip {
   border-color: white;

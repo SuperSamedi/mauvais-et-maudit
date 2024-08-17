@@ -71,6 +71,7 @@ function beingNameWithDeterminantDefiniContracte(being, preposition) {
     being.gender == "F" ||
     name[0] == 'a' ||
     name[0] == 'e' ||
+    name[0] == 'é' ||
     name[0] == 'i' ||
     name[0] == 'o' ||
     name[0] == 'u' ||
@@ -241,6 +242,35 @@ function generateDescription(trait) {
   return description
 }
 
+function getClubsItem(id) {
+  switch (id) {
+    case 1:
+      return new DivineWind(structuredClone(clubsItemsTable[id - 1]))
+    case 2:
+      return new MetalForm(structuredClone(clubsItemsTable[id - 1]))
+    case 3:
+      return new InfiniteSpring(structuredClone(clubsItemsTable[id - 1]))
+    case 4:
+      return new Healing(structuredClone(clubsItemsTable[id - 1]))
+    case 5:
+      return new Steal(structuredClone(clubsItemsTable[id - 1]))
+    case 6:
+      return new Teleport(structuredClone(clubsItemsTable[id - 1]))
+    case 7:
+      return new Enfeeble(structuredClone(clubsItemsTable[id - 1]))
+    case 8:
+      return new InfernalSphere(structuredClone(clubsItemsTable[id - 1]))
+    case 9:
+      return new Divination(structuredClone(clubsItemsTable[id - 1]))
+    case 10:
+      return new AbsoluteRestoration(structuredClone(clubsItemsTable[id - 1]))
+
+    default:
+      console.error("Can't find a Clubs item with id: " + id);
+      return undefined
+  }
+}
+
 function getCupsItem(id) {
   switch (id) {
     case 1:
@@ -319,4 +349,14 @@ function updateGameDivHeight(element) {
 
 function isAllowedToRerollEnvironment() {
   return environmentRerolls > 0
+}
+
+function displayState(isOn = false, text = "") {
+  txtDungeonMasterState.style.display = "none"
+  DungeonMasterLine.style.display = "none"
+  if (isOn) {
+    txtDungeonMasterState.style.display = "block"
+    DungeonMasterLine.style.display = "block"
+    txtDungeonMasterState.innerText = text
+  }
 }

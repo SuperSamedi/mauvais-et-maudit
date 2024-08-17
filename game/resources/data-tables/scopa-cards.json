@@ -120,6 +120,66 @@
     "description": "Roi d'Épées"
   },
   {
+    "suit": "clubs",
+    "value": 1,
+    "imageURL": "game/assets/scopa-cards/clubs-ace.png",
+    "description": "As de Bâtons"
+  },
+  {
+    "suit": "clubs",
+    "value": 2,
+    "imageURL": "game/assets/scopa-cards/clubs-two.png",
+    "description": "Deux de Bâtons"
+  },
+  {
+    "suit": "clubs",
+    "value": 3,
+    "imageURL": "game/assets/scopa-cards/clubs-three.png",
+    "description": "Trois de Bâtons"
+  },
+  {
+    "suit": "clubs",
+    "value": 4,
+    "imageURL": "game/assets/scopa-cards/clubs-four.png",
+    "description": "Quatre de Bâtons"
+  },
+  {
+    "suit": "clubs",
+    "value": 5,
+    "imageURL": "game/assets/scopa-cards/clubs-five.png",
+    "description": "Cinq de Bâtons"
+  },
+  {
+    "suit": "clubs",
+    "value": 6,
+    "imageURL": "game/assets/scopa-cards/clubs-six.png",
+    "description": "Six de Bâtons"
+  },
+  {
+    "suit": "clubs",
+    "value": 7,
+    "imageURL": "game/assets/scopa-cards/clubs-seven.png",
+    "description": "Sept de Bâtons"
+  },
+  {
+    "suit": "clubs",
+    "value": 8,
+    "imageURL": "game/assets/scopa-cards/clubs-jack.png",
+    "description": "Valet de Bâtons"
+  },
+  {
+    "suit": "clubs",
+    "value": 9,
+    "imageURL": "game/assets/scopa-cards/clubs-knight.png",
+    "description": "Cavalier de Bâtons"
+  },
+  {
+    "suit": "clubs",
+    "value": 10,
+    "imageURL": "game/assets/scopa-cards/clubs-king.png",
+    "description": "Roi de Bâtons"
+  },
+  {
     "suit": "cups",
     "value": 1,
     "imageURL": "game/assets/scopa-cards/cups-ace.png",

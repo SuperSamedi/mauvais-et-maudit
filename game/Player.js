@@ -87,6 +87,13 @@ class Player {
       speed: 0,
       magic: 0
     }
+    this.spellEffects = {
+      strength: 0,
+      speed: 0,
+      magic: 0
+    }
+    this.isAllowedToCastSpell = false
+    this.hasForcedInitiative = false
     this.updateAllVisuals();
   }
 
@@ -174,6 +181,9 @@ class Player {
     // Level up stats
     stat += this.levelUpStats.hitPoints
 
+    // Spell Effects
+    if (this.spellEffects.hitPoints) stat += this.spellEffects.hitPoints
+
     return stat;
   }
 
@@ -215,6 +225,9 @@ class Player {
 
     // Level up stats
     stat += this.levelUpStats.strength
+
+    // Spell Effects
+    if (this.spellEffects.strength) stat += this.spellEffects.strength
 
     return stat;
   }
@@ -258,6 +271,9 @@ class Player {
     // Level up stats
     stat += this.levelUpStats.speed
 
+    // Spell Effects
+    if (this.spellEffects.speed) stat += this.spellEffects.speed
+
     return stat;
   }
 
@@ -299,6 +315,9 @@ class Player {
 
     // Level up stats
     stat += this.levelUpStats.magic
+
+    // Spell Effects
+    if (this.spellEffects.magic) stat += this.spellEffects.magic
 
     return stat;
   }
@@ -408,6 +427,19 @@ class Player {
   restoreHitPoints() {
     this.hitPoints = this.maxHitPoints;
     this.updateHitPointsVisuals();
+  }
+
+  resetSpellEffects() {
+    this.spellEffects = {
+      strength: 0,
+      speed: 0,
+      magic: 0
+    }
+    this.updateStrengthVisuals()
+    this.updateSpeedVisuals()
+    this.updateMagicVisuals()
+
+    this.hasForcedInitiative = false
   }
 
   hasARaceInCommonWith(intelligentBeing) {

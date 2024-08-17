@@ -1,3 +1,4 @@
 .vscode
 *.psd
 *.jpg
+.prettierignore

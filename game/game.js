@@ -2,7 +2,9 @@
 const containerGame = document.getElementById("game")
 const screenLoader = document.getElementById("loading-screen")
 
-const txtDungeonMaster = document.getElementById("dungeon-master-text");
+const txtDungeonMasterState = document.getElementById("dungeon-master__state")
+const DungeonMasterLine = document.getElementById("dungeon-master__line");
+const txtDungeonMaster = document.getElementById("dungeon-master__main");
 
 // Generic buttons
 const btn1 = document.getElementById("btn1");
@@ -34,6 +36,9 @@ const btnRemoveSpeed = document.getElementById("btn-remove-speed");
 const btnAddMagic = document.getElementById("btn-add-magic");
 const btnRemoveMagic = document.getElementById("btn-remove-magic");
 const btnConfirmStatsAdjustment = document.getElementById("btn-confirm-stats-adjustment");
+
+// Test Buttons TOREMOVE
+const btnUnlockDeck = document.getElementById("btn-unlock-deck")
 //#endregion
 
 // =====> START
@@ -41,7 +46,6 @@ imgDeck.onclick = () => {
     if (allowedToDraw) {
         clearCardsDisplayZone();
         drawReward(scopaDeck, false, true);
-        updateDeckVisual()
     }
 };
 
@@ -50,6 +54,7 @@ const player = new Player();
 const d20 = new Dice(20);
 const d100 = new Dice(100);
 let shop = new Shop();
+let currentCombatContext = {}
 
 let environmentRerolls = 0
 let allowedToDraw = false;
@@ -60,6 +65,8 @@ let isInCombat = false
 let isDeckUnlocked = false
 
 const adventureBeginsMessage = `Vous contemplez les plaines de votre campagne natale. Savoir que vous ne reviendrai peut-être jamais chez vous vous fais un petit pincement au cœur mais votre détermination est sans faille, votre destin vous appelle.`
+const playerPreparationPhaseMessage = `Si vous le souhaitez, vous pouvez lancer un sort depuis votre inventaire.`
+
 
 loadJSONS();
 
@@ -67,6 +74,7 @@ function start() {
     console.log("Starting Game");
     updateDeckVisual()
     hideAllGenericButtons()
+    displayState(false)
     panelPlayerName.style.display = "none"
     panelStatsAdjustment.style.display = "none"
     // btnCardDraw.style.display = "none"
@@ -74,6 +82,7 @@ function start() {
     closeVoyage()
     detailsViewOverlay.style.display = "none"
     screenLoader.style.display = "none"
+    btnUnlockDeck.style.display = "none"
     // tests()
     presentation()
 }
@@ -161,18 +170,17 @@ function tests() {
     //#endregion
 
     //#region Tests Card Draw
-    // Test Buttons TOREMOVE
-    // const btnUnlockDeck = document.getElementById("btn-unlock-deck")
-    // btnUnlockDeck.onclick = () => {
-    //     imgDeck.onclick = () => {
-    //         drawTest()
-    //         updateDeckVisual()
-    //     }
-    // }
+    btnUnlockDeck.style.display = "block"
+    btnUnlockDeck.onclick = () => {
+        imgDeck.onclick = () => {
+            drawTest()
+            updateDeckVisual()
+        }
+    }
 
-    // function drawTest() {
-    //     addCardToDisplayZone(scopaDeck.shift())
-    // }
+    function drawTest() {
+        addCardToDisplayZone(scopaDeck.shift())
+    }
     //#endregion
 
     //#region Item details screen V2 
@@ -206,6 +214,19 @@ function tests() {
     // player.inventory.add(getCupsItem(9))
     // player.inventory.add(getCupsItem(10))
     // player.inventory.add(getCupsItem(12))
+    //#endregion
+
+    //#region test SPELLS
+    player.inventory.add(getClubsItem(1))
+    player.inventory.add(getClubsItem(2))
+    player.inventory.add(getClubsItem(3))
+    // player.inventory.add(getClubsItem(4))
+    player.inventory.add(getClubsItem(5))
+    player.inventory.add(getClubsItem(6))
+    player.inventory.add(getClubsItem(7))
+    player.inventory.add(getClubsItem(8))
+    // player.inventory.add(getClubsItem(9))
+    // player.inventory.add(getClubsItem(10))
     //#endregion
 }
 //#endregion
@@ -863,13 +884,24 @@ function choosePlayerName(name) {
     allowedToDraw = true
 }
 
-function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpReward = false) {
+function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpReward = false, isStealSpellReward = false) {
     if (!allowedToDraw) return
 
-    hideAllGenericButtons()
+    if (!isStealSpellReward) {
+        hideAllGenericButtons()
+    }
     allowedToDraw = false;
 
-    if (deck.length <= 0) {
+    // Redirection if no more cards
+    // TODO: improve this
+    if (deck.length <= 0 && isStealSpellReward) {
+        gameMessage(`${playerPreparationPhaseMessage}
+            
+            Désolé, il n'y a plus de carte dans la pioche.`)
+        btn1.disabled = false
+        return;
+    }
+    if (deck.length <= 0 && !isStealSpellReward) {
         nextAdventure("La pioche est vide...")
         return;
     }
@@ -879,6 +911,7 @@ function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpRewar
     const cardDrawn = structuredClone(deck.shift());
     //console.log(scopaDeck);
     addCardToDisplayZone(cardDrawn)
+    updateDeckVisual()
     feedbackMessage += `${cardDrawn.description} !`;
     let reward = {}
 
@@ -904,6 +937,15 @@ function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpRewar
         //console.log(inventory);
     }
 
+    // CLUBS cards
+    if (cardDrawn.suit == "clubs" && allCardsCountAsCoins === false) {
+        reward = getClubsItem(cardDrawn.value);
+        player.inventory.add(reward);
+        feedbackMessage += ` 
+        Vous recevez le sort ${reward.name} (${reward.description}).`;
+        //console.log(inventory);
+    }
+
     // CUPS cards
     if (cardDrawn.suit == "cups" && allCardsCountAsCoins === false) {
         reward = getCupsItem(cardDrawn.value)
@@ -920,7 +962,6 @@ function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpRewar
             if (allowedToDraw) {
                 clearCardsDisplayZone();
                 drawReward(scopaDeck, false, false)
-                updateDeckVisual()
             }
         }
         player.actionPoints += 2
@@ -943,6 +984,12 @@ function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpRewar
             }
         )
 
+        return
+    }
+
+    if (isStealSpellReward) {
+        btn1.disabled = false
+        gameMessage(`${feedbackMessage}`);
         return
     }
 
@@ -1260,6 +1307,7 @@ function generateBoss(roll = d20.roll()) {
 
 function nextAdventure(customMessage = "") {
     hideAllGenericButtons()
+    displayState(false)
     // console.log("current step: ");
     // console.log(currentStep);
 
@@ -1433,50 +1481,45 @@ function finalAdventure() {
         switch (boss.name) {
             case "Vcrakusa, la déesse-vampire":
                 // Flavor text before the boss name is revealed
-                message += ` Vous êtes au pied d'une falaise au sommet de laquelle un château aux longues tours effilées est perché. Vous parvenez à gravir la falaise et trouver une entrée dérobée du château. Vous vous faufilez sans vous faire repérer par les gardes. Aux détours des couloirs et des escaliers vous parvenez enfin à trouver la salle d'incantation où se tisse l'origine du terrible maléfice qui s'est abattu sur l'ensemble des régions voisines. Une telle malédiction est certainement l'oeuvre d'une créature très puissante. Vous prenez tout votre courage à bras le corps et pénétrez dans l'antre du mal.`
+                message += `Vous êtes au pied d'une falaise au sommet de laquelle un château aux longues tours effilées est perché. Vous parvenez à gravir la falaise et trouver une entrée dérobée du château. Vous vous faufilez sans vous faire repérer par les gardes. Aux détours des couloirs et des escaliers vous parvenez enfin à trouver la salle d'incantation où se tisse l'origine du terrible maléfice qui s'est abattu sur l'ensemble des régions voisines. Une telle malédiction est certainement l'oeuvre d'une créature très puissante. Vous prenez tout votre courage à bras le corps et pénétrez dans l'antre du mal.`
 
                 const vcrakusaPreparationPhase = (ctx) => {
-                    let message
+                    hideAllGenericButtons()
+                    displayState(false)
 
                     // Check if odd fight turn 
                     if (ctx.fightTurn % 2 != 0) {
                         // Vcrakusa does nothing
-                        message = `${boss.name} ne fait rien.`
-                        checkNextPhase()
-                        return
-                    }
-
-                    // Vcrakusa casts 'Soin' amplified
-                    const amount = 20 + d100.roll()
-                    ctx.opponent.hitPoints += amount
-                    message = `${ctx.opponent.name} lance le sort 'Soin' amplifié et récupère ${amount}PV.`
-                    checkNextPhase()
-
-                    function checkNextPhase() {
                         // If player already prepared we go to the player's attack phase
                         if (playerHasInitiative(ctx.opponent)) {
-                            message += `
-
-                            --C'est à votre tour d'attaquer.`
-
-                            gameMessage(message);
-
-                            activateButton(btn1, "Attaquer", () => { playerAttackPhase(ctx) })
+                            playerAttackPhase(ctx)
                             return
                         }
 
                         // Otherwise, we go to its prepare phase
-                        message += `
-
-                        --C'est à votre tour de vous préparer.`
-
-                        gameMessage(message);
-
-                        activateButton(btn1, "Se préparer", () => { playerPreparationPhase(ctx) })
+                        playerPreparationPhase(ctx)
+                        return
                     }
+
+                    // Vcrakusa casts 'Healing' amplified
+                    const amount = 20 + d100.roll()
+                    ctx.opponent.hitPoints += amount
+                    displayState(true, `-~ Combat contre : ${ctx.opponent.name} ~-
+                        -- Phase de préparation : adversaire --`)
+                    gameMessage(`
+
+                    ${ctx.opponent.name}, repue de votre sang, régénère ${amount}PV.`)
+
+                    if (playerHasInitiative(ctx.opponent)) {
+                        activateButton(btn1, "Continuer", () => { playerAttackPhase(ctx) })
+                        return
+                    }
+
+                    // Otherwise, we go to its prepare phase
+                    activateButton(btn1, "Continuer", () => { playerPreparationPhase(ctx) })
                 }
 
-                contextData.introMessage = `Vous découvrez une large pièce circulaire. En son centre, throne un être décharné, assis sur une chaise en bois sombre aux sculptures élaborées. La créature, en remarquant votre entrée dans la pièce, commence à se lever lentement. Ses yeux, d'un noir sans reflet, vous regardent intensément pendant plusieurs secondes. Puis, soudain, la créature funeste ouvre grand la bouche, laissant apparaître deux fines canines d'une taille anormalement grande et se rue vers vous en poussant un cri glaçant.`
+                contextData.introMessage = `Vous découvrez une large pièce circulaire. En son centre, trône un être décharné assis sur une chaise disproportionnée en bois sombre aux sculptures élaborées. La créature, en remarquant votre entrée dans la pièce, commence à se lever lentement. Ses yeux, d'un noir sans reflet, vous regardent intensément pendant plusieurs secondes. Puis, soudain, la créature funeste ouvre grand la bouche, laissant apparaître deux fines canines d'une taille anormalement grande et se rue vers vous en poussant un cri glaçant.`
                 contextData.opponentPreparationPhaseCallBack = vcrakusaPreparationPhase
                 contextData.rewardPhaseCallBack = bossRewardPhase
                 break;
@@ -1494,7 +1537,9 @@ function finalAdventure() {
 function bossRewardPhase(ctx) {
     hideAllGenericButtons()
     stepCompleted()
+    displayState(false)
     player.restoreHitPoints()
+    player.resetSpellEffects()
     isInCombat = false
 
     gameMessage(`${ctx.opponent.name} est ${ctx.opponent.gender == "F" ? "terrassée" : "terrassé"} !
@@ -1558,7 +1603,7 @@ function intelligentBeingEncounter() {
                 () => {
                     const contextData = {
                         opponent: intelligentBeing,
-                        introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(intelligentBeing, false)} et adoptez une position de combat.`,
+                        introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(intelligentBeing, true)} et adoptez une position de combat.`,
                         opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
                         rewardPhaseCallBack: regularRewardPhase
                     }
@@ -1977,16 +2022,16 @@ function visitShop(
             switch (card.suit) {
                 case "coins":
                     return
+                case "swords":
+                    shop.add(new EquippableItem(structuredClone(swordsItemsTable[card.value - 1])));
                     break;
                 case "clubs":
-                    return
+                    shop.add(getClubsItem(card.value))
                     break;
                 case "cups":
                     shop.add(getCupsItem(card.value))
                     break;
-                case "swords":
-                    shop.add(new EquippableItem(structuredClone(swordsItemsTable[card.value - 1])));
-                    break;
+
                 default:
                     console.error("Card suit unknown")
                     break;
@@ -2153,18 +2198,21 @@ function specialEncounter() {
 
         function fightTraveler() {
             // Humain male costaud
-            const traveler = generateIntelligentBeing(1, [strongTraitsTable[5]])
+            const traveler = generateIntelligentBeing(1, [getStrongTrait(6)])
             traveler.gender = "M"
 
             let introMessage = `Vous faites comprendre au voyageur vos intentions hostiles. Ce dernier vous regarde avec stupeur en se redressant, prêt à défendre sa peau.`
 
             const travelerPreparationPhase = (ctx) => {
+                hideAllGenericButtons()
                 let message = ``
                 const roll = d20.roll()
 
                 // Teleports away
                 if (roll >= 11) {
                     stepCompleted()
+                    displayState(true, `-~ Combat contre : ${ctx.opponent.name} ~-
+                        -- Phase de préparation : adversaire --`)
 
                     message += `Le voyageur lance le sort 'Téléportation' et disparaît avec sa fille, vous laissant ${player.gender == "F" ? "seule" : "seul"} au milieu du chemin.
                         
@@ -2172,45 +2220,32 @@ function specialEncounter() {
 
                     if (player.hitPoints < player.maxHitPoints) {
                         player.restoreHitPoints()
-                        message += `
-                        Vous vous soignez et continuez votre route.`
-                        nextAdventure(message)
+                        gameMessage(`${message} Vous vous soignez et continuez votre route.`)
+                        activateButton(btn1, "Continuer", () => { nextAdventure() })
                         return
                     }
 
-                    message += ` Vous continuez votre route.`
-                    nextAdventure(message)
+                    gameMessage(`${message} Vous continuez votre route.`)
+                    activateButton(btn1, "Continuer", () => { nextAdventure() })
                     return
                 }
 
                 // Traveler does nothing
-                message = `${beingNameWithDeterminantDefini(ctx.opponent, false)} ne fais rien.`
-
-                // If player already prepared we go to the player's attack phase
+                // If player has prepared before, we go to it's attack phase
                 if (playerHasInitiative(ctx.opponent)) {
-                    message += `
-                    
-                    -- C'est à votre tour d'attaquer.`
-
-                    gameMessage(message);
-
-                    activateButton(btn1, "Attaquer", () => { playerAttackPhase(ctx) })
+                    playerAttackPhase(ctx)
                     return
                 }
 
                 // Otherwise, we go to its prepare phase
-                message += `
-                
-                -- C'est à votre tour de vous préparer.`
-
-                gameMessage(message);
-
-                activateButton(btn1, "Se préparer", () => { playerPreparationPhase(ctx) })
+                playerPreparationPhase(ctx)
             }
 
             const travelerRewardPhase = () => {
                 stepCompleted();
+                displayState(false)
                 player.experiencePoints++;
+                player.resetSpellEffects()
                 isInCombat = false
 
                 let message = `Le voyageur est vaincu.
@@ -2219,10 +2254,10 @@ function specialEncounter() {
                 if (player.hitPoints < player.maxHitPoints) {
                     player.restoreHitPoints()
                     nextAdventure(`${message}.
-                    Vous vous soignez et continuez votre route.`)
+                    Vous vous soignez et continuez votre route en laissant seule la fille malade du voyageur auprès de ce dernier.`)
                     return
                 }
-                nextAdventure(`${message} et continuez votre route.`)
+                nextAdventure(`${message} et continuez votre route en laissant seule la fille malade du voyageur auprès de ce dernier.`)
             }
 
             const contextData = {
@@ -2314,9 +2349,18 @@ function fight(ctx) {
     console.log(`Fight:`);
     ctx.fightTurn = 1
     console.log(ctx);
-
+    currentCombatContext = ctx
     // Message d'intro
     let message = ctx.introMessage
+
+    // Reset spells that can only be cast once per combat
+    for (let i = 0; i < 8; i++) {
+        if (!player.inventory.slots[i]) continue
+        if (player.inventory.slots[i].type != "parchemin de sort") continue
+        if (player.inventory.slots[i].hasAlreadyBeenCast === undefined) continue
+
+        player.inventory.slots[i].hasAlreadyBeenCast = false
+    }
 
     // Special effect : Coupe Invidable
     // Count how many we have
@@ -2359,79 +2403,101 @@ function fight(ctx) {
 }
 
 function initiativePhase(ctx) {
-    if (playerHasInitiative(ctx.opponent)) {
-        gameMessage(`Vous avez l'initiative. 
-            
-            -- C'est à votre tour de vous préparer.`)
+    ctx.fightTurn++
 
-        activateButton(btn1, "Se préparer", () => { playerPreparationPhase(ctx) })
+    if (playerHasInitiative(ctx.opponent)) {
+        playerPreparationPhase(ctx)
 
         return
     }
 
-    gameMessage(`${beingNameWithDeterminantDefini(ctx.opponent, false)} a l'initiative, ${ctx.opponent.gender == "F" ? "elle" : "il"} se prépare.`)
+    ctx.opponentPreparationPhaseCallBack(ctx);
+}
 
-    activateButton(btn1, "Continuer", () => { ctx.opponentPreparationPhaseCallBack(ctx); })
+
+// Check if we need to skip the player prep phase
+function isPlayerPreparationPhaseSkipped() {
+    let skip = true
+    const playerSpells = player.inventory.getItemsOfType("parchemin de sort")
+    console.log(playerSpells);
+
+    if (playerSpells.length > 0) {
+        playerSpells.forEach(spell => {
+            if (spell.isAllowedToBeCast !== undefined) {
+                if (spell.isAllowedToBeCast === false) return
+            }
+
+            if (player.actionPoints < spell.cost) return
+            if (player.magic < spell.magicNeeded) return
+
+            // Player could cast the spell if they wanted
+            skip = false
+        });
+    }
+
+    return skip
 }
 
 function playerPreparationPhase(ctx) {
-    // TODO : implement this
-    gameMessage(`Phase de préparation.
-        
-        Voulez-vous lancer un sort ou utiliser un objet ?`)
-
-    activateButton(
-        btn1,
-        "Ne rien faire",
-        () => {
-            if (playerHasInitiative(ctx.opponent)) {
-                opponentPreparationPhase(ctx)
-                return
-            }
-            opponentAttackPhase(ctx)
+    // Skip if nothing to do
+    if (isPlayerPreparationPhaseSkipped()) {
+        if (playerHasInitiative(ctx.opponent)) {
+            ctx.opponentPreparationPhaseCallBack(ctx)
+            return
         }
-    )
-}
+        opponentAttackPhase(ctx)
+        return
+    }
 
-// Opponent prep phase if it is second in initiative
-function opponentPreparationPhase(ctx) {
-    gameMessage(`C'est au tour ${beingNameWithDeterminantDefiniContracte(ctx.opponent, "de")} de se préparer.`)
+    hideAllGenericButtons()
+    player.isAllowedToCastSpell = true
 
-    activateButton(btn1, "Continuer", () => { ctx.opponentPreparationPhaseCallBack(ctx) })
+    displayState(true, `-~ Combat contre : ${ctx.opponent.name} ~-
+        -- Phase de préparation : ${player.name} --`)
+
+    const initiativeNotification = playerHasInitiative(ctx.opponent) ? `Vous avez l'Initiative.
+            ` : ``;
+
+    gameMessage(`${initiativeNotification}${playerPreparationPhaseMessage}`)
+
+    activateButton(btn1, "Continuer", () => { goNext() })
+
+    function goNext() {
+        player.isAllowedToCastSpell = false
+        clearCardsDisplayZone()
+        if (playerHasInitiative(ctx.opponent)) {
+            ctx.opponentPreparationPhaseCallBack(ctx)
+            return
+        }
+        opponentAttackPhase(ctx)
+        return
+    }
 }
 
 function regularOpponentPreparationPhase(ctx) {
-    message = `${beingNameWithDeterminantDefini(ctx.opponent, false)} ne fais rien.`
+    // Opponent usually do nothing during their preparation phase. We use custom call backs for opponents who do.
+    // Here, we just skip to the next phase
 
     // If the player has prepared before the opponent. We start the player attack phase.
     if (playerHasInitiative(ctx.opponent)) {
-        message += `
-        
-        -- C'est à votre tour d'attaquer.`
-
-        gameMessage(message);
-
-        activateButton(btn1, "Attaquer", () => { playerAttackPhase(ctx) })
-
+        playerAttackPhase(ctx)
         return
     }
 
     // Otherwise, we start the player prepare phase
-    message += `
-    
-    -- C'est à votre tour de vous préparer.`
-
-    gameMessage(message)
-
-    activateButton(btn1, "Se préparer", () => { playerPreparationPhase(ctx) })
+    playerPreparationPhase(ctx)
 }
 
 function playerAttackPhase(ctx) {
     let damage = 0;
 
-    gameMessage(`Phase d'attaque
-        
-        -- Voulez-vous faire une attaque physique ou une attaque magique ?`)
+    displayState(true, `-~ Combat contre : ${ctx.opponent.name} ~-
+        -- Phase d'attaque : ${player.name} --`)
+
+    const initiativeNotification = playerHasInitiative(ctx.opponent) ? `Vous avez l'Initiative.` : `C'est à votre tour d'attaquer.`;
+
+    gameMessage(`${initiativeNotification}
+        - Voulez-vous faire une attaque physique ou une attaque magique ?`)
 
     activateButton(btn1, "Attaque physique", () => { decideIfPowerful(true) })
     activateButton(btn2, "Attaque magique", () => { decideIfPowerful(false) })
@@ -2516,19 +2582,16 @@ function playerAttackPhase(ctx) {
             Vous infligez un total de ${damage} ${damage <= 1 ? "dégât physique" : "dégâts physiques"} ${beingNameWithDeterminantDefiniContracte(ctx.opponent, 'à')}.`
         }
 
+        gameMessage(message)
+
         // Check if opponent is KO
         if (isBeingDead(ctx.opponent)) {
-            gameMessage(message)
             activateButton(btn1, "Continuer", () => { ctx.rewardPhaseCallBack(ctx) })
             return
         }
 
         // If we attacked first , it's the opponent's turn
         if (playerHasInitiative(ctx.opponent)) {
-            gameMessage(`${message}
-            
-            -- C'est au tour ${beingNameWithDeterminantDefiniContracte(ctx.opponent, 'de')} d'attaquer.`)
-
             activateButton(btn1, "Continuer", () => { opponentAttackPhase(ctx) })
             return
         }
@@ -2539,19 +2602,7 @@ function playerAttackPhase(ctx) {
 }
 
 function opponentAttackPhase(ctx) {
-    let damage = 0
-
-    // If player attacked first we skip the phase presentation
-    if (playerHasInitiative(ctx.opponent)) {
-        selectAttackType()
-        return
-    }
-
-    gameMessage(`Phase d'attaque.
-       
-        -- C'est au tour ${beingNameWithDeterminantDefiniContracte(ctx.opponent, "de")} d'attaquer.`)
-
-    activateButton(btn1, "Continuer", () => { selectAttackType() })
+    selectAttackType()
 
     function selectAttackType() {
         // If both stats are equal we choose the version with the most damaging potential
@@ -2581,7 +2632,14 @@ function opponentAttackPhase(ctx) {
     }
 
     function inflictDamage(isPhysical) {
-        let message = ``
+        let damage = 0
+
+        displayState(true, `-~ Combat contre : ${ctx.opponent.name} ~-
+            -- Phase d'attaque : adversaire --`)
+
+        let message = `C'est au tour ${beingNameWithDeterminantDefiniContracte(ctx.opponent, "de")} d'attaquer.
+        
+        `;
 
         // Magical Hit
         if (!isPhysical) {
@@ -2590,49 +2648,42 @@ function opponentAttackPhase(ctx) {
             damage = clamp(ctx.opponent.magic + roll - player.magic, 0, Infinity)
             player.hitPoints -= damage
 
-            message += `${beingNameWithDeterminantDefini(ctx.opponent, false)} attaque et vous inflige ${damage} ${damage <= 1 ? "dégât magique" : "dégâts magiques"}.`
+            message += `${ctx.opponent.gender == "F" ? "Elle" : "Il"} vous inflige ${damage} ${damage <= 1 ? "dégât magique" : "dégâts magiques"}.`
         }
         // Physical Hit
         else {
-
             const roll = d100.roll()
             console.log(`The monster rolls a ${roll} - Physical`);
             damage = clamp(ctx.opponent.strength + roll - player.speed, 0, Infinity)
             player.hitPoints -= damage
 
-            message += `${beingNameWithDeterminantDefini(ctx.opponent, false)} attaque et vous inflige ${damage} ${damage <= 1 ? "dégât physique" : "dégâts physiques"}.`
+            message += `${ctx.opponent.gender == "F" ? "Elle" : "Il"} vous inflige ${damage} ${damage <= 1 ? "dégât physique" : "dégâts physiques"}.`
         }
+
+        gameMessage(message)
 
         // Check if the hit killed the player
         // Display just the hit message and set up button to bring to the game over screen
         if (isBeingDead(player)) {
-            gameMessage(message)
             activateButton(btn1, "Continuer", () => { gameOver() })
-
             return
         }
 
         // If we attacked first it's time for a new turn
         if (playerHasInitiative(ctx.opponent)) {
-            gameMessage(message)
             activateButton(btn1, "Continuer", () => { newTurn(ctx) })
-
             return
         }
 
         // Otherwise, we start the player attack phase
-        message += `
-        
-        -- C'est à votre tour d'attaquer.`
-
-        gameMessage(message)
-
-        activateButton(btn1, "Attaquer", () => { playerAttackPhase(ctx) })
+        activateButton(btn1, "Continuer", () => { playerAttackPhase(ctx) })
     }
 }
 
 function newTurn(ctx) {
     ctx.fightTurn++
+    displayState(true, `-~ Combat contre : ${ctx.opponent.name} ~-
+        -- Nouveau tour --`)
 
     gameMessage(`Vous avez résisté à l'assault ${beingNameWithDeterminantDefiniContracte(ctx.opponent, "de")} mais ${ctx.opponent.gender == "F" ? "cette dernière" : "ce dernier"} est toujours debout et prêt${ctx.opponent.gender == "F" ? "e" : ""} à en découdre.
         
@@ -2643,8 +2694,10 @@ function newTurn(ctx) {
 
 function regularRewardPhase(ctx) {
     hideAllGenericButtons()
+    displayState(false)
     stepCompleted();
     player.experiencePoints++
+    player.resetSpellEffects()
 
     gameMessage(`${beingNameWithDeterminantDefini(ctx.opponent, false)} est ${ctx.opponent.gender == "F" ? "terrassée" : "terrassé"} !
         ${player.hitPoints < player.maxHitPoints ? "Vous vous soignez et" : "Vous"} gagnez 1 point d'expérience.
@@ -2697,15 +2750,11 @@ function regularRewardPhase(ctx) {
 
 function playerHasInitiative(opponent) {
     // Environment 'Plaines' special rule
-    if (currentEnvironment.name == "Plaines") {
-        return true
-    }
+    if (currentEnvironment.name == "Plaines") return true
+    if (player.hasForcedInitiative) return true
+    if (player.speed >= opponent.speed) return true
 
-    if (opponent.speed > player.speed) {
-        return false
-    }
-
-    return true
+    return false
 }
 //#endregion
 
@@ -2777,6 +2826,7 @@ function gameMessage(text) {
 
 function gameOver() {
     hideAllGenericButtons()
+    displayState(false)
     gameMessage(`Vous êtes ${player.gender == "F" ? "morte" : "mort"}, votre aventure s'achève ici.
             Merci d'avoir joué ! On espère que vous vous êtes quand même bien ${player.gender == "F" ? "amusée" : "amusé"}.
             Rechargez la page si vous souhaitez recommencer une partie.`)
@@ -2784,6 +2834,7 @@ function gameOver() {
 
 function win() {
     hideAllGenericButtons()
+    displayState(false)
     gameMessage(`Vous avez gagné ! Quelle aventure ! Bravo !
         Merci d'avoir joué ! On espère que vous vous êtes bien ${player.gender == "F" ? "amusée" : "amusé"}.
         Rechargez la page si vous souhaitez recommencer une partie.`)

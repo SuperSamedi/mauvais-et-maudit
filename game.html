@@ -17,7 +17,12 @@
         <!-- Main Screen -->
         <div id="main-screen">
             <div id="main">
-                <div id="dungeon-master-text">xx</div>
+                
+                <div id="dungeon-master">
+                    <div id="dungeon-master__state">xx</div>
+                    <hr id="dungeon-master__line">
+                    <div id="dungeon-master__main">xx</div>
+                </div>
 
                 <div id="controls">
 
@@ -74,7 +79,7 @@
                     </div>
 
                     <div id="test-buttons">
-                        <!-- <button id="btn-unlock-deck" type="button">Unlock Deck</button> -->
+                        <button id="btn-unlock-deck" type="button">Unlock Deck</button>
                         <!-- <button id="btn-fight-boss" type="button">Fight Boss</button> -->
                     </div>
 
@@ -257,18 +262,40 @@
         <!-- Item Details Screen -->
         <div id="item-details-view-background">
             <div id="item-details-view">
-                <div id="item-details-view__name">épée</div>
-                <p id="item-details-view__item-type">arme non</p>
-                <hr id="item-details-view__separation-bar">
+                <div id="item-details-view__item-info-container">
+                    <p id="item-details-view__name">épée</p>
+                    <p id="item-details-view__item-type">arme non</p>
+                    <p id="item-details-view__magic-needed">MA nécessaire : <span id="item-details-view__magic-needed__amount">54</span></p>
+                    <p id="item-details-view__spell-cost">Coût de lancement : <span id="item-details-view__spell-cost__cost">54</span>PA</p>
+                </div>
+                
+                <hr class="item-details-view__separation-bar">
+                
                 <div id="item-details-view__bottom-container">
-                    <div id="item-details-view__description">Force +15, Vitesse +5</div>
+                    <div id="item-details-view__description">
+                        <div id="item-details-view__description__effects">
+                            Force +15, Vitesse +5
+                        </div>
+                        <div id="item-details-view__description__spell-amplify">
+                            <p id="txt-amplification">Amplification</p>
+                            <p>MA nécessaire : <span id="item-details-view__description__magicNeeded">54</span></p>
+                            <p>Coût supplémentaire : <span id="item-details-view__description__spell-amplify__additional-cost">56</span>PA</p>
+                            
+                            <hr class="item-details-view__separation-bar">
+                            
+                            <div id="item-details-view__description__spell-amplify__effects">
+
+                            </div>
+                        </div>
+                    </div>
+                   
                     <div id="item-details-view__sell-value">valeur : 100PO</div>
-                    <button type="button" id="item-details-view__btn-equip"
-                        class="item-details-view__btn">Équiper</button>
-                    <button type="button" id="item-details-view__btn-use"
-                        class="item-details-view__btn">Utiliser</button>
-                    <button type="button" id="item-details-view__btn-sell"
-                        class="item-details-view__btn">Vendre</button>
+                    
+                    <button type="button" id="item-details-view__btn-equip" class="item-details-view__btn">Équiper</button>
+                    <button type="button" id="item-details-view__btn-use" class="item-details-view__btn">Utiliser</button>
+                    <button type="button" id="item-details-view__btn-cast" class="item-details-view__btn">Lancer</button>
+                    <button type="button" id="item-details-view__btn-cast-amplified" class="item-details-view__btn">Lancer Amplifié</button>
+                    <button type="button" id="item-details-view__btn-sell" class="item-details-view__btn">Vendre</button>
                     <button type="button" id="item-details-view__btn-drop" class="item-details-view__btn">Jeter</button>
                 </div>
             </div>
@@ -291,6 +318,17 @@
     <script src="game/ConsumableItem.js"></script>
     <script src="game/Potion.js"></script>
     <script src="game/Ether.js"></script>
+    <script src="game/Spell.js"></script>
+    <script src="game/spells/DivineWind.js"></script>
+    <script src="game/spells/MetalForm.js"></script>
+    <script src="game/spells/InfiniteSpring.js"></script>
+    <script src="game/spells/Healing.js"></script>
+    <script src="game/spells/Steal.js"></script>
+    <script src="game/spells/Teleport.js"></script>
+    <script src="game/spells/Enfeeble.js"></script>
+    <script src="game/spells/InfernalSphere.js"></script>
+    <script src="game/spells/Divination.js"></script>
+    <script src="game/spells/AbsoluteRestoration.js"></script>
     <script src="game/Shop.js"></script>
     <script src="game/Being.js"></script>
     <script src="game/Player.js"></script>

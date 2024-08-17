@@ -7,6 +7,12 @@ class Being {
         this.gender = gender ? gender : races[0].gender
         this.traits = traits ? traits : []
         this.#hitPoints = 0;
+        this.spellEffects = {
+            strength: 0,
+            speed: 0,
+            magic: 0
+        }
+        this.isAllowedToCastSpells = true
     }
 
     get name() {
@@ -222,6 +228,9 @@ class Being {
             }
         }
 
+        // Spell Effects
+        if (this.spellEffects.hitPoints) stat += this.spellEffects.hitPoints
+
         return stat;
     }
 
@@ -266,6 +275,9 @@ class Being {
             }
         }
 
+        // Spell Effects
+        if (this.spellEffects.strength) stat += this.spellEffects.strength
+
         return stat;
     }
 
@@ -308,6 +320,9 @@ class Being {
             }
         }
 
+        // Spell Effects
+        if (this.spellEffects.speed) stat += this.spellEffects.speed
+
         return stat;
     }
 
@@ -349,6 +364,9 @@ class Being {
                 }
             }
         }
+
+        // Spell Effects
+        if (this.spellEffects.magic) stat += this.spellEffects.magic
 
         return stat;
     }

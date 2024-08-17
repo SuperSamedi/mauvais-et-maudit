@@ -1,0 +1,246 @@
+[
+  {
+    "type": "parchemin de sort",
+    "name": "Vent Divin",
+    "isLegendary": false,
+    "description": "Procure +[20] VI jusqu'à la fin du combat.",
+    "buffAmount": 20,
+    "effects": [
+      {
+        "description": "Procure +20 VI jusqu'à la fin du combat.",
+        "type": "bonus"
+      }
+    ],
+    "magicNeeded": 10,
+    "cost": 1,
+    "amplification": {
+      "effects": [
+        {
+          "description": "Procure +(20 + 1D100) VI jusqu'à la fin du combat.",
+          "type": "bonus"
+        }
+      ],
+      "magicNeeded": 20,
+      "cost": 1
+    },
+    "buyValue": 400,
+    "sellValue": 200
+  },
+  {
+    "type": "parchemin de sort",
+    "name": "Corps de Métal",
+    "isLegendary": false,
+    "description": "Procure +[20] FO jusqu'à la fin du combat.",
+    "buffAmount": 20,
+    "effects": [
+      {
+        "description": "Procure +20 FO jusqu'à la fin du combat.",
+        "type": "bonus"
+      }
+    ],
+    "magicNeeded": 10,
+    "cost": 1,
+    "amplification": {
+      "effects": [
+        {
+          "description": "Procure +(20 + 1D100) FO jusqu'à la fin du combat.",
+          "type": "bonus"
+        }
+      ],
+      "magicNeeded": 20,
+      "cost": 1
+    },
+    "buyValue": 400,
+    "sellValue": 200
+  },
+  {
+    "type": "parchemin de sort",
+    "name": "Source Infinie",
+    "isLegendary": false,
+    "description": "Procure +[20] MA jusqu'à la fin du combat.",
+    "buffAmount": 20,
+    "effects": [
+      {
+        "description": "Procure +20 MA jusqu'à la fin du combat.",
+        "type": "bonus"
+      }
+    ],
+    "magicNeeded": 20,
+    "cost": 1,
+    "amplification": {
+      "effects": [
+        {
+          "description": "Procure +(20 + 1D100) MA jusqu'à la fin du combat.",
+          "type": "bonus"
+        }
+      ],
+      "magicNeeded": 40,
+      "cost": 1
+    },
+    "buyValue": 450,
+    "sellValue": 200
+  },
+  {
+    "type": "parchemin de sort",
+    "name": "Soin",
+    "isLegendary": false,
+    "description": "Soigne [20]PV.",
+    "healingAmount": 20,
+    "effects": [
+      {
+        "description": "Soigne 20PV.",
+        "type": "bonus"
+      }
+    ],
+    "magicNeeded": 30,
+    "cost": 1,
+    "amplification": {
+      "effects": [
+        {
+          "description": "Soigne (20 + 1D100)PV.",
+          "type": "bonus"
+        }
+      ],
+      "magicNeeded": 60,
+      "cost": 1
+    },
+    "buyValue": 450,
+    "sellValue": 200
+  },
+  {
+    "type": "parchemin de sort",
+    "name": "Vol",
+    "isLegendary": false,
+    "description": "Permet de tirer une carte",
+    "effects": [
+      {
+        "description": "Permet de tirer une carte et de récupérer l'or ou l'objet correspondant.",
+        "type": "bonus"
+      },
+      {
+        "description": "Utilisable une seule fois par combat.",
+        "type": "malus"
+      }
+    ],
+    "magicNeeded": 50,
+    "cost": 2,
+    "buyValue": 800,
+    "sellValue": 400
+  },
+  {
+    "type": "parchemin de sort",
+    "name": "Téléportation",
+    "isLegendary": false,
+    "description": "Permet de fuir un combat.",
+    "effects": [
+      {
+        "description": "Permet de fuir un combat.",
+        "type": "bonus"
+      },
+      {
+        "description": "Pas de récompense de combat.",
+        "type": "malus"
+      },
+      {
+        "description": "Ne marche pas contre un boss.",
+        "type": "malus"
+      }
+    ],
+    "magicNeeded": 40,
+    "cost": 1,
+    "buyValue": 300,
+    "sellValue": 150
+  },
+  {
+    "type": "parchemin de sort",
+    "name": "Affaiblissement",
+    "isLegendary": false,
+    "description": "Réduit une stat de l'adversaire de -[25] jusqu'à la fin du combat.",
+    "effects": [
+      {
+        "description": "Réduit la FO, la VI ou la MA (au choix) de l'adversaire de -25 jusqu'à la fin du combat.",
+        "type": "bonus"
+      }
+    ],
+    "magicNeeded": 50,
+    "cost": 1,
+    "amplification": {
+      "effects": [
+        {
+          "description": "Réduit la FO, la VI ou la MA (au choix) de l'adversaire de -(25 + 1D100) jusqu'à la fin du combat.",
+          "type": "bonus"
+        }
+      ],
+      "magicNeeded": 80,
+      "cost": 1
+    },
+    "buyValue": 600,
+    "sellValue": 300
+  },
+  {
+    "type": "parchemin de sort",
+    "name": "Sphère Infernale",
+    "isLegendary": true,
+    "description": "Inflige [1D100] de dégâts à l'adversaire.",
+    "effects": [
+      {
+        "description": "Inflige 1D100 de dégâts à l'adversaire.",
+        "type": "bonus"
+      }
+    ],
+    "magicNeeded": 70,
+    "cost": 2,
+    "amplification": {
+      "effects": [
+        {
+          "description": "Inflige 2D100 de dégâts à l'adversaire.",
+          "type": "bonus"
+        }
+      ],
+      "magicNeeded": 110,
+      "cost": 1
+    },
+    "buyValue": 900,
+    "sellValue": 450
+  },
+  {
+    "type": "parchemin de sort",
+    "name": "Divination",
+    "isLegendary": true,
+    "description": "Donne l'initiative jusqu'à la fin du combat.",
+    "effects": [
+      {
+        "description": "Donne l'initiative jusqu'à la fin du combat.",
+        "type": "bonus"
+      },
+      {
+        "description": "Octroie 2PA.",
+        "type": "bonus"
+      },
+      {
+        "description": "Utilisable une seule fois par combat.",
+        "type": "malus"
+      }
+    ],
+    "magicNeeded": 90,
+    "cost": 1,
+    "buyValue": 900,
+    "sellValue": 450
+  },
+  {
+    "type": "parchemin de sort",
+    "name": "Guérison Absolue",
+    "isLegendary": true,
+    "description": "Soigne tous les PV.",
+    "effects": [
+      {
+        "description": "Soigne tous les PV.",
+        "type": "bonus"
+      }
+    ],
+    "magicNeeded": 100,
+    "cost": 2,
+    "buyValue": 1000,
+    "sellValue": 450
+  }
+]
