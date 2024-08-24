@@ -86,7 +86,6 @@
   width: 50%;
   background-color: bisque;
 }
-
 #dungeon-master__main {
   width: 100%;
   color: rgb(243, 243, 243);
@@ -97,7 +96,41 @@
   flex-direction: column;
   gap: 20px;
 }
-
+#generic-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+}
+.generic-button {
+  background-color: white;
+  border: 2px solid rgba(0, 0, 0, 0);
+  border-radius: 2px;
+  font-size: 0.75rem;
+  padding: 0.33rem;
+}
+.generic-button:hover {
+  cursor: pointer;
+  border: 2px solid black;
+}
+@media (pointer: none), (pointer: coarse) {
+  .generic-button {
+    background-color: white;
+    border: 2px solid black;
+    border-radius: 2px;
+    font-size: 0.75rem;
+    padding: 0.33rem;
+  }
+}
+.btn-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-weight: bold;
+}
+.btn-icon {
+  max-width: 3rem;
+  image-rendering: auto;
+}
 .btn-open-screen {
   width: 3rem;
   height: 3rem;

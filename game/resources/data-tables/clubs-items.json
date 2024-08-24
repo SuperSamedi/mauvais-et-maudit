@@ -3,7 +3,7 @@
     "type": "parchemin de sort",
     "name": "Vent Divin",
     "isLegendary": false,
-    "description": "Procure +[20] VI jusqu'à la fin du combat.",
+    "description": "Procure +[20] VI jusqu'à la fin du combat",
     "buffAmount": 20,
     "effects": [
       {
@@ -30,7 +30,7 @@
     "type": "parchemin de sort",
     "name": "Corps de Métal",
     "isLegendary": false,
-    "description": "Procure +[20] FO jusqu'à la fin du combat.",
+    "description": "Procure +[20] FO jusqu'à la fin du combat",
     "buffAmount": 20,
     "effects": [
       {
@@ -57,7 +57,7 @@
     "type": "parchemin de sort",
     "name": "Source Infinie",
     "isLegendary": false,
-    "description": "Procure +[20] MA jusqu'à la fin du combat.",
+    "description": "Procure +[20] MA jusqu'à la fin du combat",
     "buffAmount": 20,
     "effects": [
       {
@@ -84,7 +84,7 @@
     "type": "parchemin de sort",
     "name": "Soin",
     "isLegendary": false,
-    "description": "Soigne [20]PV.",
+    "description": "Soigne [20]PV",
     "healingAmount": 20,
     "effects": [
       {
@@ -131,7 +131,7 @@
     "type": "parchemin de sort",
     "name": "Téléportation",
     "isLegendary": false,
-    "description": "Permet de fuir un combat.",
+    "description": "Permet de fuir un combat",
     "effects": [
       {
         "description": "Permet de fuir un combat.",
@@ -155,7 +155,7 @@
     "type": "parchemin de sort",
     "name": "Affaiblissement",
     "isLegendary": false,
-    "description": "Réduit une stat de l'adversaire de -[25] jusqu'à la fin du combat.",
+    "description": "Réduit une stat de l'adversaire de -[25] jusqu'à la fin du combat",
     "effects": [
       {
         "description": "Réduit la FO, la VI ou la MA (au choix) de l'adversaire de -25 jusqu'à la fin du combat.",
@@ -181,7 +181,7 @@
     "type": "parchemin de sort",
     "name": "Sphère Infernale",
     "isLegendary": true,
-    "description": "Inflige [1D100] de dégâts à l'adversaire.",
+    "description": "Inflige [1D100] de dégâts à l'adversaire",
     "effects": [
       {
         "description": "Inflige 1D100 de dégâts à l'adversaire.",
@@ -207,7 +207,7 @@
     "type": "parchemin de sort",
     "name": "Divination",
     "isLegendary": true,
-    "description": "Donne l'initiative jusqu'à la fin du combat.",
+    "description": "Donne l'initiative jusqu'à la fin du combat",
     "effects": [
       {
         "description": "Donne l'initiative jusqu'à la fin du combat.",
@@ -231,7 +231,7 @@
     "type": "parchemin de sort",
     "name": "Guérison Absolue",
     "isLegendary": true,
-    "description": "Soigne tous les PV.",
+    "description": "Soigne tous les PV",
     "effects": [
       {
         "description": "Soigne tous les PV.",

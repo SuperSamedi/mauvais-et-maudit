@@ -246,10 +246,10 @@ function presentation() {
 
         Bienvenue dans Mauvais & Maudit "Édition Online" !
         Vous êtes sur le point d'embarquer dans une aventure interactive textuelle. Durant cette quête, vous allez incarner un personnage dont vous allez tirer au hasard la race et le trait distinctif.
-        Commençons par la race de votre personnage :
+        Commençons par la race de votre personnage :
         - Appuyez sur "Lancer le D20" pour tirer au hasard votre race.`)
 
-    activateButton(btn1, "Lancer le D20", () => { choosePlayerRace(d20.roll()) })
+    activateButton(btn1, "Lancer le D20", () => { choosePlayerRace(d20.roll()) }, "d20")
 }
 
 function choosePlayerRace(roll) {
@@ -287,7 +287,7 @@ function choosePlayerRace(roll) {
 
         - Maintenant, lancez le D20 pour tirer votre trait.`)
 
-    activateButton(btn1, "Lancer le D20", () => { choosePlayerTrait(d20.roll()) })
+    activateButton(btn1, "Lancer le D20", () => { choosePlayerTrait(d20.roll()) }, "d20")
 
     //#region Non-Being Player Generation
     function generateNonBeingPlayer(being, isGeneratingHybrid) {
@@ -296,7 +296,7 @@ function choosePlayerRace(roll) {
         Les Non-Êtres sont des créatures instables. Vous allez devoir tirer vos stats au hasard.
         Lancez le D100 pour vos points de vie.`);
 
-        activateButton(btn1, "Lancer le D100", () => { generateNonBeingHitPoints() })
+        activateButton(btn1, "Lancer le D100", () => { generateNonBeingHitPoints() }, "d100")
 
         function generateNonBeingHitPoints() {
             const roll = d100.roll();
@@ -362,7 +362,7 @@ function choosePlayerRace(roll) {
         function checkNonBeingStability(being) {
             hideAllGenericButtons()
             const totalStats = being.hitPoints + being.strength + being.speed + being.magic;
-            console.log(`Total Non-Être stats : ${totalStats}`);
+            console.log(`Total Non-Être stats : ${totalStats}`);
 
             if (totalStats < 200) {
                 const pointsToAdd = 200 - totalStats;
@@ -398,7 +398,7 @@ function choosePlayerRace(roll) {
 
                 - Maintenant, lancez le D20 pour tirer votre trait.`)
 
-            activateButton(btn1, "Lancer le D20", () => { choosePlayerTrait(d20.roll()) })
+            activateButton(btn1, "Lancer le D20", () => { choosePlayerTrait(d20.roll()) }, "d20")
         }
 
         function adjustStats(being, amount, isAdding) {
@@ -620,7 +620,7 @@ function choosePlayerRace(roll) {
                             
                             - Maintenant, lancez le D20 pour tirer votre deuxième race.`)
 
-                        activateButton(btn1, "Lancer le D20", () => { generateHybridPlayer(); })
+                        activateButton(btn1, "Lancer le D20", () => { generateHybridPlayer(); }, "d20")
                         return
                     }
 
@@ -636,7 +636,7 @@ function choosePlayerRace(roll) {
 
                     - Maintenant, lancez le D20 pour tirer votre trait.`)
 
-                activateButton(btn1, "Lancer le D20", () => { choosePlayerTrait(d20.roll()) })
+                activateButton(btn1, "Lancer le D20", () => { choosePlayerTrait(d20.roll()) }, "d20")
             }
         }
     }
@@ -652,14 +652,14 @@ function choosePlayerRace(roll) {
             Tu vas devoir tirer deux races séparément. Ta race finale sera un mélange des deux.
             Lance le D20 pour ta première race.`);
 
-            activateButton(btn1, "Lancer le D20", () => { generateHybridPlayerFirstHalf() })
+            activateButton(btn1, "Lancer le D20", () => { generateHybridPlayerFirstHalf() }, "d20")
             return;
         }
         // Second come around (after 1st half hybride)
         if (!hybridRaceB.name) {
             gameMessage(`Lance maintenant le D20 pour ta deuxième race.`);
 
-            activateButton(btn1, "Lancer le D20", () => { generateHybridPlayerSecondHalf() })
+            activateButton(btn1, "Lancer le D20", () => { generateHybridPlayerSecondHalf() }, "d20")
             return;
         }
 
@@ -671,7 +671,7 @@ function choosePlayerRace(roll) {
             
             Maintenant, lancez le D20 pour choisir votre trait.`)
 
-        activateButton(btn1, "Lancer le D20", () => { choosePlayerTrait(d20.roll()) })
+        activateButton(btn1, "Lancer le D20", () => { choosePlayerTrait(d20.roll()) }, "d20")
 
 
         function generateHybridPlayerFirstHalf() {
@@ -700,7 +700,7 @@ function choosePlayerRace(roll) {
                 `${roll} ! ${player.gender == "F" ? hybridRaceA.name.female : hybridRaceA.name.male}. Maintenant, lancez à nouveau le D20 pour votre deuxième race.`
             );
 
-            activateButton(btn1, "Lancer le D20", () => { generateHybridPlayerSecondHalf() })
+            activateButton(btn1, "Lancer le D20", () => { generateHybridPlayerSecondHalf() }, "d20")
 
             player.updateAllVisuals();
         }
@@ -856,17 +856,17 @@ function choosePlayerGender(gender) {
         if (isNameValid(inputName) === false) return
         if (isNameValid(inputName) == "short") {
             gameMessage(`${message}
-                Notez: le nom doit contenir au moins 1 caractère.`)
+                Notez : le nom doit contenir au moins 1 caractère.`)
             return
         }
         if (isNameValid(inputName) == "long") {
             gameMessage(`${message}
-                Notez: le nom ne doit pas dépasser 32 caractères.`)
+                Notez : le nom ne doit pas dépasser 32 caractères.`)
             return
         }
         if (isNameValid(inputName) == "invalid") {
             gameMessage(`${message}
-                Notez: le nom ne peut contenir que des lettres de l'alphabet, des espaces et des tirets.`)
+                Notez : le nom ne peut contenir que des lettres de l'alphabet, des espaces et des tirets.`)
             return
         }
         choosePlayerName(inputName)
@@ -961,7 +961,7 @@ function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpRewar
         // Tracker for the Lucky Clover
         lastItemReceivedRandomly = reward
         feedbackMessage += ` 
-        Vous recevez le sort ${reward.name} (${reward.description}).`;
+        Vous recevez le sort ${reward.name} (${reward.description})`;
         //console.log(inventory);
     }
 
@@ -1043,7 +1043,8 @@ function chooseNewEnvironment(customMessage) {
             saveCloverState()
             clearCardsDisplayZone()
             newEnvironmentResult(getRandomInt(environmentsTable.length) + 1)
-        }
+        },
+        "d20"
     )
 
     function newEnvironmentResult(roll) {
@@ -1096,7 +1097,9 @@ function chooseNewEnvironment(customMessage) {
                     environmentRerolls--
                     saveCloverState()
                     newEnvironmentResult(getRandomInt(environmentsTable.length + 1))
-                })
+                },
+                "d20"
+            )
 
             return
         }
@@ -1370,7 +1373,8 @@ function nextAdventure(customMessage = "") {
             () => {
                 clearCardsDisplayZone()
                 miniBossAdventure()
-            })
+            }
+        )
         return
     }
 
@@ -1383,7 +1387,8 @@ function nextAdventure(customMessage = "") {
             () => {
                 clearCardsDisplayZone()
                 finalAdventure()
-            })
+            }
+        )
 
         return
     }
@@ -1400,14 +1405,16 @@ function nextAdventure(customMessage = "") {
             saveCloverState()
             clearCardsDisplayZone()
             chooseNextAdventure(d100.roll())
-        })
+        },
+        "d100"
+    )
 
     function chooseNextAdventure(roll) {
         hideAllGenericButtons()
         isAllowedToUseLuckyClover = true
 
         let message = `${roll} !
-        Vous avez le choix entre ces aventures :
+        Vous avez le choix entre ces aventures :
         `;
 
         let choice1 = encountersTable[roll - 2] // Roll - 1
@@ -1442,35 +1449,35 @@ function nextAdventure(customMessage = "") {
             if (choices[i] === undefined) continue
 
             switch (choices[i].type) {
-                case "Événement":
-                    message += `- Un événement spécial
-                            `;
-                    activateButton(buttons[i], "Événement spécial", () => { specialEncounter() })
-                    break;
-                case "Village":
-                    message += `- Visiter un village
-                            `;
-                    activateButton(buttons[i], "Visiter un village", () => { villageEncounter() })
-                    break;
-                case "Repos":
-                    message += `- Se reposer
-                            `;
-                    activateButton(buttons[i], "Se reposer", () => { restEncounter() })
-                    break;
                 case "Combat !":
                     message += `- Un combat contre un monstre
                             `;
-                    activateButton(buttons[i], "Combattre un monstre", () => { monsterEncounter() })
+                    activateButton(buttons[i], "Combattre un monstre", () => { monsterEncounter() }, "monstre")
                     break;
                 case "Combat ?":
                     message += `- Une rencontre avec une créature intelligente
                             `;
-                    activateButton(buttons[i], "Rencontrer une créature intelligente", () => { intelligentBeingEncounter() })
+                    activateButton(buttons[i], "Rencontrer une créature intelligente", () => { intelligentBeingEncounter() }, "créature-intelligente")
+                    break;
+                case "Événement":
+                    message += `- Un événement spécial
+                            `;
+                    activateButton(buttons[i], "Événement spécial", () => { specialEncounter() }, "événement")
+                    break;
+                case "Village":
+                    message += `- Visiter un village
+                            `;
+                    activateButton(buttons[i], "Visiter un village", () => { villageEncounter() }, "village")
+                    break;
+                case "Repos":
+                    message += `- Se reposer
+                            `;
+                    activateButton(buttons[i], "Se reposer", () => { restEncounter() }, "repos")
                     break;
                 case "Coup de chance !":
                     message += `- Un coup de chance
                         `;
-                    activateButton(buttons[i], "Coup de chance", () => { luckyEncounter() })
+                    activateButton(buttons[i], "Coup de chance", () => { luckyEncounter() }, "coup-de-chance")
                     break;
                 default:
                     console.error("Unknown adventure type !");
@@ -1518,7 +1525,8 @@ function finalAdventure() {
         () => {
             saveCloverState()
             chooseBoss(getRandomInt(bossesTable.length) + 1)
-        }
+        },
+        "d20"
     )
 
     function chooseBoss(roll) {
@@ -1559,8 +1567,8 @@ function finalAdventure() {
                     // Vcrakusa casts 'Healing' amplified
                     const amount = 20 + d100.roll()
                     ctx.opponent.hitPoints += amount
-                    displayState(true, `-~ Combat contre : ${ctx.opponent.name} ~-
-                        -- Phase de préparation : adversaire --`)
+                    displayState(true, `-~ Combat contre : ${ctx.opponent.name} ~-
+                        -- Phase de préparation : adversaire --`)
                     gameMessage(`
 
                     ${ctx.opponent.name}, repue de votre sang, régénère ${amount}PV.`)
@@ -1645,7 +1653,8 @@ function intelligentBeingEncounter() {
         () => {
             saveCloverState()
             checkAttitude(d20.roll())
-        }
+        },
+        "d20"
     )
 
 
@@ -1953,7 +1962,7 @@ function villageEncounter() {
 
     gameMessage(`Vous arrivez sur la place principale d'un petit village. Les passants vous dévisagent avec méfiance.
         
-        Que choisissez-vous de faire :
+        Que choisissez-vous de faire :
         - Se rendre au magasin. (possibilité d'acheter et de revendre des objets)
         - Se rendre à l'auberge. (coûte ${innPrice}PO, permet de se reposer)`)
 
@@ -2306,8 +2315,8 @@ function specialEncounter() {
                 // Teleports away
                 if (roll >= 11) {
                     stepCompleted()
-                    displayState(true, `-~ Combat contre : ${ctx.opponent.name} ~-
-                        -- Phase de préparation : adversaire --`)
+                    displayState(true, `-~ Combat contre : ${ctx.opponent.name} ~-
+                        -- Phase de préparation : adversaire --`)
 
                     message += `Le voyageur lance le sort 'Téléportation' et disparaît avec sa fille, vous laissant ${player.gender == "F" ? "seule" : "seul"} au milieu du chemin.
                         
@@ -2488,7 +2497,7 @@ function fight(ctx) {
     // if fighting boss and boss has at least one effect to mention to the player
     if (ctx.opponent.type == "Boss" && ctx.opponent.races[0].effects.length > 0) {
         message += `
-        ${ctx.opponent.races[0].effects.length == 1 ? "Effet" : "Effets"} du boss :`;
+        ${ctx.opponent.races[0].effects.length == 1 ? "Effet" : "Effets"} du boss :`;
         ctx.opponent.races[0].effects.forEach(effect => {
             message += `
             • ${effect.description}`
@@ -2548,8 +2557,8 @@ function playerPreparationPhase(ctx) {
     hideAllGenericButtons()
     player.isAllowedToCastSpell = true
 
-    displayState(true, `-~ Combat contre : ${ctx.opponent.name} ~-
-        -- Phase de préparation : ${player.name} --`)
+    displayState(true, `-~ Combat contre : ${ctx.opponent.name} ~-
+        -- Phase de préparation : ${player.name} --`)
 
     const initiativeNotification = playerHasInitiative(ctx.opponent) ? `Vous avez l'Initiative.
             ` : ``;
@@ -2588,16 +2597,16 @@ function regularOpponentPreparationPhase(ctx) {
 function playerAttackPhase(ctx) {
     let damage = 0;
 
-    displayState(true, `-~ Combat contre : ${ctx.opponent.name} ~-
-        -- Phase d'attaque : ${player.name} --`)
+    displayState(true, `-~ Combat contre : ${ctx.opponent.name} ~-
+        -- Phase d'attaque : ${player.name} --`)
 
     const initiativeNotification = playerHasInitiative(ctx.opponent) ? `Vous avez l'Initiative.` : `C'est à votre tour d'attaquer.`;
 
     gameMessage(`${initiativeNotification}
         - Voulez-vous faire une attaque physique ou une attaque magique ?`)
 
-    activateButton(btn1, "Attaque physique", () => { decideIfPowerful(true) })
-    activateButton(btn2, "Attaque magique", () => { decideIfPowerful(false) })
+    activateButton(btn1, "Attaque physique", () => { decideIfPowerful(true) }, "attaque-physique")
+    activateButton(btn2, "Attaque magique", () => { decideIfPowerful(false) }, "attaque-magique")
 
     function decideIfPowerful(isPhysical) {
         if (player.actionPoints > 0) {
@@ -2627,7 +2636,8 @@ function playerAttackPhase(ctx) {
                 damage += firstRoll;
                 saveCloverState(() => { damage -= firstRoll })
                 secondRoll(firstRoll)
-            }
+            },
+            "d100"
         )
 
         function secondRoll(firstRoll) {
@@ -2644,7 +2654,8 @@ function playerAttackPhase(ctx) {
                     damage += secondRoll
                     saveCloverState(() => { damage -= secondRoll })
                     inflictDamage(isPhysical, secondRoll)
-                }
+                },
+                "d100"
             )
         }
     }
@@ -2661,7 +2672,8 @@ function playerAttackPhase(ctx) {
                 damage += roll;
                 saveCloverState(() => { damage -= roll })
                 inflictDamage(isPhysical, roll)
-            }
+            },
+            "d100"
         )
     }
 
@@ -2738,8 +2750,8 @@ function opponentAttackPhase(ctx) {
     function inflictDamage(isPhysical) {
         let damage = 0
 
-        displayState(true, `-~ Combat contre : ${ctx.opponent.name} ~-
-            -- Phase d'attaque : adversaire --`)
+        displayState(true, `-~ Combat contre : ${ctx.opponent.name} ~-
+            -- Phase d'attaque : adversaire --`)
 
         let message = `C'est au tour ${beingNameWithDeterminantDefiniContracte(ctx.opponent, "de")} d'attaquer.
         
@@ -2788,7 +2800,7 @@ function newTurn(ctx) {
     console.log("New combat turn.");
     isAllowedToUseLuckyClover = false
     ctx.fightTurn++
-    displayState(true, `-~ Combat contre : ${ctx.opponent.name} ~-
+    displayState(true, `-~ Combat contre : ${ctx.opponent.name} ~-
         -- Nouveau tour --`)
 
     gameMessage(`Vous avez résisté à l'assault ${beingNameWithDeterminantDefiniContracte(ctx.opponent, "de")} mais ${ctx.opponent.gender == "F" ? "cette dernière" : "ce dernier"} est toujours debout et prêt${ctx.opponent.gender == "F" ? "e" : ""} à en découdre.
@@ -2819,7 +2831,9 @@ function regularRewardPhase(ctx) {
         () => {
             saveCloverState()
             fightReward(d20.roll())
-        })
+        },
+        "d20"
+    )
 
     function fightReward(roll) {
         isAllowedToUseLuckyClover = true
