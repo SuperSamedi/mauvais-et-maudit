@@ -30,13 +30,29 @@
     "gender": "M"
   },
   {
+    "type": "équipement",
+    "name": "Pendentif de la Lune",
+    "isLegendary": true,
+    "magic": 15,
+    "description": "MA +15",
+    "effects": [
+      {
+        "description": "Magie +15",
+        "type": "bonus"
+      }
+    ],
+    "buyValue": 450,
+    "sellValue": 200,
+    "gender": "M"
+  },
+  {
     "type": "consommable",
-    "name": "Trèfle à 4 feuilles",
+    "name": "Trèfle à 4 Feuilles",
     "isLegendary": false,
     "description": "Permet de recommencer un tirage de dé ou de carte",
     "effects": [
       {
-        "description": "Permet d'annuler un tirage de dé ou de carte, et de le recommencer.",
+        "description": "Permet d'annuler un tirage de dé ou de carte de récompense, et de le recommencer.",
         "type": "bonus"
       }
     ],
@@ -80,22 +96,6 @@
     "buyValue": 500,
     "sellValue": 200,
     "gender": "F"
-  },
-  {
-    "type": "équipement",
-    "name": "Pendentif de la Lune",
-    "isLegendary": true,
-    "magic": 15,
-    "description": "MA +15",
-    "effects": [
-      {
-        "description": "Magie +15",
-        "type": "bonus"
-      }
-    ],
-    "buyValue": 450,
-    "sellValue": 200,
-    "gender": "M"
   },
   {
     "type": "équipement",
@@ -248,6 +248,26 @@
     ],
     "buyValue": 100,
     "sellValue": 50,
+    "gender": "M"
+  },
+  {
+    "type": "objet de test (consommable)",
+    "name": "Trèfle à 4 Feuilles de test",
+    "isLegendary": false,
+    "isTestItem": true,
+    "description": "Permet de recommencer un tirage de dé ou de carte",
+    "effects": [
+      {
+        "description": "Permet d'annuler un tirage de dé ou de carte de récompense, et de le recommencer.",
+        "type": "bonus"
+      },
+      {
+        "description": "Cet objet, étant relié à de nombreux systèmes du jeu, demande une quantité de tests importante. Aidez le développement de ce jeu en utilisant cet objet pendant vos parties et en communiquant les bugs éventuels qui y seraient liés (voir page d'accueil pour plus d'infos). Si vous désirez faire une partie dans les conditions \"normales\" de jeu, appuyez simplement sur le bouton \"Jeter\" pour vous en débarrasser.",
+        "type": "malus"
+      }
+    ],
+    "buyValue": 400,
+    "sellValue": 150,
     "gender": "M"
   }
 ]

@@ -1,12 +1,12 @@
-class Divination extends Spell {
+class Steal extends Spell {
 
-    constructor(data) {
+    constructor(data = structuredClone(clubsItemsTable[4])) {
         super(data)
-        this.hasAlreadyBeenCast = true // One cast per combat
+        this.hasAlreadyBeenCast = true
     }
 
     /**
-     * Casts the spell Divination
+     * Casts the spell Steal 'Vol'
      * @param {object} being The being casting the spell */
     cast(caster = player) {
         // Safeguards
@@ -16,7 +16,6 @@ class Divination extends Spell {
             
                 Votre ne pouvez lancer qu'un seul sort par phase de préparation.
                 - Appuyer sur 'Continuer' pour passer à la phase suivante.`)
-
             return
         }
         if (caster == player && caster.magic < this.magicNeeded) {
@@ -41,13 +40,19 @@ class Divination extends Spell {
         // Spell effect
         player.isAllowedToCastSpell = false
         this.hasAlreadyBeenCast = true
-        btn1.disabled = false
+        btn1.disabled = true
         caster.actionPoints -= this.cost
-        caster.actionPoints += 2
-        player.hasForcedInitiative = true
+        allowedToDraw = true
 
-        gameMessage(`Vous lancez ${this.name} !
-            Vous acquérez l'Initiative jusqu'à la fin du combat.
-            Vous gagnez également 2PA.`)
+        gameMessage(`${playerPreparationPhaseMessage}
+            
+            Vous lancez ${this.name} !
+            Vous pouvez tirer une carte du deck, vous gagnerez immédiatement l'or ou l'objet correspondant à la carte.`)
+
+        imgDeck.onclick = () => {
+            saveCloverState()
+            clearCardsDisplayZone();
+            drawReward(scopaDeck, false, false, true)
+        }
     }
 }

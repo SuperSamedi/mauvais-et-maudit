@@ -193,6 +193,12 @@
   },
   {
     "suit": "cups",
+    "value": 3,
+    "imageURL": "game/assets/scopa-cards/cups-three.png",
+    "description": "Trois de Coupes"
+  },
+  {
+    "suit": "cups",
     "value": 4,
     "imageURL": "game/assets/scopa-cards/cups-four.png",
     "description": "Quatre de Coupes"

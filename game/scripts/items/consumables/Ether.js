@@ -2,7 +2,7 @@ class Ether extends ConsumableItem {
     constructor() {
         const data = structuredClone(cupsItemsTable[1])
         super(data)
-        // Potion is always usable
+        // Ether is always usable
         this.isUsable = true
     }
 

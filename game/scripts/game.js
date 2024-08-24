@@ -43,7 +43,7 @@ const btnUnlockDeck = document.getElementById("btn-unlock-deck")
 
 // =====> START
 imgDeck.onclick = () => {
-    if (allowedToDraw) {
+    if (isAllowedToDraw) {
         clearCardsDisplayZone();
         drawReward(scopaDeck, false, true);
     }
@@ -54,12 +54,12 @@ const player = new Player();
 const d20 = new Dice(20);
 const d100 = new Dice(100);
 let shop = new Shop();
-let currentCombatContext = {}
+let currentCombatContext = undefined
 
 let environmentRerolls = 0
-let allowedToDraw = false;
-let allowedToSellItems = false;
-let allowedToLevelUp = false;
+let isAllowedToDraw = false;
+let isAllowedToSellItems = false;
+let isAllowedToLevelUp = false;
 let isInCombat = false
 // Test Variable TOREMOVE
 let isDeckUnlocked = false
@@ -83,8 +83,8 @@ function start() {
     detailsViewOverlay.style.display = "none"
     screenLoader.style.display = "none"
     btnUnlockDeck.style.display = "none"
-    // tests()
     presentation()
+    // tests()
 }
 
 
@@ -170,7 +170,7 @@ function tests() {
     //#endregion
 
     //#region Tests Card Draw
-    btnUnlockDeck.style.display = "block"
+    // btnUnlockDeck.style.display = "block"
     btnUnlockDeck.onclick = () => {
         imgDeck.onclick = () => {
             drawTest()
@@ -195,12 +195,16 @@ function tests() {
     // const btnFightBoss = document.getElementById("btn-fight-boss");
     // btnFightBoss.onclick = () => { finalAdventure() }
 
-    // allowedToLevelUp = true
-    // player.experiencePoints += 1_000_000
+    allowedToLevelUp = true
+    player.experiencePoints += 1_000
     // player.levelUpHitPoints(1000)
     // player.levelUpStrength(1000)
     // player.levelUpSpeed(1000)
-    // player.levelUpMagic(1000)
+    player.levelUpMagic(20)
+    // const predicateMod1 = 1 % 2 != 0
+    // const predicateMod2 = 2 % 2 != 0
+    // console.log("1 % 2 != 0 = " + predicateMod1)
+    // console.log("2 % 2 != 0 = " + predicateMod2)
     //#endregion
 
     //#region test Potion
@@ -217,16 +221,21 @@ function tests() {
     //#endregion
 
     //#region test SPELLS
-    player.inventory.add(getClubsItem(1))
-    player.inventory.add(getClubsItem(2))
-    player.inventory.add(getClubsItem(3))
-    // player.inventory.add(getClubsItem(4))
-    player.inventory.add(getClubsItem(5))
-    player.inventory.add(getClubsItem(6))
-    player.inventory.add(getClubsItem(7))
-    player.inventory.add(getClubsItem(8))
-    // player.inventory.add(getClubsItem(9))
-    // player.inventory.add(getClubsItem(10))
+    // player.inventory.add(getClubsItem(1)) // Vent Divin
+    // player.inventory.add(getClubsItem(2)) // Corps de Métal
+    player.inventory.add(getClubsItem(3)) // Source Infinie
+    player.inventory.add(getClubsItem(4)) // Soin
+    player.inventory.add(getClubsItem(5)) // Vol
+    // player.inventory.add(getClubsItem(6)) // Téléportation
+    player.inventory.add(getClubsItem(7)) // Affaiblissement
+    player.inventory.add(getClubsItem(8)) // Sphère Infernale
+    // player.inventory.add(getClubsItem(9)) // Divination
+    // player.inventory.add(getClubsItem(10)) // Guérison Absolue
+    player.actionPoints += 100
+    //#endregion
+
+    //#region Clover system
+    player.inventory.add(getCupsItem(15))
     //#endregion
 }
 //#endregion
@@ -282,6 +291,7 @@ function choosePlayerRace(roll) {
 
     //#region Non-Being Player Generation
     function generateNonBeingPlayer(being, isGeneratingHybrid) {
+        // TODO : Manage case where PV is 0
         gameMessage(`19 ! - Non-Être.
         Les Non-Êtres sont des créatures instables. Vous allez devoir tirer vos stats au hasard.
         Lancez le D100 pour vos points de vie.`);
@@ -725,6 +735,7 @@ function choosePlayerRace(roll) {
 }
 
 function choosePlayerTrait(roll) {
+    // TODO : Manage cases where PV go below 1
     hideAllGenericButtons()
 
     player.traits[0] = structuredClone(strongTraitsTable[roll - 1]);
@@ -881,16 +892,18 @@ function choosePlayerName(name) {
     gameMessage(`
         - Enfin, tirez une carte du deck. Vous recevrez une récompense en fonction de la carte.`)
 
-    allowedToDraw = true
+    isAllowedToDraw = true
 }
 
+//#region Draw
 function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpReward = false, isStealSpellReward = false) {
-    if (!allowedToDraw) return
+    if (!isAllowedToDraw) return
 
     if (!isStealSpellReward) {
         hideAllGenericButtons()
     }
-    allowedToDraw = false;
+
+    isAllowedToDraw = false;
 
     // Redirection if no more cards
     // TODO: improve this
@@ -898,6 +911,8 @@ function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpRewar
         gameMessage(`${playerPreparationPhaseMessage}
             
             Désolé, il n'y a plus de carte dans la pioche.`)
+
+        isAllowedToUseLuckyClover = false
         btn1.disabled = false
         return;
     }
@@ -932,6 +947,8 @@ function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpRewar
     if (cardDrawn.suit == "swords" && allCardsCountAsCoins === false) {
         reward = new EquippableItem(structuredClone(swordsItemsTable[cardDrawn.value - 1]));
         player.inventory.add(reward);
+        // Tracker for the Lucky Clover
+        lastItemReceivedRandomly = reward
         feedbackMessage += ` 
         Vous recevez ${reward.isLegendary ? beingNameWithDeterminantDefini(reward, false) : reward.gender == "F" ? `une ${reward.name}` : `un ${reward.name}`} (${reward.description})`;
         //console.log(inventory);
@@ -941,6 +958,8 @@ function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpRewar
     if (cardDrawn.suit == "clubs" && allCardsCountAsCoins === false) {
         reward = getClubsItem(cardDrawn.value);
         player.inventory.add(reward);
+        // Tracker for the Lucky Clover
+        lastItemReceivedRandomly = reward
         feedbackMessage += ` 
         Vous recevez le sort ${reward.name} (${reward.description}).`;
         //console.log(inventory);
@@ -950,6 +969,8 @@ function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpRewar
     if (cardDrawn.suit == "cups" && allCardsCountAsCoins === false) {
         reward = getCupsItem(cardDrawn.value)
         player.inventory.add(reward);
+        // Tracker for the Lucky Clover
+        lastItemReceivedRandomly = reward
         feedbackMessage += ` 
         Vous recevez ${reward.isLegendary ? beingNameWithDeterminantDefini(reward, false) : reward.gender == "F" ? `une ${reward.name}` : `un ${reward.name}`} (${reward.description})`;
         //console.log(inventory);
@@ -958,13 +979,17 @@ function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpRewar
     feedbackMessage += `.`;
 
     if (isSetUpReward) {
+        // Reset the deck button to be a normal reward one
         imgDeck.onclick = () => {
-            if (allowedToDraw) {
+            if (isAllowedToDraw) {
                 clearCardsDisplayZone();
                 drawReward(scopaDeck, false, false)
             }
         }
+
         player.actionPoints += 2
+        lastItemReceivedRandomly = undefined
+
         feedbackMessage += `
         
         Vous recevez également, comme bonus de départ, 2 points d'action${reward.actionPoints ? " supplémentaires" : ""}.
@@ -973,7 +998,6 @@ function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpRewar
         - Appuyer sur 'Commencer'.`
 
         gameMessage(feedbackMessage);
-
 
         activateButton(
             btn1,
@@ -987,32 +1011,44 @@ function drawReward(deck = scopaDeck, allCardsCountAsCoins = false, isSetUpRewar
         return
     }
 
+    // Only allowed if not just after receiving the first reward draw (which would make it possible to use it "on itself" right after drawing it if it was the very first item we drew - would not make sens)
+    isAllowedToUseLuckyClover = true
+
     if (isStealSpellReward) {
         btn1.disabled = false
         gameMessage(`${feedbackMessage}`);
         return
     }
 
-    nextAdventure(feedbackMessage)
+    gameMessage(feedbackMessage)
+
+    activateButton(btn1, "Continuer", () => { nextAdventure() })
 }
+//#endregion
 
 function chooseNewEnvironment(customMessage) {
     if (player.inventory.containsItemWithName("Compas des Anciens")) environmentRerolls++
+
     gameMessage(`${customMessage}
         
         Vous arrivez dans un nouvel environnement.
         - Lancez le D20 pour tirer celui-ci.`)
 
     hideAllGenericButtons()
+
     activateButton(
         btn1,
         "Lancer le D20",
         () => {
+            saveCloverState()
             clearCardsDisplayZone()
             newEnvironmentResult(getRandomInt(environmentsTable.length) + 1)
-        })
+        }
+    )
 
     function newEnvironmentResult(roll) {
+        hideAllGenericButtons()
+        isAllowedToUseLuckyClover = true
         console.log("New Environment roll : " + roll);
         const newEnvironment = environmentsTable[roll - 1]
         console.log(newEnvironment);
@@ -1020,6 +1056,8 @@ function chooseNewEnvironment(customMessage) {
 
         // Pass data to the currentEnvironment of voyage.js
         currentEnvironment.name = newEnvironment.name
+        // reset the effects in case we reroll the environment
+        currentEnvironment.effects = []
         newEnvironment.effects.forEach(effect => {
             currentEnvironment.effects.push(effect)
         });
@@ -1056,6 +1094,7 @@ function chooseNewEnvironment(customMessage) {
                 "Relancer",
                 () => {
                     environmentRerolls--
+                    saveCloverState()
                     newEnvironmentResult(getRandomInt(environmentsTable.length + 1))
                 })
 
@@ -1307,6 +1346,11 @@ function generateBoss(roll = d20.roll()) {
 
 function nextAdventure(customMessage = "") {
     hideAllGenericButtons()
+
+    // Trackers for the Lucky Clover
+    isAllowedToUseLuckyClover = false
+    lastItemReceivedRandomly = undefined
+
     displayState(false)
     // console.log("current step: ");
     // console.log(currentStep);
@@ -1317,7 +1361,7 @@ function nextAdventure(customMessage = "") {
         return
     }
 
-    // Mini boss time !
+    // Mini-boss time !
     if (currentStep.isMiniBoss) {
         gameMessage(customMessage)
         activateButton(
@@ -1330,7 +1374,7 @@ function nextAdventure(customMessage = "") {
         return
     }
 
-    // Is it Final Boss time ??
+    // Final Boss time !
     if (currentStep.isFinalBoss) {
         gameMessage(customMessage)
         activateButton(
@@ -1353,12 +1397,14 @@ function nextAdventure(customMessage = "") {
         btn1,
         "Lancer le D100",
         () => {
+            saveCloverState()
             clearCardsDisplayZone()
             chooseNextAdventure(d100.roll())
         })
 
     function chooseNextAdventure(roll) {
         hideAllGenericButtons()
+        isAllowedToUseLuckyClover = true
 
         let message = `${roll} !
         Vous avez le choix entre ces aventures :
@@ -1460,19 +1506,26 @@ function miniBossAdventure() {
 
 //#region Boss fight set up
 function finalAdventure() {
-    const roll = getRandomInt(bossesTable.length) + 1;
-    console.log(roll);
-    const boss = generateBoss(roll)
-    console.log("Boss généré :");
-    console.log(boss);
-
     let message = `Ça y est ! Vous y êtes. Le repère du mal.
         
         - Lancez le D20 pour tirer le boss que vous allez affronter.`
+
     gameMessage(message)
-    activateButton(btn1, "Lancer le D20", () => { chooseBoss(roll) })
+
+    activateButton(
+        btn1,
+        "Lancer le D20",
+        () => {
+            saveCloverState()
+            chooseBoss(getRandomInt(bossesTable.length) + 1)
+        }
+    )
 
     function chooseBoss(roll) {
+        isAllowedToUseLuckyClover = true
+        const boss = generateBoss(roll)
+        console.log("Boss :");
+        console.log(boss);
         let message = `${roll} !
         `;
         let contextData = {}
@@ -1486,6 +1539,8 @@ function finalAdventure() {
                 const vcrakusaPreparationPhase = (ctx) => {
                     hideAllGenericButtons()
                     displayState(false)
+                    console.log("Vcrakusa preparation phase.");
+                    console.log("Combat turn: " + ctx.fightTurn);
 
                     // Check if odd fight turn 
                     if (ctx.fightTurn % 2 != 0) {
@@ -1535,6 +1590,8 @@ function finalAdventure() {
 }
 
 function bossRewardPhase(ctx) {
+    isAllowedToUseLuckyClover = false
+    currentCombatContext = undefined
     hideAllGenericButtons()
     stepCompleted()
     displayState(false)
@@ -1554,6 +1611,8 @@ function bossRewardPhase(ctx) {
 
 //#region ENCOUNTERS
 function monsterEncounter() {
+    isAllowedToUseLuckyClover = false
+
     let traits = generateTraits()
     const monster = generateMonster(d20.roll(), traits)
     let introMessage = `${monster.gender == "F" ? "Une" : "Un"} ${monster.name} vous barre la route. Le combat est inévitable.`
@@ -1569,6 +1628,7 @@ function monsterEncounter() {
 }
 
 function intelligentBeingEncounter() {
+    isAllowedToUseLuckyClover = false
     hideAllGenericButtons()
 
     let traits = generateTraits()
@@ -1583,14 +1643,16 @@ function intelligentBeingEncounter() {
         btn1,
         "Lancer le D20",
         () => {
-            const roll = d20.roll()
-            checkAttitude(roll)
+            saveCloverState()
+            checkAttitude(d20.roll())
         }
     )
 
 
     function checkAttitude(roll) {
-        console.log("checkattitude roll" + roll);
+        isAllowedToUseLuckyClover = true
+
+        // Roll 1-3
         if (roll <= 3) {
             gameMessage(`${roll} !
                 ${beingNameWithDeterminantDefini(intelligentBeing, false)} vous salue poliment et fait mine de vouloir continuer sa route sans plus d'interaction.
@@ -1612,11 +1674,12 @@ function intelligentBeingEncounter() {
             )
             return;
         }
+        // Roll 4-6
         if (roll <= 6) {
             // If race in common or as strong as the being - Free passage
             if (player.hasARaceInCommonWith(intelligentBeing) || player.strength >= intelligentBeing.strength) {
                 gameMessage(`${roll} !
-                    ${beingNameWithDeterminantDefini(intelligentBeing, false)} vous toise du regard avant de s'écarter du chemin pour vous laisser passer. Vous déceler un certain air de frustration sur son visage.
+                    ${beingNameWithDeterminantDefini(intelligentBeing, false)} vous toise du regard avant de s'écarter du chemin pour vous laisser passer. Vous décelez un certain air de frustration sur son visage.
                     
                     - Voulez-vous continuer votre route ou l'attaquer ?`)
 
@@ -1665,11 +1728,12 @@ function intelligentBeingEncounter() {
             )
             return
         }
+        // Roll 7-9
         if (roll <= 9) {
             // If race in common or as strong magically as the being - Free passage
             if (player.hasARaceInCommonWith(intelligentBeing) || player.magic >= intelligentBeing.magic) {
                 gameMessage(`${roll} !
-                    ${beingNameWithDeterminantDefini(intelligentBeing, false)} vous toise du regard avant de s'écarter du chemin pour vous laisser passer. Vous déceler un certain air de frustration sur son visage.
+                    ${beingNameWithDeterminantDefini(intelligentBeing, false)} vous toise du regard avant de s'écarter du chemin pour vous laisser passer. Vous décelez un certain air de frustration sur son visage.
     
                     - Voulez-vous continuer votre route ou l'attaquer ?`)
 
@@ -1718,22 +1782,29 @@ function intelligentBeingEncounter() {
             )
             return
         }
+        // Roll 10-12
         if (roll <= 12) {
             // FIGHT !
-            const introMessage = `${roll} !
-                Dès que ${beingNameWithDeterminantDefini(intelligentBeing, true)} vous aperçois, ${intelligentBeing.gender == "F" ? "elle" : "il"} sort son arme et se rue vers vous en criant sauvagement !`
+            gameMessage(`${roll} !
+                Dès que ${beingNameWithDeterminantDefini(intelligentBeing, true)} vous aperçois, ${intelligentBeing.gender == "F" ? "elle" : "il"} sort son arme et se rue vers vous en criant sauvagement !`)
 
-            const contextData = {
-                opponent: intelligentBeing,
-                introMessage: introMessage,
-                opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
-                rewardPhaseCallBack: regularRewardPhase
-            }
+            activateButton(
+                btn1,
+                "Continuer",
+                () => {
+                    const contextData = {
+                        opponent: intelligentBeing,
+                        introMessage: currentGameMessage(),
+                        opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
+                        rewardPhaseCallBack: regularRewardPhase
+                    }
 
-            fight(contextData)
+                    fight(contextData)
+                })
 
             return
         }
+        // Roll 13-15
         if (roll <= 15) {
             const unbuffedBeing = new Being(
                 intelligentBeing.type,
@@ -1741,33 +1812,51 @@ function intelligentBeingEncounter() {
                 intelligentBeing.gender,
                 intelligentBeing.traits
             )
-            const introMessage = `${roll} !
-            Lorsque ${beingNameWithDeterminantDefini(unbuffedBeing, true)} arrive à votre hauteur, ${unbuffedBeing.gender == "F" ? "elle" : "il"} vous lance un grognement bourru. Vous ${unbuffedBeing.gender == "F" ? "la" : "le"} saluez en retour ce qui, surprenamment, à pour effet de faire entrer ${beingNameWithDeterminantDefini(unbuffedBeing, true)} dans une rage folle. `
 
-            intelligentBeing.traits.push(getStrongTrait(d20.roll()))
-            intelligentBeing.restoreHitPoints()
+            gameMessage(`${roll} !
+            Lorsque ${beingNameWithDeterminantDefini(unbuffedBeing, true)} arrive à votre hauteur, ${unbuffedBeing.gender == "F" ? "elle" : "il"} vous lance un grognement bourru. Vous ${unbuffedBeing.gender == "F" ? "la" : "le"} saluez en retour ce qui, surprenamment, à pour effet de faire entrer ${beingNameWithDeterminantDefini(unbuffedBeing, true)} dans une rage folle. 
+            
+            La créature gagne un trait fort.`)
 
-            const contextData = {
-                opponent: intelligentBeing,
-                introMessage: introMessage,
-                opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
-                rewardPhaseCallBack: regularRewardPhase
-            }
+            activateButton(
+                btn1,
+                "Continuer",
+                () => {
+                    intelligentBeing.traits.push(getStrongTrait(d20.roll()))
+                    intelligentBeing.restoreHitPoints()
 
-            fight(contextData)
+                    const contextData = {
+                        opponent: intelligentBeing,
+                        introMessage: currentGameMessage(),
+                        opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
+                        rewardPhaseCallBack: regularRewardPhase
+                    }
+
+                    fight(contextData)
+                })
 
             return
         }
+        // Roll 16-18
         if (roll <= 18) {
-            environmentRerolls++
             player.experiencePoints++
-            stepCompleted()
-            nextAdventure(`${roll} !
+            environmentRerolls++
+            gameMessage(`${roll} !
                 ${beingNameWithDeterminantDefini(intelligentBeing, false)} vous salue amicalement et vous fait part d'un malencontreux événement qui lui est arrivé sur sa route. Vous prenez bonnes notes de ces précieuses informations. Qui sait, peut-être réussirez-vous, grâce à ces dernières, à déjouer les périls du chemin ardu qui vous attend ?
-                - Vous gagnez 1XP et la possibilité d'annuler votre prochain lancé de dé d'environnement et de le relancer.`)
+                
+                Vous gagnez 1XP et la possibilité d'annuler votre prochain lancé de dé d'environnement et de le relancer.`)
+
+            activateButton(
+                btn1,
+                "Continuer",
+                () => {
+                    stepCompleted()
+                    nextAdventure()
+                })
 
             return
         }
+        // Roll 19-20
         if (roll <= 20) {
             gameMessage(`${roll} !
                 Vous réalisez que ${beingNameWithDeterminantDefini(intelligentBeing, true)} est en fait ${intelligentBeing.gender == "F" ? "une marchande itinérante" : "un marchand itinérant"}.
@@ -1805,10 +1894,11 @@ function intelligentBeingEncounter() {
 
 
         function letBeingGo() {
+            isAllowedToUseLuckyClover = false
             hideAllGenericButtons()
 
             let outroMessage = `Vous continuez votre route.
-                - Vous gagnez 1XP.`
+            - Vous gagnez 1XP.`
 
             player.experiencePoints++
             stepCompleted()
@@ -1818,6 +1908,7 @@ function intelligentBeingEncounter() {
         function giveGold(amount) {
             if (player.goldCoins < amount) return
 
+            isAllowedToUseLuckyClover = false
             hideAllGenericButtons()
 
             let outroMessage = `Vous donnez ${amount}PO ${intelligentBeing.gender == "F" ? "à la racketteuse" : "au racketteur"}, qui vous laisse passer. Vous continuez votre route.
@@ -1832,6 +1923,7 @@ function intelligentBeingEncounter() {
 }
 
 function restEncounter() {
+    isAllowedToUseLuckyClover = false
     const flavorTextsVariations = [
         {
             introMessage: `Vous trouvez un coin relativement sûr et aménagez un campement sommaire. Vous vous sustentez et vous apprêtez à passer la nuit tout en repensant aux situations auxquelles vous avez fait face jusqu'ici.`,
@@ -1849,6 +1941,7 @@ function restEncounter() {
 }
 
 function villageEncounter() {
+    isAllowedToUseLuckyClover = false
     let innPrice = 100
 
     // environment modifiers
@@ -1879,6 +1972,7 @@ function visitShop(
     maxCards = 4
 ) {
     hideAllGenericButtons()
+    isAllowedToUseLuckyClover = false
 
     if (scopaDeck.length <= 0) {
         gameMessage(`${noCardsMessage} (il n'y a plus de carte dans la pioche).`);
@@ -1899,17 +1993,17 @@ function visitShop(
     let cardsDrawn = []
 
     imgDeck.onclick = () => {
-        if (allowedToDraw) {
+        if (isAllowedToDraw) {
             clearCardsDisplayZone()
             initialShopDraw(scopaDeck);
             updateDeckVisual()
         }
     };
 
-    allowedToDraw = true
+    isAllowedToDraw = true
 
     function initialShopDraw(deck) {
-        allowedToDraw = false
+        isAllowedToDraw = false
 
         if (deck.length <= 0) {
             gameMessage("La pioche est vide.");
@@ -1925,10 +2019,10 @@ function visitShop(
             gameMessage(`${cardDrawn.description}.
                 Tirez encore ${maxCards - cardsDrawn.length} ${cardsDrawn.length == maxCards - 1 ? "carte" : "cartes"}.`)
 
-            allowedToDraw = true
+            isAllowedToDraw = true
 
             imgDeck.onclick = () => {
-                if (allowedToDraw) {
+                if (isAllowedToDraw) {
                     initialShopDraw(deck);
                     updateDeckVisual()
                 }
@@ -1951,7 +2045,7 @@ function visitShop(
                 Toutes les cartes sont de la suite 'Pièces'.
                 Tirez des cartes jusqu'à tomber sur une carte d'une autre suite.`)
 
-            allowedToDraw = true
+            isAllowedToDraw = true
             cardsDrawn = []
 
             imgDeck.onclick = () => {
@@ -1978,7 +2072,7 @@ function visitShop(
     }
 
     function additionalShopDraw(deck) {
-        allowedToDraw = false
+        isAllowedToDraw = false
 
         if (deck.length <= 0) {
             gameMessage("La pioche est vide.");
@@ -1992,7 +2086,7 @@ function visitShop(
         if (cardDrawn.suit == "coins") {
             gameMessage(`${cardDrawn.description}.
                 Tirez à nouveau une carte.`)
-            allowedToDraw = true
+            isAllowedToDraw = true
             return
         }
 
@@ -2010,7 +2104,7 @@ function visitShop(
             btn1,
             "Partir",
             () => {
-                allowedToSellItems = false
+                isAllowedToSellItems = false
                 stepCompleted()
                 clearCardsDisplayZone()
                 zoneShopButtons.innerHTML = ``
@@ -2039,7 +2133,7 @@ function visitShop(
         })
 
         shop.updateDisplay()
-        allowedToSellItems = true
+        isAllowedToSellItems = true
     }
 
 }
@@ -2107,7 +2201,7 @@ function rest(introMessage, outroMessage, continueButtonText) {
         btn6,
         continueButtonText,
         () => {
-            allowedToLevelUp = false
+            isAllowedToLevelUp = false
             stepCompleted()
             nextAdventure(outroMessage)
         }
@@ -2115,7 +2209,7 @@ function rest(introMessage, outroMessage, continueButtonText) {
 
     player.actionPoints += 2
     checkButtonsValidity()
-    allowedToLevelUp = true
+    isAllowedToLevelUp = true
 
     function checkButtonsValidity() {
         if (player.experiencePoints <= 0) {
@@ -2129,6 +2223,7 @@ function rest(introMessage, outroMessage, continueButtonText) {
 }
 
 function specialEncounter() {
+    isAllowedToUseLuckyClover = false
     const specialEncounters = [event01]
     specialEncounters[getRandomInt(specialEncounters.length)]()
 
@@ -2155,7 +2250,7 @@ function specialEncounter() {
             if (!potion) return
 
             player.inventory.remove(potion)
-            player.inventory.add(getCupsItem(6))
+            player.inventory.add(getCupsItem(3))
             player.experiencePoints++
             stepCompleted()
             nextAdventure(`Vous donnez une Potion au voyageur.
@@ -2171,7 +2266,7 @@ function specialEncounter() {
             if (!ether) return
 
             player.inventory.remove(ether)
-            player.inventory.add(getCupsItem(6))
+            player.inventory.add(getCupsItem(3))
             player.experiencePoints++
             stepCompleted()
             nextAdventure(`Vous donnez un Éther au voyageur.
@@ -2242,11 +2337,13 @@ function specialEncounter() {
             }
 
             const travelerRewardPhase = () => {
+                isAllowedToUseLuckyClover = false
                 stepCompleted();
                 displayState(false)
                 player.experiencePoints++;
                 player.resetSpellEffects()
                 isInCombat = false
+                currentCombatContext = undefined
 
                 let message = `Le voyageur est vaincu.
                 Vous recevez 1XP`
@@ -2274,13 +2371,14 @@ function specialEncounter() {
             player.experiencePoints++;
             stepCompleted()
             nextAdventure(`Vous partagez votre sympathie au voyageur mais lui dites que vous ne pouvez pas l'aider.
-                Vous gagner 1XP et continuer votre route.`)
+                Vous gagnez 1XP et continuez votre route.`)
         }
 
     }
 }
 
 function luckyEncounter() {
+    isAllowedToUseLuckyClover = false
     hideAllGenericButtons()
 
     const flavorTextVariations = [
@@ -2325,11 +2423,11 @@ function luckyEncounter() {
             - Vous pouvez tirer une carte et gagner l'objet correspondant.`)
 
         imgDeck.onclick = () => {
+            saveCloverState()
             drawReward(scopaDeck, false, false)
-            updateDeckVisual()
         }
 
-        allowedToDraw = true
+        isAllowedToDraw = true
         stepCompleted()
     }
 }
@@ -2346,6 +2444,7 @@ function luckyEncounter() {
  */
 function fight(ctx) {
     isInCombat = true
+    isAllowedToUseLuckyClover = false
     console.log(`Fight:`);
     ctx.fightTurn = 1
     console.log(ctx);
@@ -2403,8 +2502,6 @@ function fight(ctx) {
 }
 
 function initiativePhase(ctx) {
-    ctx.fightTurn++
-
     if (playerHasInitiative(ctx.opponent)) {
         playerPreparationPhase(ctx)
 
@@ -2413,7 +2510,6 @@ function initiativePhase(ctx) {
 
     ctx.opponentPreparationPhaseCallBack(ctx);
 }
-
 
 // Check if we need to skip the player prep phase
 function isPlayerPreparationPhaseSkipped() {
@@ -2460,10 +2556,11 @@ function playerPreparationPhase(ctx) {
 
     gameMessage(`${initiativeNotification}${playerPreparationPhaseMessage}`)
 
-    activateButton(btn1, "Continuer", () => { goNext() })
+    activateButton(btn1, "Continuer", () => { endPlayerPreparationPhase() })
 
-    function goNext() {
+    function endPlayerPreparationPhase() {
         player.isAllowedToCastSpell = false
+        isAllowedToUseLuckyClover = false
         clearCardsDisplayZone()
         if (playerHasInitiative(ctx.opponent)) {
             ctx.opponentPreparationPhaseCallBack(ctx)
@@ -2504,7 +2601,7 @@ function playerAttackPhase(ctx) {
 
     function decideIfPowerful(isPhysical) {
         if (player.actionPoints > 0) {
-            gameMessage(`Voulez-vous utiliser un point d'action pour effectuer une attaque puissante ? (Vous recevrez un lancé bonus du D100 qui sera ajouté à vos dégâts.)`)
+            gameMessage(`- Voulez-vous utiliser un point d'action pour effectuer une attaque puissante ? (Vous recevrez un lancé bonus du D100 qui sera ajouté à vos dégâts.)`)
 
             activateButton(btn1, "Oui", () => { powerfulAttack(isPhysical) })
             activateButton(btn2, "Non", () => { normalAttack(isPhysical) })
@@ -2518,8 +2615,8 @@ function playerAttackPhase(ctx) {
     function powerfulAttack(isPhysical) {
         player.actionPoints -= 1
 
-        gameMessage(`Très bien, vous utilisez un point d'action pour effectuer une attaque puissante.
-            Lancez une première fois le D100 pour voir combien de dégâts vous allez infliger.`)
+        gameMessage(`Vous utilisez un point d'action pour effectuer une attaque puissante.
+            - Lancez une première fois le D100 pour voir combien de dégâts vous allez infliger.`)
 
         hideButton(btn2)
         activateButton(
@@ -2528,13 +2625,16 @@ function playerAttackPhase(ctx) {
             () => {
                 const firstRoll = d100.roll()
                 damage += firstRoll;
+                saveCloverState(() => { damage -= firstRoll })
                 secondRoll(firstRoll)
             }
         )
 
         function secondRoll(firstRoll) {
+            isAllowedToUseLuckyClover = true
+
             gameMessage(`${firstRoll} ! 
-                Maintenant lancez votre D100 bonus.`)
+                - Maintenant, lancez votre D100 bonus.`)
 
             activateButton(
                 btn1,
@@ -2542,6 +2642,7 @@ function playerAttackPhase(ctx) {
                 () => {
                     const secondRoll = d100.roll()
                     damage += secondRoll
+                    saveCloverState(() => { damage -= secondRoll })
                     inflictDamage(isPhysical, secondRoll)
                 }
             )
@@ -2558,12 +2659,14 @@ function playerAttackPhase(ctx) {
             () => {
                 const roll = d100.roll()
                 damage += roll;
+                saveCloverState(() => { damage -= roll })
                 inflictDamage(isPhysical, roll)
             }
         )
     }
 
     function inflictDamage(isPhysical, finalRoll) {
+        isAllowedToUseLuckyClover = true
         let message = `${finalRoll} !`
 
         // Magical Hit
@@ -2602,6 +2705,7 @@ function playerAttackPhase(ctx) {
 }
 
 function opponentAttackPhase(ctx) {
+    isAllowedToUseLuckyClover = false
     selectAttackType()
 
     function selectAttackType() {
@@ -2681,6 +2785,8 @@ function opponentAttackPhase(ctx) {
 }
 
 function newTurn(ctx) {
+    console.log("New combat turn.");
+    isAllowedToUseLuckyClover = false
     ctx.fightTurn++
     displayState(true, `-~ Combat contre : ${ctx.opponent.name} ~-
         -- Nouveau tour --`)
@@ -2693,6 +2799,7 @@ function newTurn(ctx) {
 }
 
 function regularRewardPhase(ctx) {
+    isAllowedToUseLuckyClover = false
     hideAllGenericButtons()
     displayState(false)
     stepCompleted();
@@ -2706,45 +2813,70 @@ function regularRewardPhase(ctx) {
     player.restoreHitPoints()
     isInCombat = false
 
-    activateButton(btn1, "Lancer le D20", () => { fightReward(d20.roll()) })
+    activateButton(
+        btn1,
+        "Lancer le D20",
+        () => {
+            saveCloverState()
+            fightReward(d20.roll())
+        })
 
     function fightReward(roll) {
+        isAllowedToUseLuckyClover = true
+        currentCombatContext = undefined
         hideAllGenericButtons()
 
-        const reducedRoll = d20.reducedRoll(roll, 4)
+        // Roll 1-3
+        if (roll >= 1 && roll <= 3) {
+            gameMessage(`${roll} !
+                Aucune récompense. Déso...`)
 
-        switch (reducedRoll) {
-            case 2:
-                player.actionPoints++
-                nextAdventure(`${roll} !
-                    Vous gagnez 1 point d'action.`)
-                break;
-
-            case 3:
-                gameMessage(`${roll} !
-                    Vous pouvez tirer une carte du deck mais toutes les cartes comptent comme des cartes 'Pièces'.`)
-                allowedToDraw = true;
-                imgDeck.onclick = () => {
-                    drawReward(scopaDeck, true)
-                    updateDeckVisual()
-                }
-                return
-
-            case 4:
-                gameMessage(`${roll} !
-                    Vous pouvez tirer une carte du deck. Vous gagnez immédiatement l'objet ou l'or correspondant.`)
-                allowedToDraw = true;
-                imgDeck.onclick = () => {
-                    drawReward(scopaDeck, false)
-                    updateDeckVisual()
-                }
-                return
-
-            default:
-                nextAdventure(`${roll} !
-                    Aucune récompense. Déso...`)
-                break;
+            activateButton(btn1, "Continuer", () => { nextAdventure() })
+            return
         }
+
+        // Roll 4 - 9
+        if (roll <= 9) {
+            player.actionPoints++
+
+            gameMessage(`${roll} !
+                    Vous gagnez 1 point d'action.`)
+
+            activateButton(btn1, "Continuer", () => { nextAdventure() })
+            return
+        }
+
+        // Roll 10-15
+        if (roll <= 15) {
+            gameMessage(`${roll} !
+                        Vous pouvez tirer une carte du deck mais toutes les cartes comptent comme des cartes 'Pièces'.`)
+
+            isAllowedToDraw = true;
+
+            imgDeck.onclick = () => {
+                saveCloverState()
+                drawReward(scopaDeck, true)
+            }
+            return
+        }
+
+        // Roll 16-20
+        if (roll <= 20) {
+            gameMessage(`${roll} !
+                        Vous pouvez tirer une carte du deck. Vous gagnez immédiatement l'objet ou l'or correspondant.`)
+
+            isAllowedToDraw = true;
+
+            imgDeck.onclick = () => {
+                saveCloverState()
+                drawReward(scopaDeck, false)
+            }
+            return
+        }
+
+        // roll is not a number between 1 and 20
+        console.error("Unexpected reward roll : ")
+        console.error(roll)
     }
 }
 
@@ -2759,6 +2891,8 @@ function playerHasInitiative(opponent) {
 //#endregion
 
 function addCardToDisplayZone(card) {
+    if (!card) return
+
     const cardElement = document.createElement("img")
     cardElement.setAttribute("src", card.imageURL)
     cardElement.setAttribute("alt", card.description)

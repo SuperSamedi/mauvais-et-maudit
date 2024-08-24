@@ -45,10 +45,16 @@ inventorySlots.forEach((slot) => {
             // Display Item name
             detailsViewName.innerText = `${item.name}`
             detailsViewName.classList.remove('legendary')
+            detailsViewName.classList.remove('test-item')
             detailsViewName.classList.add('normal')
             if (item.isLegendary) {
                 detailsViewName.classList.remove('normal')
                 detailsViewName.classList.add('legendary')
+            }
+            if (item.isTestItem) {
+                detailsViewName.classList.remove('normal')
+                detailsViewName.classList.remove('legendary')
+                detailsViewName.classList.add('test-item')
             }
 
             // Display item type
@@ -113,9 +119,9 @@ inventorySlots.forEach((slot) => {
                     detailsViewBtnCastAmplified.style.display = "block"
                     detailsViewBtnCastAmplified.disabled = !player.isAllowedToCastSpell
                     detailsViewBtnCastAmplified.onclick = () => {
+                        item.castAmplified()
                         detailsViewOverlay.style.display = "none"
                         closeCharacterSheet()
-                        item.castAmplified()
                     }
                 }
             }
@@ -129,6 +135,7 @@ inventorySlots.forEach((slot) => {
                     if (!item.isUsable) return
                     item.use(player)
                     detailsViewOverlay.style.display = "none"
+                    closeCharacterSheet()
                 }
             }
 
@@ -138,7 +145,7 @@ inventorySlots.forEach((slot) => {
                 detailsViewOverlay.style.display = "none"
             }
             detailsViewBtnSell.disabled = false
-            if (allowedToSellItems == false) {
+            if (isAllowedToSellItems == false) {
                 detailsViewBtnSell.disabled = true
             }
 

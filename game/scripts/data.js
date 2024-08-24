@@ -63,7 +63,7 @@ async function loadJSONS() {
         scopaDeck = await responseScopaDeck.json()
         shuffle(scopaDeck)
         console.log("Scopa Deck LOADED");
-        console.log(scopaDeck);
+        // console.log(scopaDeck);
 
 
         // Coins Item Table

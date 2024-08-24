@@ -1,6 +1,6 @@
 class Enfeeble extends Spell {
 
-    constructor(data) {
+    constructor(data = structuredClone(clubsItemsTable[6])) {
         super(data)
         this.debuffAmount = -25
     }
@@ -175,6 +175,7 @@ class Enfeeble extends Spell {
     }
 
     rollAmplified(caster = player, debuffedStat) {
+        saveCloverState()
         player.isAllowedToCastSpell = false
         btn1.disabled = false
         hideButton(btn2)
@@ -199,5 +200,7 @@ class Enfeeble extends Spell {
 
         gameMessage(`${roll} !
             Vous affaiblissez la ${debuffedStat} de votre adversaire de ${this.debuffAmount - roll}.`)
+
+        isAllowedToUseLuckyClover = true
     }
 }

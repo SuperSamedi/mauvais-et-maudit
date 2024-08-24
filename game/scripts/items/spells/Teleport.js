@@ -1,6 +1,6 @@
 class Teleport extends Spell {
 
-    constructor(data) {
+    constructor(data = structuredClone(clubsItemsTable[5])) {
         super(data)
     }
 

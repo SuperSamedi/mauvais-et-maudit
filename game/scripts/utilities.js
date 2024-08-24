@@ -245,25 +245,25 @@ function generateDescription(trait) {
 function getClubsItem(id) {
   switch (id) {
     case 1:
-      return new DivineWind(structuredClone(clubsItemsTable[id - 1]))
+      return new DivineWind()
     case 2:
-      return new MetalForm(structuredClone(clubsItemsTable[id - 1]))
+      return new MetalForm()
     case 3:
-      return new InfiniteSpring(structuredClone(clubsItemsTable[id - 1]))
+      return new InfiniteSpring()
     case 4:
-      return new Healing(structuredClone(clubsItemsTable[id - 1]))
+      return new Healing()
     case 5:
-      return new Steal(structuredClone(clubsItemsTable[id - 1]))
+      return new Steal()
     case 6:
-      return new Teleport(structuredClone(clubsItemsTable[id - 1]))
+      return new Teleport()
     case 7:
-      return new Enfeeble(structuredClone(clubsItemsTable[id - 1]))
+      return new Enfeeble()
     case 8:
-      return new InfernalSphere(structuredClone(clubsItemsTable[id - 1]))
+      return new InfernalSphere()
     case 9:
-      return new Divination(structuredClone(clubsItemsTable[id - 1]))
+      return new Divination()
     case 10:
-      return new AbsoluteRestoration(structuredClone(clubsItemsTable[id - 1]))
+      return new AbsoluteRestoration()
 
     default:
       console.error("Can't find a Clubs item with id: " + id);
@@ -279,14 +279,17 @@ function getCupsItem(id) {
     case 2:
       // Ether
       return new Ether()
+    case 3:
+      // Moon Pendant
+      return new EquippableItem(structuredClone(cupsItemsTable[id - 1]))
     case 4:
+      // Lucky Clover
+      return new LuckyClover()
+    case 5:
       // Ligth Armor
       return new EquippableItem(structuredClone(cupsItemsTable[id - 1]))
-    case 5:
-      // Heavy Armor
-      return new EquippableItem(structuredClone(cupsItemsTable[id - 1]))
     case 6:
-      // Moon Pendant
+      // Heavy Armor
       return new EquippableItem(structuredClone(cupsItemsTable[id - 1]))
     case 7:
       // Ring of Balance
@@ -303,6 +306,9 @@ function getCupsItem(id) {
     case 12:
       // Compas of the Ancients
       return new Item(structuredClone(cupsItemsTable[id - 1]))
+    case 15:
+      // Lucky Clover (test version)
+      return new LuckyClover(structuredClone(cupsItemsTable[id - 1]))
 
     default:
       break;

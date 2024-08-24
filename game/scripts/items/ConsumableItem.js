@@ -1,8 +1,6 @@
 class ConsumableItem extends Item {
     constructor(data) {
         super(data)
-        // Some consumables are not always usable. Some require to be in combat.
-        this.isUsable = false
     }
 
     /**

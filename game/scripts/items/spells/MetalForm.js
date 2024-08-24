@@ -1,12 +1,12 @@
-class DivineWind extends Spell {
+class MetalForm extends Spell {
 
-    constructor(data) {
+    constructor(data = structuredClone(clubsItemsTable[1])) {
         super(data)
         this.buffAmount = data.buffAmount
     }
 
     /**
-     * Casts the spell Divine Wind 'Vent Divin'
+     * Casts the spell Metal Form 'Corps de Métal'
      * @param {object} being The being casting the spell */
     cast(caster = player) {
         // Safeguards
@@ -39,11 +39,11 @@ class DivineWind extends Spell {
         player.isAllowedToCastSpell = false
         btn1.disabled = false // To be able to cancel out when casting the amp' version before rolling the die and cast the normal version instead.
         caster.actionPoints -= this.cost
-        caster.spellEffects.speed += this.buffAmount
-        player.updateSpeedVisuals()
+        caster.spellEffects.strength += this.buffAmount
+        player.updateStrengthVisuals()
 
         gameMessage(`Vous lancez ${this.name} !
-            Vous gagnez +${this.buffAmount} VI jusqu'à la fin du combat.`)
+            Vous gagnez +${this.buffAmount} FO jusqu'à la fin du combat.`)
     }
 
     castAmplified(caster = player) {
@@ -84,16 +84,19 @@ class DivineWind extends Spell {
             btn2,
             "Lancer le D100",
             () => {
+                saveCloverState()
                 player.isAllowedToCastSpell = false
                 btn1.disabled = false
                 hideButton(btn2)
                 const roll = d100.roll()
                 caster.actionPoints -= this.cost + this.amplification.cost
-                caster.spellEffects.speed += this.buffAmount + roll
-                player.updateSpeedVisuals()
+                caster.spellEffects.strength += this.buffAmount + roll
+                player.updateStrengthVisuals()
 
                 gameMessage(`${roll} !
-                    Vous gagnez +${this.buffAmount + roll} VI jusqu'à la fin du combat.`)
+                    Vous gagnez +${this.buffAmount + roll} FO jusqu'à la fin du combat.`)
+
+                isAllowedToUseLuckyClover = true
             })
     }
 }

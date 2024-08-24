@@ -17,6 +17,7 @@ class Item {
         this.#buyValue = data.buyValue
         this.#sellValue = data.sellValue
         this.#gender = data.gender
+        if (data.isTestItem) this.isTestItem = data.isTestItem
     }
 
     get type() {

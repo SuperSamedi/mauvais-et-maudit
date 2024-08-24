@@ -29,7 +29,7 @@
 }
 .loading-screen__game-title {
   aspect-ratio: 800/377;
-  background-image: url("assets/artworks/game-title.bmp");
+  background-image: url("../assets/artworks/game-title.bmp");
   background-size: contain;
   margin-top: 20%;
 }
@@ -300,6 +300,9 @@
 }
 .legendary {
   color: coral;
+}
+.test-item {
+  color: chartreuse;
 }
 #item-details-view__item-type {
   color: bisque;

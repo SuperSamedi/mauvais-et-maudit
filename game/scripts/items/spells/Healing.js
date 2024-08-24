@@ -1,6 +1,6 @@
 class Healing extends Spell {
 
-    constructor(data) {
+    constructor(data = structuredClone(clubsItemsTable[3])) {
         super(data)
         this.healingAmount = data.healingAmount
     }
@@ -82,6 +82,7 @@ class Healing extends Spell {
             btn2,
             "Lancer le D100",
             () => {
+                saveCloverState()
                 player.isAllowedToCastSpell = false
                 btn1.disabled = false
                 hideButton(btn2)
@@ -91,6 +92,8 @@ class Healing extends Spell {
 
                 gameMessage(`${roll} !
                     Vous régénérez ${this.healingAmount + roll} points de vie.`)
+
+                isAllowedToUseLuckyClover = true
             })
     }
 }
