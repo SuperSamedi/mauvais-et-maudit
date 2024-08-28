@@ -324,66 +324,12 @@ function isBeingDead(being) {
 }
 
 function hideAllGenericButtons() {
-  hideButton(btn1)
-  hideButton(btn2)
-  hideButton(btn3)
-  hideButton(btn4)
-  hideButton(btn5)
-  hideButton(btn6)
-}
-
-function activateButton(btn, innerText, clickFunction, icon) {
-  // Show button
-  btn.style.display = "block"
-  btn.disabled = false
-
-  // Text set up
-  const textElement = btn.querySelector(".btn-text")
-  textElement.innerText = innerText
-
-  // Click set up
-  btn.onclick = clickFunction
-
-  // Icon set up
-  const imgElement = btn.querySelector(".btn-icon")
-  imgElement.setAttribute("alt", `icone-${icon}`)
-  switch (icon) {
-    case "d20":
-      imgElement.setAttribute("src", "game/assets/icons/d20.png")
-      break;
-    case "attaque-physique":
-      imgElement.setAttribute("src", "game/assets/icons/attak-physik.png")
-      break;
-    case "attaque-magique":
-      imgElement.setAttribute("src", "game/assets/icons/attak-magik.png")
-      break;
-    case "monstre":
-      imgElement.setAttribute("src", "game/assets/icons/monstre.png")
-      break;
-    case "créature-intelligente":
-      imgElement.setAttribute("src", "game/assets/icons/creature-intelligente.png")
-      break;
-    case "événement":
-      imgElement.setAttribute("src", "game/assets/icons/evenement.png")
-      break;
-    case "repos":
-      imgElement.setAttribute("src", "game/assets/icons/repos.png")
-      break;
-    case "village":
-      imgElement.setAttribute("src", "game/assets/icons/village.png")
-      break;
-    case "d100":
-      imgElement.setAttribute("src", "game/assets/icons/d100.png")
-      break;
-    case "coup-de-chance":
-      imgElement.setAttribute("src", "game/assets/icons/coup-de-chance.png")
-      break;
-
-    default:
-      imgElement.setAttribute("src", "")
-      imgElement.setAttribute("alt", "")
-      break;
-  }
+  btn1.hide();
+  btn2.hide();
+  btn3.hide();
+  btn4.hide();
+  btn5.hide();
+  btn6.hide();
 }
 
 function hideButton(btn) {

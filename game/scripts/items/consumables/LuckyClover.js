@@ -26,17 +26,17 @@ function saveCloverState(onLoadCallBack) {
         data.opponentHitPoints = currentCombatContext.opponent.hitPoints
     }
 
-    // TODO : Fix this (updating button innertext is obsolete)
     // Save each button state
     const genericButtons = [btn1, btn2, btn3, btn4, btn5, btn6]
     data.genericButtonsStates = []
 
     genericButtons.forEach(button => {
         const buttonState = {
-            display: button.style.display,
-            disabled: button.disabled,
-            text: button.innerText,
-            clickFunction: button.onclick
+            display: button.display,
+            disabled: button.isDisabled,
+            text: button.text,
+            clickFunction: button.onclick,
+            iconCode: button.iconCode
         }
         data.genericButtonsStates.push(buttonState)
     });
@@ -66,7 +66,9 @@ function loadCloverState() {
     // Reset Game State
     environmentRerolls = data.environmentRerolls
     isAllowedToDraw = data.isAllowedToDraw
+    // Remove item we got from the deck (it means we used the clover after drawing a card reward. Otherwise, lastItemReceivedRandomly would be undefined)
     if (lastItemReceivedRandomly) player.inventory.remove(lastItemReceivedRandomly)
+    // Reset opponent effect we would have applied and roll back damage we would have dealt
     if (data.opponentSpellEffects) currentCombatContext.opponent.spellEffects = data.opponentSpellEffects
     if (data.opponentHitPoints) currentCombatContext.opponent.hitPoints = data.opponentHitPoints
 
@@ -74,10 +76,11 @@ function loadCloverState() {
     const genericButtons = [btn1, btn2, btn3, btn4, btn5, btn6]
 
     for (let i = 0; i < genericButtons.length; i++) {
-        genericButtons[i].style.display = data.genericButtonsStates[i].display
-        genericButtons[i].disabled = data.genericButtonsStates[i].disabled
-        genericButtons[i].innerText = data.genericButtonsStates[i].text
+        genericButtons[i].display = data.genericButtonsStates[i].display
+        genericButtons[i].isDisabled = data.genericButtonsStates[i].disabled
+        genericButtons[i].text = data.genericButtonsStates[i].text
         genericButtons[i].onclick = data.genericButtonsStates[i].clickFunction
+        genericButtons[i].iconCode = data.genericButtonsStates[i].iconCode
     }
 
     imgDeck.onclick = data.deckClickFunction

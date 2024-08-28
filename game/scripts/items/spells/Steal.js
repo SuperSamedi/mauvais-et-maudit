@@ -40,7 +40,7 @@ class Steal extends Spell {
         // Spell effect
         player.isAllowedToCastSpell = false
         this.hasAlreadyBeenCast = true
-        btn1.disabled = true
+        btn1.isDisabled = true
         caster.actionPoints -= this.cost
         allowedToDraw = true
 
@@ -54,5 +54,12 @@ class Steal extends Spell {
             clearCardsDisplayZone();
             drawReward(scopaDeck, false, false, true)
         }
+    }
+
+    get isAllowedToBeCast() {
+        if (!player.isAllowedToCastSpell) return false
+        if (this.hasAlreadyBeenCast === true) return false
+
+        return true
     }
 }

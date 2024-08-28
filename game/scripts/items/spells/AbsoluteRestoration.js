@@ -35,7 +35,7 @@ class AbsoluteRestoration extends Spell {
 
         // Spell effect
         player.isAllowedToCastSpell = false
-        btn1.disabled = false
+        btn1.isDisabled = false
         caster.actionPoints -= this.cost
         const healedAmount = caster.maxHitPoints - caster.hitPoints
         caster.hitPoints += healedAmount

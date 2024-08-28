@@ -23,4 +23,10 @@ class Spell extends Item {
         return this.#amplification
     }
 
+    get isAllowedToBeCast() {
+        if (!player.isAllowedToCastSpell) return false
+
+        return true
+    }
+
 }

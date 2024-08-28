@@ -37,7 +37,7 @@ class InfiniteSpring extends Spell {
 
         // Spell effect
         player.isAllowedToCastSpell = false
-        btn1.disabled = false // To be able to cancel out when casting the amp' version before rolling the die and cast the normal version instead.
+        btn1.isDisabled = false // To be able to cancel out when casting the amp' version before rolling the die and cast the normal version instead.
         caster.actionPoints -= this.cost
         caster.spellEffects.magic += this.buffAmount
         player.updateMagicVisuals()
@@ -79,15 +79,14 @@ class InfiniteSpring extends Spell {
                         Vous lancez ${this.name} de manière amplifiée !
                         - Lancez le D100 pour augmenter l'effet de ${this.name}.`)
 
-        btn1.disabled = true
-        activateButton(
-            btn2,
+        btn1.isDisabled = true
+        btn2.activate(
             "Lancer le D100",
             () => {
                 saveCloverState()
                 player.isAllowedToCastSpell = false
-                btn1.disabled = false
-                hideButton(btn2)
+                btn1.isDisabled = false
+                btn2.hide()
                 const roll = d100.roll()
                 caster.actionPoints -= this.cost + this.amplification.cost
                 caster.spellEffects.magic += this.buffAmount + roll

@@ -41,7 +41,7 @@ class Divination extends Spell {
         // Spell effect
         player.isAllowedToCastSpell = false
         this.hasAlreadyBeenCast = true
-        btn1.disabled = false
+        btn1.isDisabled = false
         caster.actionPoints -= this.cost
         caster.actionPoints += 2
         player.hasForcedInitiative = true
