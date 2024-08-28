@@ -26,6 +26,7 @@ function saveCloverState(onLoadCallBack) {
         data.opponentHitPoints = currentCombatContext.opponent.hitPoints
     }
 
+    // TODO : Fix this (updating button innertext is obsolete)
     // Save each button state
     const genericButtons = [btn1, btn2, btn3, btn4, btn5, btn6]
     data.genericButtonsStates = []

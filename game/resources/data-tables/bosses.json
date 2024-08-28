@@ -1,6 +1,16 @@
 [
   {
     "name": {
+      "male": "Balneus, le dragon sans visage"
+    },
+    "hitPoints": 240,
+    "strength": 90,
+    "speed": 50,
+    "magic": 90,
+    "gender": "M"
+  },
+  {
+    "name": {
       "female": "Vcrakusa, la déesse-vampire"
     },
     "effects": [

@@ -39,6 +39,8 @@ const btnConfirmStatsAdjustment = document.getElementById("btn-confirm-stats-adj
 
 // Test Buttons TOREMOVE
 const btnUnlockDeck = document.getElementById("btn-unlock-deck")
+const btnFightBoss = document.getElementById("btn-fight-boss");
+const btnSpecialEventEncounter = document.getElementById("btn-special-event-encounter")
 //#endregion
 
 // =====> START
@@ -83,16 +85,16 @@ function start() {
     detailsViewOverlay.style.display = "none"
     screenLoader.style.display = "none"
     btnUnlockDeck.style.display = "none"
+    btnFightBoss.style.display = "none"
+    btnSpecialEventEncounter.style.display = "none"
     presentation()
-    // tests()
+    tests()
 }
 
 
 //#region TESTS
 function tests() {
-    console.log("TESTING ACTIVATED");
-    // Test Buttons
-
+    console.log("-- /!\\ TESTING ACTIVATED /!\\ --");
 
     //#region ReducedRoll Tests
     // Reduced roll algorithm test
@@ -191,23 +193,23 @@ function tests() {
     // player.goldCoins += 200
     //#endregion
 
-    //#region test Fight Boss
-    // const btnFightBoss = document.getElementById("btn-fight-boss");
-    // btnFightBoss.onclick = () => { finalAdventure() }
+    //#region test BOSS
+    btnFightBoss.style.display = "block"
+    btnFightBoss.onclick = () => { finalAdventure() }
 
-    allowedToLevelUp = true
-    player.experiencePoints += 1_000
+    // allowedToLevelUp = true
+    // player.experiencePoints += 1_000
     // player.levelUpHitPoints(1000)
     // player.levelUpStrength(1000)
     // player.levelUpSpeed(1000)
-    player.levelUpMagic(20)
+    // player.levelUpMagic(20)
     // const predicateMod1 = 1 % 2 != 0
     // const predicateMod2 = 2 % 2 != 0
     // console.log("1 % 2 != 0 = " + predicateMod1)
     // console.log("2 % 2 != 0 = " + predicateMod2)
     //#endregion
 
-    //#region test Potion
+    //#region test CONSUMABLES
     // player.inventory.add(getCupsItem(1))
     // player.inventory.add(getCupsItem(2))
     // player.inventory.add(getCupsItem(4))
@@ -223,19 +225,25 @@ function tests() {
     //#region test SPELLS
     // player.inventory.add(getClubsItem(1)) // Vent Divin
     // player.inventory.add(getClubsItem(2)) // Corps de Métal
-    player.inventory.add(getClubsItem(3)) // Source Infinie
-    player.inventory.add(getClubsItem(4)) // Soin
-    player.inventory.add(getClubsItem(5)) // Vol
+    // player.inventory.add(getClubsItem(3)) // Source Infinie
+    // player.inventory.add(getClubsItem(4)) // Soin
+    // player.inventory.add(getClubsItem(5)) // Vol
     // player.inventory.add(getClubsItem(6)) // Téléportation
-    player.inventory.add(getClubsItem(7)) // Affaiblissement
-    player.inventory.add(getClubsItem(8)) // Sphère Infernale
+    // player.inventory.add(getClubsItem(7)) // Affaiblissement
+    // player.inventory.add(getClubsItem(8)) // Sphère Infernale
     // player.inventory.add(getClubsItem(9)) // Divination
     // player.inventory.add(getClubsItem(10)) // Guérison Absolue
-    player.actionPoints += 100
+    // player.actionPoints += 100
     //#endregion
 
     //#region Clover system
     player.inventory.add(getCupsItem(15))
+    //#endregion
+
+    //#region test SPECIAL EVENTS
+    // Event02
+    btnSpecialEventEncounter.style.display = "block"
+    btnSpecialEventEncounter.onclick = () => { specialEncounter() }
     //#endregion
 }
 //#endregion
@@ -1513,11 +1521,16 @@ function miniBossAdventure() {
 
 //#region Boss fight set up
 function finalAdventure() {
-    let message = `Ça y est ! Vous y êtes. Le repère du mal.
-        
-        - Lancez le D20 pour tirer le boss que vous allez affronter.`
+    const openingMessageVariations = [
+        `Ça y est ! Vous y êtes. Le repère du mal.`,
+        `Vous suivez maintenant le chemin depuis plusieurs jours. Non loin, au détour d'un gros talus, vous apercevez enfin votre destination...`
+    ]
 
-    gameMessage(message)
+    gameMessage(
+        `${openingMessageVariations[getRandomInt(openingMessageVariations.length)]}
+
+        - Lancez le D20 pour tirer le boss que vous allez affronter.`
+    )
 
     activateButton(
         btn1,
@@ -1584,7 +1597,25 @@ function finalAdventure() {
 
                 contextData.introMessage = `Vous découvrez une large pièce circulaire. En son centre, trône un être décharné assis sur une chaise disproportionnée en bois sombre aux sculptures élaborées. La créature, en remarquant votre entrée dans la pièce, commence à se lever lentement. Ses yeux, d'un noir sans reflet, vous regardent intensément pendant plusieurs secondes. Puis, soudain, la créature funeste ouvre grand la bouche, laissant apparaître deux fines canines d'une taille anormalement grande et se rue vers vous en poussant un cri glaçant.`
                 contextData.opponentPreparationPhaseCallBack = vcrakusaPreparationPhase
-                contextData.rewardPhaseCallBack = bossRewardPhase
+                contextData.rewardPhaseCallBack = defaultBossRewardPhase
+                break;
+
+            case "Balneus, le dragon sans visage":
+                // Flavor text before the boss name is revealed
+                message += `Une porte massive, incrustée dans la roche de la falaise, se dresse devant vous. Vous apercevez des gobelin·e·s qui montent la garde autour. En les observant un peu mieux, iels semblent avoir un comportement étrange pour des gobelin·e·s.
+                    En restant sur votre garde, vous vous approchez d'elleux. Une fois à portée de voix et avant même que vous ayez pu prononcer le moindre mot, iels vous demandent tous ensemble ce que vous venez faire devant l'antre du grand Balneus, d'une voix unique ainsi qu'avec une parfaite maîtrise de la langue commune.
+                    ${player.gender == "F" ? "Surprise" : "Surpris"}, vous reprenez votre assurance avant de répondre d'une voix claire :
+                    "- Je viens rencontrer le maitre des lieux !" Votre voix se répercute sur la roche, créant de l'écho.
+                    Les yeux des gobelin·e·s semble s'éteindre quelques instants. Puis de leur voix commune iels annoncent :
+                    "- Entrez donc ! Je commençais à avoir faim !"
+                    Tout de suite après, la porte s'ouvre dans un bruit de tonnerre. Doutant une fois de plus de votre stratégie, vous entrez néanmoins. Après quelques couloirs, vous l’apercevez enfin...`
+
+                contextData.introMessage = `Allongé de tout son long sur une montagne d'ossements de diverses créatures, le dragon sans visage. D'une blancheur maladive, ses ailes sont repliées autour de son corps d'apparence visqueuse.
+                    Alors que vous approchez, le dragon pousse un rugissement impressionnant, se lève et déplie ses ailes de chauve-souris, plus menaçant que jamais.
+                    Le combat est imminent. Vous rassemblez vos esprits et votre courage.`
+                contextData.opponentPreparationPhaseCallBack = regularOpponentPreparationPhase
+                contextData.rewardPhaseCallBack = balneusRewardPhase
+                contextData.defeatPhaseCallBack = balneusDefeatPhase
                 break;
 
             default:
@@ -1597,7 +1628,7 @@ function finalAdventure() {
     }
 }
 
-function bossRewardPhase(ctx) {
+function defaultBossRewardPhase(ctx) {
     isAllowedToUseLuckyClover = false
     currentCombatContext = undefined
     hideAllGenericButtons()
@@ -1614,6 +1645,38 @@ function bossRewardPhase(ctx) {
         
         Merci d'avoir joué ! On espère que vous avez passé un bon moment pendant ce jeu de rôle.
         Rechargez la page si vous voulez recommencer une nouvelle aventure. Et sinon, ben voilà, c'est fini, à la prochaine. Bisou ! `)
+}
+
+function balneusRewardPhase(ctx) {
+    isAllowedToUseLuckyClover = false
+    currentCombatContext = undefined
+    hideAllGenericButtons()
+    stepCompleted()
+    displayState(false)
+    player.restoreHitPoints()
+    player.resetSpellEffects()
+    isInCombat = false
+
+    gameMessage(
+        `Quand le dragon s'écroule, vous en croyez à peine vos yeux. Un rapide coup d'œuil alentour vous apprends que vous avez du même coup libéré les gobelin·e·s du controle mental de Balneus. Vous vous préparez à vous défendre. Cependant, au lieu de vous attaquer, iels se prosternent devant vous en criant : ${player.gender == "F" ? "déesse !" : "dieux !"}. Si vous en restez ${player.gender == "F" ? "abasourdie" : "abasourdi"}, les gobelin·e·s, elleux, ne perdent pas de temps avant de passer aux offrandes. Des bijoux, des vivres, de somptueuses gemmes et surtout des bandages et onguents pour vos plaies. Faire la fête quelques jours avec les gobelin·e·s ne pouvait pas faire de mal après tout.
+        
+        Merci d'avoir joué ! En espérant que vous avez passé un bon moment !
+        Rechargez la page si vous voulez recommencer une nouvelle aventure. Et sinon, ben voilà, c'est fini, à la prochaine. Bisou !
+        `
+    )
+}
+
+function balneusDefeatPhase(ctx) {
+    isAllowedToUseLuckyClover = false
+    hideAllGenericButtons()
+    displayState(false)
+    gameMessage(
+        `Un genou à terre, vous tenter une contre-attaque pour reprendre l'avantage. Mais le dragon semble lire en vous comme dans un livre ouvert. D'un geste fluide, son aile atterrit dans votre ventre, vous envoyant plusieurs mètres plus loin inerte. **Satisfaite** d'avoir pu voir vos derniers instants, votre âme s'envole vers la lumière ... à moins que ce ne soit vers une autre aventure ?
+    
+        Merci d'avoir joué ! On espère que vous vous êtes quand même bien ${player.gender == "F" ? "amusée" : "amusé"}.
+        Rechargez la page si vous souhaitez recommencer une partie.
+        `
+    )
 }
 //#endregion
 
@@ -2232,10 +2295,12 @@ function rest(introMessage, outroMessage, continueButtonText) {
 }
 
 function specialEncounter() {
+    hideAllGenericButtons()
     isAllowedToUseLuckyClover = false
-    const specialEncounters = [event01]
+    const specialEncounters = [event01, event02]
     specialEncounters[getRandomInt(specialEncounters.length)]()
 
+    // Sick Child Traveler
     function event01() {
         gameMessage(`Vous rencontrez un voyageur dont l'enfant est gravement malade. Il vous supplie de l'aider.
         --- Si vous avez une potion ou un ether, vous pouvez lui donner.
@@ -2382,7 +2447,127 @@ function specialEncounter() {
             nextAdventure(`Vous partagez votre sympathie au voyageur mais lui dites que vous ne pouvez pas l'aider.
                 Vous gagnez 1XP et continuez votre route.`)
         }
+    }
 
+    // Cursed Mirror
+    function event02() {
+        gameMessage(`Vous découvrez un miroir magique posé sur le sol. Il vous appelle par votre nom : "${player.name}... ${player.name}...". Vous vous approchez et découvrez un démon emprisonné à l'intérieur du miroir. Il vous demande de l'aider à le libérer.
+        --- Si vous avez 60+ MA vous pouvez le libérer.
+        --- Vous pouvez décider de briser le miroir.
+        --- Vous pouvez décider d'ignorer le démon et de passer votre chemin.
+        
+        Que choisissez-vous de faire ?`)
+
+        activateButton(btn1, "Libérer le démon", () => { freeDemon() })
+        activateButton(btn2, "Briser le miroir", () => { breakMirror() })
+        activateButton(btn3, "Passer mon chemin", () => { leave() })
+        if (player.magic < 60) btn1.disabled = true
+
+        // Generate the demon
+        const traits = []
+        traits.push(getStrongTrait(4))
+        const demon = generateIntelligentBeing(12, traits)
+        demon.gender = "M"
+
+        function freeDemon() {
+            if (player.magic < 60) return
+
+            hideAllGenericButtons()
+
+            // Player is stronger than the demon or is a demon
+            if (player.magic >= 80 || player.hasARaceInCommonWith(demon)) {
+                gameMessage(
+                    `Vous utilisez un simple sort de désenchantement pour libérer le démon enfermé dans le miroir. Ce dernier vol en éclats et une fumée sombre et épaisse s'en répand avant de se matérialiser en une créature cornue à la peau rouge sang. Le démon se dresse devant vous, vous dépassant de plusieurs têtes. Il vous toise du regard pendant un instant avant de s'agenouiller et de s'adresser à vous d'une voix aiguë et sifflante : "Vouuus mm'aveeez libérééé ô ${player.gender == "F" ? "maîîîtresssse" : `maîîître`} ${player.hasARaceInCommonWith(demon) ? player.gender == "F" ? "inffffernale" : "inffffernal" : ""} ! Preneeez ceccci en guise de ma reconnaissssssance éternelle...".
+                    Le démon tend sa main vers vous et un parchemin y apparaît dans un petit tourbillon de flammes. Vous prenez le parchemin qui vous brûle légèrement les doigts. Le démon disparaît alors dans un craquement ne laissant derrière lui qu'un petit nuage de fumée noire et un son de ricanement satisfait qui résonne dans l'air pendant quelques secondes. 
+                    
+                    Vous recevez le parchemin de sort 'Sphère Infernale'.
+                    Vous gagnez également 1XP.`
+                )
+
+                player.inventory.add(getClubsItem(8))
+                player.experiencePoints++
+                activateButton(btn1, "Continuer", () => { nextAdventure() })
+
+                return
+            }
+
+            // Fight against 'démon rusé'
+            const introMessage = `Vous utilisez un simple sort de désenchantement pour libérer le démon enfermé dans le miroir. Ce dernier vol en éclats et une fumée sombre et lourde commence à s'en répandre. Une créature cornue à la peau rouge sang s'extirpe de cette flaque noire sans surface et se dresse devant vous, vous dépassant de plusieurs têtes. Le démon vous fixe intensément de ses yeux perçants aux iris ressemblants à des flammes. D'une voix aiguë et sifflante il vous adresse la parole, révélant une rangée de dents fines et aiguisées : "Heeeheeeheee pauvvvre ${player.gender == "F" ? "petiiite avvventurièèèère stupiiiide" : "petiiit aventuriiier stupiiiide"}... Prépareeez-vous à mourirrr !".`
+
+            const contextData = {
+                opponent: demon,
+                introMessage: introMessage
+            }
+
+            fight(contextData)
+        }
+
+        function breakMirror() {
+            hideAllGenericButtons()
+
+            gameMessage(`Vous donnez un grand coup de talon dans le miroir ce qui le brise en multiple morceaux.
+                - Lancez le D20 pour voir ce qu'il se passe.`)
+
+            activateButton(
+                btn1,
+                "Lancer le D20",
+                () => {
+                    saveCloverState()
+                    mirrorBreakConsequences(d20.roll())
+                },
+                "d20"
+            )
+
+            function mirrorBreakConsequences(roll) {
+                hideAllGenericButtons()
+                isAllowedToUseLuckyClover = true
+
+                // Result >= 11 -> Nothing happens
+                if (roll >= 11) {
+                    player.experiencePoints++;
+
+                    gameMessage(`${roll} !
+                        Le visage morcelé du démon se reflétant dans les éclats du miroir se tord de douleur avant de disparaît, sans un bruit.
+                        Vous gagnez 1XP et continuez votre route.`)
+
+                    activateButton(
+                        btn1,
+                        "Continuer",
+                        () => {
+                            stepCompleted()
+                            nextAdventure()
+                        }
+                    )
+
+                    return
+                }
+
+                // Result < 11 -> Fight against a 'Démon rusé et agressif'
+                gameMessage(
+                    `${roll} !
+                    Une fumée sombre et lourde commence à se répandre rapidement des restes du miroir brisé. Une créature cornue à la peau rouge sang s'extirpe de cette flaque noire sans surface et se dresse devant vous, vous dépassant de plusieurs têtes. Le démon vous fixe intensément de ses yeux perçants aux iris ressemblants à des flammes. D'une voix aiguë et sifflante il vous adresse la parole, révélant une rangée de dents fine et aiguisées : "Vouuuus avez esssssayé de m'exxxxiler à jjjamaiiis... Prépareeez-vous à mourirrr !".`
+                )
+
+                activateButton(
+                    btn1,
+                    "Continuer",
+                    () => {
+                        demon.traits.push(getStrongTrait(13))
+                        const contextData = {
+                            opponent: demon
+                        }
+                        fight(contextData)
+                    }
+                )
+            }
+        }
+
+        function leave() {
+            player.experiencePoints++;
+            stepCompleted()
+            nextAdventure(`Vous méfiant d'une potentielle ruse du démon, vous ignorez ses appels et passez votre chemin.
+                Vous gagnez 1XP et continuez votre route.`)
+        }
     }
 }
 
@@ -2459,7 +2644,8 @@ function fight(ctx) {
     console.log(ctx);
     currentCombatContext = ctx
     // Message d'intro
-    let message = ctx.introMessage
+    let message = ``
+    if (ctx.introMessage) message += ctx.introMessage
 
     // Reset spells that can only be cast once per combat
     for (let i = 0; i < 8; i++) {
@@ -2495,7 +2681,7 @@ function fight(ctx) {
     ---- Un combat contre ${ctx.opponent.type == "Boss" ? "" : ctx.opponent.gender == "F" ? "une " : "un "}${ctx.opponent.name} commence !`
 
     // if fighting boss and boss has at least one effect to mention to the player
-    if (ctx.opponent.type == "Boss" && ctx.opponent.races[0].effects.length > 0) {
+    if (ctx.opponent.type == "Boss" && ctx.opponent.races[0].effects) {
         message += `
         ${ctx.opponent.races[0].effects.length == 1 ? "Effet" : "Effets"} du boss :`;
         ctx.opponent.races[0].effects.forEach(effect => {
@@ -2517,9 +2703,13 @@ function initiativePhase(ctx) {
         return
     }
 
-    ctx.opponentPreparationPhaseCallBack(ctx);
-}
+    if (ctx.opponentPreparationPhaseCallBack) {
+        ctx.opponentPreparationPhaseCallBack(ctx);
+        return
+    }
 
+    regularOpponentPreparationPhase(ctx)
+}
 // Check if we need to skip the player prep phase
 function isPlayerPreparationPhaseSkipped() {
     let skip = true
@@ -2547,7 +2737,12 @@ function playerPreparationPhase(ctx) {
     // Skip if nothing to do
     if (isPlayerPreparationPhaseSkipped()) {
         if (playerHasInitiative(ctx.opponent)) {
-            ctx.opponentPreparationPhaseCallBack(ctx)
+            if (ctx.opponentPreparationPhaseCallBack) {
+                ctx.opponentPreparationPhaseCallBack(ctx)
+                return
+            }
+
+            regularOpponentPreparationPhase(ctx)
             return
         }
         opponentAttackPhase(ctx)
@@ -2572,7 +2767,11 @@ function playerPreparationPhase(ctx) {
         isAllowedToUseLuckyClover = false
         clearCardsDisplayZone()
         if (playerHasInitiative(ctx.opponent)) {
-            ctx.opponentPreparationPhaseCallBack(ctx)
+            if (ctx.opponentPreparationPhaseCallBack) {
+                ctx.opponentPreparationPhaseCallBack(ctx)
+                return
+            }
+            regularOpponentPreparationPhase(ctx)
             return
         }
         opponentAttackPhase(ctx)
@@ -2701,7 +2900,17 @@ function playerAttackPhase(ctx) {
 
         // Check if opponent is KO
         if (isBeingDead(ctx.opponent)) {
-            activateButton(btn1, "Continuer", () => { ctx.rewardPhaseCallBack(ctx) })
+            activateButton(
+                btn1,
+                "Continuer",
+                () => {
+                    if (ctx.rewardPhaseCallBack) {
+                        ctx.rewardPhaseCallBack(ctx)
+                        return
+                    }
+                    regularRewardPhase(ctx)
+                }
+            )
             return
         }
 
@@ -2781,7 +2990,17 @@ function opponentAttackPhase(ctx) {
         // Check if the hit killed the player
         // Display just the hit message and set up button to bring to the game over screen
         if (isBeingDead(player)) {
-            activateButton(btn1, "Continuer", () => { gameOver() })
+            activateButton(
+                btn1,
+                "Continuer",
+                () => {
+                    if (!ctx.defeatPhaseCallBack) {
+                        regularDefeatPhase(ctx)
+                        return
+                    }
+                    ctx.defeatPhaseCallBack(ctx)
+                }
+            )
             return
         }
 
@@ -2892,6 +3111,15 @@ function regularRewardPhase(ctx) {
         console.error("Unexpected reward roll : ")
         console.error(roll)
     }
+}
+
+function regularDefeatPhase(ctx) {
+    isAllowedToUseLuckyClover = false
+    hideAllGenericButtons()
+    displayState(false)
+    gameMessage(`Vous êtes ${player.gender == "F" ? "morte" : "mort"}, votre aventure s'achève ici.
+            Merci d'avoir joué ! On espère que vous vous êtes quand même bien ${player.gender == "F" ? "amusée" : "amusé"}.
+            Rechargez la page si vous souhaitez recommencer une partie.`)
 }
 
 function playerHasInitiative(opponent) {
