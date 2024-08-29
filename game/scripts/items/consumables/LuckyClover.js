@@ -1,5 +1,4 @@
 let cloverState = {}
-let isAllowedToUseLuckyClover = false;
 // To track the last item received as a card reward so we can rollback in case we use the lucky clover after we draw a reward card.
 let lastItemReceivedRandomly = undefined
 
@@ -50,7 +49,7 @@ function saveCloverState(onLoadCallBack) {
 function loadCloverState() {
     const data = cloverState
 
-    isAllowedToUseLuckyClover = false
+    player.isAllowedToUseLuckyClover = false
 
     console.log("Loaded Clover Data :");
     console.log(data);
@@ -101,7 +100,7 @@ class LuckyClover extends ConsumableItem {
     }
 
     get isUsable() {
-        return isAllowedToUseLuckyClover
+        return player.isAllowedToUseLuckyClover
     }
 
     use(being = player) {

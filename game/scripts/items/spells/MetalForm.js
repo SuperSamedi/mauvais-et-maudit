@@ -12,7 +12,7 @@ class MetalForm extends Spell {
         // Safeguards
         if (!caster) return
         if (!caster.spellEffects) return
-        if (!caster.isAllowedToCastSpell) {
+        if (caster.isAllowedToCastSpell === false) {
             gameMessage(`${playerPreparationPhaseMessage}
             
                 Votre ne pouvez lancer qu'un seul sort par phase de préparation.
@@ -50,7 +50,7 @@ class MetalForm extends Spell {
         // Safeguards
         if (!caster) return
         if (!caster.spellEffects) return
-        if (!caster.isAllowedToCastSpell) {
+        if (caster.isAllowedToCastSpell === false) {
             gameMessage(`${playerPreparationPhaseMessage}
             
                 Votre ne pouvez lancer qu'un seul sort par phase de préparation.
@@ -95,7 +95,7 @@ class MetalForm extends Spell {
                 gameMessage(`${roll} !
                     Vous gagnez +${this.buffAmount + roll} FO jusqu'à la fin du combat.`)
 
-                isAllowedToUseLuckyClover = true
+                player.isAllowedToUseLuckyClover = true
             }
         )
     }

@@ -11,7 +11,7 @@ class Steal extends Spell {
     cast(caster = player) {
         // Safeguards
         if (!caster) return
-        if (!caster.isAllowedToCastSpell) {
+        if (caster.isAllowedToCastSpell === false) {
             gameMessage(`${playerPreparationPhaseMessage}
             
                 Votre ne pouvez lancer qu'un seul sort par phase de préparation.
@@ -57,7 +57,7 @@ class Steal extends Spell {
     }
 
     get isAllowedToBeCast() {
-        if (!player.isAllowedToCastSpell) return false
+        if (player.isAllowedToCastSpell === false) return false
         if (this.hasAlreadyBeenCast === true) return false
 
         return true

@@ -10,7 +10,7 @@ class Enfeeble extends Spell {
   cast(caster = player) {
     // Safeguards
     if (!caster) return;
-    if (!caster.isAllowedToCastSpell) {
+    if (caster.isAllowedToCastSpell === false) {
       gameMessage(`${playerPreparationPhaseMessage}
             
                 Votre ne pouvez lancer qu'un seul sort par phase de préparation.
@@ -121,7 +121,7 @@ class Enfeeble extends Spell {
   castAmplified(caster = player) {
     // Safeguards
     if (!caster) return;
-    if (!caster.isAllowedToCastSpell) {
+    if (caster.isAllowedToCastSpell === false) {
       gameMessage(`${playerPreparationPhaseMessage}
             
                 Votre ne pouvez lancer qu'un seul sort par phase de préparation.
@@ -219,10 +219,11 @@ class Enfeeble extends Spell {
         break;
     }
 
-    gameMessage(`${roll} !
-            Vous affaiblissez la ${debuffedStat} de votre adversaire de ${this.debuffAmount - roll
-      }.`);
+    gameMessage(
+      `${roll} !
+      Vous affaiblissez la ${debuffedStat} de votre adversaire de ${this.debuffAmount - roll}.`
+    );
 
-    isAllowedToUseLuckyClover = true;
+    player.isAllowedToUseLuckyClover = true;
   }
 }

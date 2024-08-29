@@ -11,7 +11,7 @@ class Divination extends Spell {
     cast(caster = player) {
         // Safeguards
         if (!caster) return
-        if (!caster.isAllowedToCastSpell) {
+        if (caster.isAllowedToCastSpell === false) {
             gameMessage(`${playerPreparationPhaseMessage}
             
                 Votre ne pouvez lancer qu'un seul sort par phase de préparation.

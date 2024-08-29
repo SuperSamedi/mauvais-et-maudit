@@ -10,7 +10,7 @@ class Healing extends Spell {
   cast(caster = player) {
     // Safeguards
     if (!caster) return;
-    if (!caster.isAllowedToCastSpell) {
+    if (caster.isAllowedToCastSpell === false) {
       gameMessage(`${playerPreparationPhaseMessage}
             
                 Votre ne pouvez lancer qu'un seul sort par phase de préparation.
@@ -48,7 +48,7 @@ class Healing extends Spell {
     // Safeguards
     if (!caster) return;
     if (!caster.spellEffects) return;
-    if (!caster.isAllowedToCastSpell) {
+    if (caster.isAllowedToCastSpell === false) {
       gameMessage(`${playerPreparationPhaseMessage}
             
                 Votre ne pouvez lancer qu'un seul sort par phase de préparation.
@@ -96,7 +96,7 @@ class Healing extends Spell {
                     Vous régénérez ${this.healingAmount + roll
         } points de vie.`);
 
-      isAllowedToUseLuckyClover = true;
+      player.isAllowedToUseLuckyClover = true;
     });
   }
 }

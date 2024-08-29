@@ -24,7 +24,7 @@ class Spell extends Item {
     }
 
     get isAllowedToBeCast() {
-        if (!player.isAllowedToCastSpell) return false
+        if (player.isAllowedToCastSpell === false) return false
 
         return true
     }

@@ -189,6 +189,7 @@ class Inventory {
     }
 
     add(item) {
+        // TODO : Manage the situation where inventory is full
         for (let i = 0; i < 8; i++) {
             if (this.slots[i] == undefined) {
                 this.slots[i] = item;

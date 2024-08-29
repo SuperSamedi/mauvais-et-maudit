@@ -33,14 +33,15 @@ const btnConfirmStatsAdjustment = document.getElementById("btn-confirm-stats-adj
 const btnUnlockDeck = document.getElementById("btn-unlock-deck")
 const btnFightBoss = document.getElementById("btn-fight-boss");
 const btnSpecialEventEncounter = document.getElementById("btn-special-event-encounter")
+const btnRestEncounter = document.getElementById("btn-rest-encounter")
 //#endregion
 
 // =====> START
 imgDeck.onclick = () => {
-    if (isAllowedToDraw) {
-        clearCardsDisplayZone();
-        drawReward(scopaDeck, false, true);
-    }
+  if (isAllowedToDraw) {
+    clearCardsDisplayZone();
+    drawReward(scopaDeck, false, true);
+  }
 };
 
 const player = new Player();
@@ -54,7 +55,6 @@ let currentCombatContext = undefined
 let environmentRerolls = 0
 let isAllowedToDraw = false;
 let isAllowedToSellItems = false;
-let isAllowedToLevelUp = false;
 let isInCombat = false
 // Test Variable TOREMOVE
 let isDeckUnlocked = false
@@ -80,6 +80,7 @@ function start() {
   btnUnlockDeck.style.display = "none";
   btnFightBoss.style.display = "none";
   btnSpecialEventEncounter.style.display = "none";
+  btnRestEncounter.style.display = "none"
   presentation();
   // tests();
 }
@@ -191,7 +192,7 @@ function tests() {
     finalAdventure();
   };
 
-  // allowedToLevelUp = true
+  // player.isAllowedToLevelUp = true
   // player.experiencePoints += 1_000
   // player.levelUpHitPoints(1000)
   // player.levelUpStrength(1000)
@@ -241,11 +242,19 @@ function tests() {
     specialEncounter();
   };
   //#endregion
+
+  //#region test REST
+  player.experiencePoints += 6
+  btnRestEncounter.style.display = "block"
+  btnRestEncounter.onclick = () => {
+    restEncounter()
+  }
+  //#endregion
 }
 //#endregion
 
 function presentation() {
-    gameMessage(`Vous êtes assis·e devant votre âtre, le feu crépite. Soudain il tremble imperceptiblement, et pendant un instant la lumière vacille. Les ombres s'allongent légèrement, et un frisson glacé vous parcourt. Vous savez ce que cela signifie. Vous vous emparez de votre ancienne arme, enfilez votre manteau, et ouvrez la porte de votre masure. À l'horizon le ciel se teint de rouge et de mauve. Le Mal est revenu, et vous seul·e pouvez le vaincre...
+  gameMessage(`Vous êtes assis·e devant votre âtre, le feu crépite. Soudain il tremble imperceptiblement, et pendant un instant la lumière vacille. Les ombres s'allongent légèrement, et un frisson glacé vous parcourt. Vous savez ce que cela signifie. Vous vous emparez de votre ancienne arme, enfilez votre manteau, et ouvrez la porte de votre masure. À l'horizon le ciel se teint de rouge et de mauve. Le Mal est revenu, et vous seul·e pouvez le vaincre...
 
         Bienvenue dans Mauvais & Maudit "Édition Online" !
         Vous êtes sur le point d'embarquer dans une aventure interactive textuelle. Durant cette quête, vous allez incarner un personnage dont vous allez tirer au hasard la race et le trait distinctif.
@@ -262,7 +271,7 @@ function presentation() {
 }
 
 function choosePlayerRace(roll) {
-    hideAllGenericButtons()
+  hideAllGenericButtons()
 
   let hybridRaceA = {};
   let hybridRaceB = {};
@@ -1051,7 +1060,7 @@ function drawReward(
             
             Désolé, il n'y a plus de carte dans la pioche.`);
 
-    isAllowedToUseLuckyClover = false;
+    player.isAllowedToUseLuckyClover = false;
     btn1.isDisabled = false;
     return;
   }
@@ -1161,7 +1170,7 @@ function drawReward(
   }
 
   // Only allowed if not just after receiving the first reward draw (which would make it possible to use it "on itself" right after drawing it if it was the very first item we drew - would not make sens)
-  isAllowedToUseLuckyClover = true;
+  player.isAllowedToUseLuckyClover = true;
 
   if (isStealSpellReward) {
     btn1.isDisabled = false;
@@ -1200,7 +1209,7 @@ function chooseNewEnvironment(customMessage) {
 
   function newEnvironmentResult(roll) {
     hideAllGenericButtons();
-    isAllowedToUseLuckyClover = true;
+    player.isAllowedToUseLuckyClover = true;
     console.log("New Environment roll : " + roll);
     const newEnvironment = environmentsTable[roll - 1];
     console.log(newEnvironment);
@@ -1513,7 +1522,7 @@ function nextAdventure(customMessage = "") {
   hideAllGenericButtons();
 
   // Trackers for the Lucky Clover
-  isAllowedToUseLuckyClover = false;
+  player.isAllowedToUseLuckyClover = false;
   lastItemReceivedRandomly = undefined;
 
   displayState(false);
@@ -1564,7 +1573,7 @@ function nextAdventure(customMessage = "") {
 
   function chooseNextAdventure(roll) {
     hideAllGenericButtons();
-    isAllowedToUseLuckyClover = true;
+    player.isAllowedToUseLuckyClover = true;
 
     let message = `${roll} !
         Vous avez le choix entre ces aventures :
@@ -1729,7 +1738,7 @@ function finalAdventure() {
   );
 
   function chooseBoss(roll) {
-    isAllowedToUseLuckyClover = true;
+    player.isAllowedToUseLuckyClover = true;
     const boss = generateBoss(roll);
     console.log("Boss :");
     console.log(boss);
@@ -1826,7 +1835,7 @@ function finalAdventure() {
 }
 
 function defaultBossRewardPhase(ctx) {
-  isAllowedToUseLuckyClover = false;
+  player.isAllowedToUseLuckyClover = false;
   currentCombatContext = undefined;
   hideAllGenericButtons();
   stepCompleted();
@@ -1845,7 +1854,7 @@ function defaultBossRewardPhase(ctx) {
 }
 
 function balneusRewardPhase(ctx) {
-  isAllowedToUseLuckyClover = false;
+  player.isAllowedToUseLuckyClover = false;
   currentCombatContext = undefined;
   hideAllGenericButtons();
   stepCompleted();
@@ -1864,7 +1873,7 @@ function balneusRewardPhase(ctx) {
 }
 
 function balneusDefeatPhase(ctx) {
-  isAllowedToUseLuckyClover = false;
+  player.isAllowedToUseLuckyClover = false;
   hideAllGenericButtons();
   displayState(false);
   gameMessage(
@@ -1880,7 +1889,7 @@ function balneusDefeatPhase(ctx) {
 
 //#region ENCOUNTERS
 function monsterEncounter() {
-  isAllowedToUseLuckyClover = false;
+  player.isAllowedToUseLuckyClover = false;
 
   let traits = generateTraits();
   const monster = generateMonster(d20.roll(), traits);
@@ -1898,7 +1907,7 @@ function monsterEncounter() {
 }
 
 function intelligentBeingEncounter() {
-  isAllowedToUseLuckyClover = false;
+  player.isAllowedToUseLuckyClover = false;
   hideAllGenericButtons();
 
   let traits = generateTraits();
@@ -1921,7 +1930,7 @@ function intelligentBeingEncounter() {
   );
 
   function checkAttitude(roll) {
-    isAllowedToUseLuckyClover = true;
+    player.isAllowedToUseLuckyClover = true;
 
     // Roll 1-3
     if (roll <= 3) {
@@ -2213,7 +2222,7 @@ function intelligentBeingEncounter() {
     }
 
     function letBeingGo() {
-      isAllowedToUseLuckyClover = false;
+      player.isAllowedToUseLuckyClover = false;
       hideAllGenericButtons();
 
       let outroMessage = `Vous continuez votre route.
@@ -2227,7 +2236,7 @@ function intelligentBeingEncounter() {
     function giveGold(amount) {
       if (player.goldCoins < amount) return;
 
-      isAllowedToUseLuckyClover = false;
+      player.isAllowedToUseLuckyClover = false;
       hideAllGenericButtons();
 
       let outroMessage = `Vous donnez ${amount}PO ${intelligentBeing.gender == "F" ? "à la racketteuse" : "au racketteur"
@@ -2243,7 +2252,7 @@ function intelligentBeingEncounter() {
 }
 
 function restEncounter() {
-  isAllowedToUseLuckyClover = false;
+  player.isAllowedToUseLuckyClover = false;
   const flavorTextsVariations = [
     {
       introMessage: `Vous trouvez un coin relativement sûr et aménagez un campement sommaire. Vous vous sustentez et vous apprêtez à passer la nuit tout en repensant aux situations auxquelles vous avez fait face jusqu'ici.`,
@@ -2261,7 +2270,7 @@ function restEncounter() {
 }
 
 function villageEncounter() {
-  isAllowedToUseLuckyClover = false;
+  player.isAllowedToUseLuckyClover = false;
   let innPrice = 100;
 
   // environment modifiers
@@ -2296,7 +2305,7 @@ function visitShop(
   maxCards = 4
 ) {
   hideAllGenericButtons();
-  isAllowedToUseLuckyClover = false;
+  player.isAllowedToUseLuckyClover = false;
 
   if (scopaDeck.length <= 0) {
     gameMessage(`${noCardsMessage} (il n'y a plus de carte dans la pioche).`);
@@ -2506,14 +2515,14 @@ function rest(introMessage, outroMessage, continueButtonText) {
     checkButtonsValidity();
   });
   btn6.activate(continueButtonText, () => {
-    isAllowedToLevelUp = false;
+    player.isAllowedToLevelUp = false;
     stepCompleted();
     nextAdventure(outroMessage);
   });
 
   player.actionPoints += 2;
   checkButtonsValidity();
-  isAllowedToLevelUp = true;
+  player.isAllowedToLevelUp = true;
 
   function checkButtonsValidity() {
     if (player.experiencePoints <= 0) {
@@ -2528,7 +2537,7 @@ function rest(introMessage, outroMessage, continueButtonText) {
 
 function specialEncounter() {
   hideAllGenericButtons();
-  isAllowedToUseLuckyClover = false;
+  player.isAllowedToUseLuckyClover = false;
   const specialEncounters = [event01, event02];
   specialEncounters[getRandomInt(specialEncounters.length)]();
 
@@ -2661,7 +2670,7 @@ function specialEncounter() {
       };
 
       const travelerRewardPhase = () => {
-        isAllowedToUseLuckyClover = false;
+        player.isAllowedToUseLuckyClover = false;
         stepCompleted();
         displayState(false);
         player.experiencePoints++;
@@ -2788,7 +2797,7 @@ function specialEncounter() {
 
       function mirrorBreakConsequences(roll) {
         hideAllGenericButtons();
-        isAllowedToUseLuckyClover = true;
+        player.isAllowedToUseLuckyClover = true;
 
         // Result >= 11 -> Nothing happens
         if (roll >= 11) {
@@ -2832,7 +2841,7 @@ function specialEncounter() {
 }
 
 function luckyEncounter() {
-  isAllowedToUseLuckyClover = false;
+  player.isAllowedToUseLuckyClover = false;
   hideAllGenericButtons();
 
   const flavorTextVariations = [
@@ -2896,7 +2905,7 @@ function luckyEncounter() {
  */
 function fight(ctx) {
   isInCombat = true;
-  isAllowedToUseLuckyClover = false;
+  player.isAllowedToUseLuckyClover = false;
   console.log(`Fight:`);
   ctx.fightTurn = 1;
   console.log(ctx);
@@ -2970,7 +2979,9 @@ function initiativePhase(ctx) {
 
   regularOpponentPreparationPhase(ctx);
 }
-// Check if we need to skip the player prep phase
+
+// Checks if we need to skip the player prep phase
+// TODO : fix this
 function isPlayerPreparationPhaseSkipped() {
   let skip = true;
   const playerSpells = player.inventory.getItemsOfType("parchemin de sort");
@@ -2993,45 +3004,33 @@ function isPlayerPreparationPhaseSkipped() {
 function playerPreparationPhase(ctx) {
   console.log("--Player Preparation Phase--");
   player.isAllowedToCastSpell = true
+
   // Skip if nothing to do
   if (isPlayerPreparationPhaseSkipped()) {
     console.log("Player preparation phase is skipped.");
-    if (playerHasInitiative(ctx.opponent)) {
-      if (ctx.opponentPreparationPhaseCallBack) {
-        ctx.opponentPreparationPhaseCallBack(ctx);
-        return;
-      }
-
-      regularOpponentPreparationPhase(ctx);
-      return;
-    }
-    opponentAttackPhase(ctx);
-    return;
+    endPlayerPreparationPhase()
+    return
   }
 
   hideAllGenericButtons();
-  player.isAllowedToCastSpell = true;
 
   displayState(
     true,
     `-~ Combat contre : ${ctx.opponent.name} ~-
-        -- Phase de préparation : ${player.name} --`
+    -- Phase de préparation : ${player.name} --`
   );
 
-  const initiativeNotification = playerHasInitiative(ctx.opponent)
-    ? `Vous avez l'Initiative.
-            `
-    : ``;
+  const initiativeNotification = playerHasInitiative(ctx.opponent) ? `Vous avez l'Initiative.` : ``;
 
-  gameMessage(`${initiativeNotification}${playerPreparationPhaseMessage}`);
+  gameMessage(`${initiativeNotification}
+    ${playerPreparationPhaseMessage}`);
 
-  btn1.activate("Continuer", () => {
-    endPlayerPreparationPhase();
-  });
+  btn1.activate("Continuer", () => { endPlayerPreparationPhase(); });
+
 
   function endPlayerPreparationPhase() {
     player.isAllowedToCastSpell = false;
-    isAllowedToUseLuckyClover = false;
+    player.isAllowedToUseLuckyClover = false;
     clearCardsDisplayZone();
     if (playerHasInitiative(ctx.opponent)) {
       if (ctx.opponentPreparationPhaseCallBack) {
@@ -3069,9 +3068,7 @@ function playerAttackPhase(ctx) {
         -- Phase d'attaque : ${player.name} --`
   );
 
-  const initiativeNotification = playerHasInitiative(ctx.opponent)
-    ? `Vous avez l'Initiative.`
-    : `C'est à votre tour d'attaquer.`;
+  const initiativeNotification = playerHasInitiative(ctx.opponent) ? `Vous avez l'Initiative.` : `C'est à votre tour d'attaquer.`;
 
   gameMessage(`${initiativeNotification}
         - Voulez-vous faire une attaque physique ou une attaque magique ?`);
@@ -3131,7 +3128,7 @@ function playerAttackPhase(ctx) {
     );
 
     function secondRoll(firstRoll) {
-      isAllowedToUseLuckyClover = true;
+      player.isAllowedToUseLuckyClover = true;
 
       gameMessage(`${firstRoll} ! 
                 - Maintenant, lancez votre D100 bonus.`);
@@ -3172,7 +3169,7 @@ function playerAttackPhase(ctx) {
   }
 
   function inflictDamage(isPhysical, finalRoll) {
-    isAllowedToUseLuckyClover = true;
+    player.isAllowedToUseLuckyClover = true;
     let message = `${finalRoll} !`;
 
     // Magical Hit
@@ -3226,7 +3223,7 @@ function playerAttackPhase(ctx) {
 }
 
 function opponentAttackPhase(ctx) {
-  isAllowedToUseLuckyClover = false;
+  player.isAllowedToUseLuckyClover = false;
   selectAttackType();
 
   function selectAttackType() {
@@ -3327,7 +3324,7 @@ function opponentAttackPhase(ctx) {
 
 function newTurn(ctx) {
   console.log("New combat turn.");
-  isAllowedToUseLuckyClover = false;
+  player.isAllowedToUseLuckyClover = false;
   ctx.fightTurn++;
   displayState(
     true,
@@ -3350,7 +3347,7 @@ function newTurn(ctx) {
 }
 
 function regularRewardPhase(ctx) {
-  isAllowedToUseLuckyClover = false;
+  player.isAllowedToUseLuckyClover = false;
   hideAllGenericButtons();
   displayState(false);
   stepCompleted();
@@ -3378,7 +3375,7 @@ function regularRewardPhase(ctx) {
   );
 
   function fightReward(roll) {
-    isAllowedToUseLuckyClover = true;
+    player.isAllowedToUseLuckyClover = true;
     currentCombatContext = undefined;
     hideAllGenericButtons();
 
@@ -3441,7 +3438,7 @@ function regularRewardPhase(ctx) {
 }
 
 function regularDefeatPhase(ctx) {
-  isAllowedToUseLuckyClover = false;
+  player.isAllowedToUseLuckyClover = false;
   hideAllGenericButtons();
   displayState(false);
   gameMessage(`Vous êtes ${player.gender == "F" ? "morte" : "mort"

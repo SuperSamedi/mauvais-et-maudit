@@ -93,6 +93,8 @@ class Player {
       magic: 0
     }
     this.isAllowedToCastSpell = false
+    this.isAllowedToLevelUp = false
+    this.isAllowedToUseLuckyClover = false
     this.hasForcedInitiative = false
     this.updateAllVisuals();
   }
@@ -368,7 +370,7 @@ class Player {
 
   // Level ups
   levelUpHitPoints(amount = 1) {
-    if (!allowedToLevelUp) return
+    if (!this.isAllowedToLevelUp) return
     if (this.experiencePoints < amount) return
 
     this.experiencePoints -= 1 * amount
@@ -380,7 +382,7 @@ class Player {
   }
 
   levelUpStrength(amount = 1) {
-    if (!allowedToLevelUp) return
+    if (!this.isAllowedToLevelUp) return
     if (this.experiencePoints < amount) return
 
     this.experiencePoints -= 1 * amount
@@ -391,7 +393,7 @@ class Player {
   }
 
   levelUpSpeed(amount = 1) {
-    if (!allowedToLevelUp) return
+    if (!this.isAllowedToLevelUp) return
     if (this.experiencePoints < amount) return
 
     this.experiencePoints -= 1 * amount
@@ -402,7 +404,7 @@ class Player {
   }
 
   levelUpMagic(amount = 1) {
-    if (!allowedToLevelUp) return
+    if (!this.isAllowedToLevelUp) return
     if (this.experiencePoints < amount) return
 
     this.experiencePoints -= 1 * amount
@@ -413,7 +415,7 @@ class Player {
   }
 
   buyActionPoint() {
-    if (!allowedToLevelUp) return
+    if (!this.isAllowedToLevelUp) return
     if (this.experiencePoints <= 0) return
 
     this.experiencePoints--

@@ -9,7 +9,7 @@ class InfernalSphere extends Spell {
     cast(caster = player) {
         // Safeguards
         if (!caster) return;
-        if (!caster.isAllowedToCastSpell) {
+        if (caster.isAllowedToCastSpell === false) {
             gameMessage(`${playerPreparationPhaseMessage}
             
                 Votre ne pouvez lancer qu'un seul sort par phase de préparation.
@@ -74,14 +74,14 @@ class InfernalSphere extends Spell {
             }
 
             gameMessage(message);
-            isAllowedToUseLuckyClover = true;
+            player.isAllowedToUseLuckyClover = true;
         });
     }
 
     castAmplified(caster = player) {
         // Safeguards
         if (!caster) return;
-        if (!caster.isAllowedToCastSpell) {
+        if (caster.isAllowedToCastSpell === false) {
             gameMessage(`${playerPreparationPhaseMessage}
             
                 Votre ne pouvez lancer qu'un seul sort par phase de préparation.
@@ -126,7 +126,7 @@ class InfernalSphere extends Spell {
                 gameMessage(`${roll1} !
                     - Maintenant, lancez le D100 à nouveau pour votre jet d'amplification.`);
 
-                isAllowedToUseLuckyClover = true;
+                player.isAllowedToUseLuckyClover = true;
 
                 btn2.activate("Lancer le D100", () => {
                     saveCloverState();
@@ -160,7 +160,7 @@ class InfernalSphere extends Spell {
                     }
 
                     gameMessage(message);
-                    isAllowedToUseLuckyClover = true;
+                    player.isAllowedToUseLuckyClover = true;
                 });
             });
     }
