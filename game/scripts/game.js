@@ -244,11 +244,11 @@ function tests() {
   //#endregion
 
   //#region test REST
-  player.experiencePoints += 6
-  btnRestEncounter.style.display = "block"
-  btnRestEncounter.onclick = () => {
-    restEncounter()
-  }
+  // player.experiencePoints += 6
+  // btnRestEncounter.style.display = "block"
+  // btnRestEncounter.onclick = () => {
+  //   restEncounter()
+  // }
   //#endregion
 }
 //#endregion
@@ -2538,7 +2538,7 @@ function rest(introMessage, outroMessage, continueButtonText) {
 function specialEncounter() {
   hideAllGenericButtons();
   player.isAllowedToUseLuckyClover = false;
-  const specialEncounters = [event01, event02];
+  const specialEncounters = [event01, event02, event03];
   specialEncounters[getRandomInt(specialEncounters.length)]();
 
   // Sick Child Traveler
@@ -2836,6 +2836,98 @@ function specialEncounter() {
       stepCompleted();
       nextAdventure(`Vous méfiant d'une potentielle ruse du démon, vous ignorez ses appels et passez votre chemin.
                 Vous gagnez 1XP et continuez votre route.`);
+    }
+  }
+
+  // Ogre bridge
+  function event03() {
+    gameMessage(`Vous arrivez à un pont. Malheureusement, ce dernier est gardé par un ogre de fort mauvaise humeur. Il exige 1000PO pour passer.
+          --- Si vous êtes ${player.gender == "F" ? "une ogresse ou une gnome" : "un ogre ou un gnome"}, il vous laisse passer gratuitement.
+          --- Vous pouvez décider de payer 1000PO.
+          --- Si vous possédez le sort 'Téléportation', vous pouvez l'utiliser pour outrepasser l'ogre (cela vous coûtera tout de même le coût de lancement habituel(1PA)).
+          --- Vous pouvez tenter de forcer le passage.
+          
+          Que choisissez-vous de faire ?`);
+
+    // Buttons set up
+    btn1.activate("Passer gratuitement", () => { freePassage(); });
+    btn2.activate("Payer 1000PO", () => { giveGold(1000) });
+    btn3.activate("Lancer le sort 'Téléportation'", () => { teleport() });
+    btn4.activate("Forcer le passage", () => { fightOgre() });
+
+    // Generate Ogre
+    const traits = []
+    traits.push(getWeakTrait(8))
+    const ogre = generateIntelligentBeing(3, traits)
+    ogre.gender = "M"
+    const gnome = generateIntelligentBeing(5, traits) // just so we can check player's race
+
+    // Disable invalid buttons
+    if (!player.hasARaceInCommonWith(ogre) && !player.hasARaceInCommonWith(gnome)) btn1.isDisabled = true;
+    if (player.goldCoins < 1000) btn2.isDisabled = true;
+    if (!player.inventory.containsItemWithName("Téléportation")) btn3.isDisabled = true;
+
+
+    function freePassage() {
+      if (!player.hasARaceInCommonWith(ogre) && !player.hasARaceInCommonWith(gnome)) return;
+
+      hideAllGenericButtons();
+
+      const outroMessage = `Alors que l'ogre vous fixait intensément du regard, une main tendue dans l'attente de sa taxe de passage, l'autre fermement serrée autour d'une grosse branche de chêne, qui lui sert apparemment d'arme, il éclate soudainement d'un rire gras et hoquetant et s'exclame : "Hua-huahhuahuaaahua mais non ! Évidement que tu peux passer ${player.gender == "F" ? "ma vieille" : "mon vieux"} ! Huahhhhuaahhua !". Il vous donne une grande frappe amicale sur l'épaule tout en continuant de rire et vous fait signe de passer sur le pont. Vous vous exécutez et poursuivez votre chemin. Vous continuez d'entendre le rire de l'ogre, visiblement très satisfait de sa "blague", résonner dans la vallée pendant encore plusieurs centaines de mètres.
+      
+      Vous gagnez 1XP.`
+
+      player.experiencePoints++;
+      stepCompleted()
+
+      nextAdventure(outroMessage);
+    }
+
+    function giveGold(amount) {
+      if (player.goldCoins < amount) return;
+
+      hideAllGenericButtons();
+
+      let outroMessage = `Vous donnez ${amount}PO ${intelligentBeing.gender == "F" ? "à la racketteuse" : "au racketteur"}, qui vous laisse passer sur le pont. Vous continuez votre route.
+      
+      Vous gagnez 1XP.`;
+
+      player.goldCoins -= amount;
+      player.experiencePoints++;
+      stepCompleted();
+
+      nextAdventure(outroMessage);
+    }
+
+    function teleport() {
+      if (!player.inventory.containsItemWithName("Téléportation")) return;
+      if (player.actionPoints < 1) {
+        gameMessage(`Vous n'avez pas assez de points d'action(PA) pour lancer ce sort.`)
+        return
+      }
+
+      hideAllGenericButtons()
+
+      let outroMessage = `Ne laissant aucune opportunité à l'ogre de réagir, vous lancez le sort 'Téléportation'. Vous disparaissez dans un tourbillon d'énergie invisible avant de réapparaître de l'autre côté de la rive sans que l'ogre, abasourdi et désemparé, ne s’aperçoive de quoi que ce soit.
+      
+      Vous gagnez 1XP.`
+
+      player.actionPoints--
+      player.experiencePoints++
+      stepCompleted()
+
+      nextAdventure(outroMessage)
+    }
+
+    function fightOgre() {
+      const introMessage = `Ne prêtant aucune attention à l'ogre, vous faites mine de vouloir le contourner et passer sur le pont sans même lui adresser la parole. Ce dernier pousse un grognement bruyant, agrippe une grosse branche qui était posée à côté de lui, que vous n'aviez pas remarqué jusqu'alors et vous barre le passage.`
+
+      const contextData = {
+        opponent: ogre,
+        introMessage: introMessage,
+      };
+
+      fight(contextData);
     }
   }
 }

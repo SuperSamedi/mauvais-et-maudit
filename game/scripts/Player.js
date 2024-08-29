@@ -446,12 +446,20 @@ class Player {
 
   hasARaceInCommonWith(intelligentBeing) {
     // For each player race we check each of the being's race to see if one matches
-    this.races.forEach(race => {
-      intelligentBeing.races.forEach(beingRace => {
-        if (race.name.male == beingRace.name.male) return true
-      })
-    })
+    for (let i = 0; i < this.races.length; i++) {
+      const playerRace = this.races[i];
 
+      for (let j = 0; j < intelligentBeing.races.length; j++) {
+        const beingRace = intelligentBeing.races[j];
+
+        if (playerRace.name.male == beingRace.name.male) {
+          console.log("Player has race in common with being.");
+          return true
+        }
+      }
+    }
+
+    console.log("Player does not have a race in common with being.");
     return false
   }
 
