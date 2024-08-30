@@ -145,7 +145,7 @@ inventorySlots.forEach((slot) => {
                 detailsViewOverlay.style.display = "none"
             }
             detailsViewBtnSell.disabled = false
-            if (isAllowedToSellItems == false) {
+            if (player.isAllowedToSellItems == false) {
                 detailsViewBtnSell.disabled = true
             }
 
@@ -185,12 +185,21 @@ function generateDetailsEffectsDescription(effects, divParent) {
 
 class Inventory {
     constructor() {
-        this.slots = [];
+        this.slots = [
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined
+        ];
     }
 
     add(item) {
         // TODO : Manage the situation where inventory is full
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < this.slots.length; i++) {
             if (this.slots[i] == undefined) {
                 this.slots[i] = item;
 
@@ -204,7 +213,7 @@ class Inventory {
     }
 
     remove(item) {
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < this.slots.length; i++) {
             if (!this.slots[i]) continue;
 
             if (this.slots[i] === item) {
@@ -217,7 +226,7 @@ class Inventory {
     }
 
     contains(item) {
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < this.slots.length; i++) {
             if (!this.slots[i]) continue;
 
             if (this.slots[i] === item) {
@@ -234,7 +243,7 @@ class Inventory {
      * @returns {object} the item if the item is in the inventory, undefined if it is not.
      */
     containsItemWithName(itemName) {
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < this.slots.length; i++) {
             if (!this.slots[i]) continue;
 
             if (this.slots[i].name === itemName) {
@@ -247,7 +256,7 @@ class Inventory {
 
     getItemsOfType(type) {
         const items = []
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < this.slots.length; i++) {
             if (!this.slots[i]) continue;
 
             if (this.slots[i].type === type) {
@@ -285,7 +294,7 @@ class Inventory {
     isFull() {
         let check = true
 
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < this.slots.length; i++) {
             if (this.slots[i] == undefined) {
                 check = false
                 break
@@ -304,7 +313,7 @@ class Inventory {
         if (item.isEquipped) return false
 
         // If we find an item that is of the same type and is equipped we return TRUE -> An item of the same type already equipped was found
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < this.slots.length; i++) {
             if (!this.slots[i]) continue
             if (this.slots[i].type != item.type) continue
             if (this.slots[i].isEquipped) return true

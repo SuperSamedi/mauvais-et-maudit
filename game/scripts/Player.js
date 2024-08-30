@@ -92,8 +92,10 @@ class Player {
       speed: 0,
       magic: 0
     }
-    this.isAllowedToCastSpell = false
+    this.isAllowedToDraw = false
+    this.isAllowedToSellItems = false
     this.isAllowedToLevelUp = false
+    this.isAllowedToCastSpell = false
     this.isAllowedToUseLuckyClover = false
     this.hasForcedInitiative = false
     this.updateAllVisuals();

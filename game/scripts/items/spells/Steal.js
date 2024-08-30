@@ -42,7 +42,7 @@ class Steal extends Spell {
         this.hasAlreadyBeenCast = true
         btn1.isDisabled = true
         caster.actionPoints -= this.cost
-        allowedToDraw = true
+        player.isAllowedToDraw = true
 
         gameMessage(`${playerPreparationPhaseMessage}
             

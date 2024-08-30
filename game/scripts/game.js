@@ -34,14 +34,13 @@ const btnUnlockDeck = document.getElementById("btn-unlock-deck")
 const btnFightBoss = document.getElementById("btn-fight-boss");
 const btnSpecialEventEncounter = document.getElementById("btn-special-event-encounter")
 const btnRestEncounter = document.getElementById("btn-rest-encounter")
+const btnVillageEncounter = document.getElementById("btn-village-encounter")
 //#endregion
 
 // =====> START
 imgDeck.onclick = () => {
-  if (isAllowedToDraw) {
-    clearCardsDisplayZone();
-    drawReward(scopaDeck, false, true);
-  }
+  clearCardsDisplayZone();
+  drawReward(scopaDeck, false, true);
 };
 
 const player = new Player();
@@ -50,11 +49,9 @@ const d20 = new Dice(20);
 const d100 = new Dice(100);
 
 let shop = new Shop();
-let currentCombatContext = undefined
 
+let currentCombatContext = undefined
 let environmentRerolls = 0
-let isAllowedToDraw = false;
-let isAllowedToSellItems = false;
 let isInCombat = false
 // Test Variable TOREMOVE
 let isDeckUnlocked = false
@@ -81,6 +78,7 @@ function start() {
   btnFightBoss.style.display = "none";
   btnSpecialEventEncounter.style.display = "none";
   btnRestEncounter.style.display = "none"
+  btnVillageEncounter.style.display = "none"
   presentation();
   // tests();
 }
@@ -222,7 +220,7 @@ function tests() {
   // player.inventory.add(getClubsItem(2)) // Corps de Métal
   // player.inventory.add(getClubsItem(3)) // Source Infinie
   // player.inventory.add(getClubsItem(4)) // Soin
-  // player.inventory.add(getClubsItem(5)) // Vol
+  player.inventory.add(getClubsItem(5)) // Vol
   player.inventory.add(getClubsItem(6)) // Téléportation
   // player.inventory.add(getClubsItem(7)) // Affaiblissement
   // player.inventory.add(getClubsItem(8)) // Sphère Infernale
@@ -232,7 +230,7 @@ function tests() {
   //#endregion
 
   //#region Clover system
-  player.inventory.add(getCupsItem(15));
+  player.inventory.add(getCupsItem(4));
   //#endregion
 
   //#region test SPECIAL EVENTS
@@ -244,11 +242,18 @@ function tests() {
   //#endregion
 
   //#region test REST
-  // player.experiencePoints += 6
-  // btnRestEncounter.style.display = "block"
-  // btnRestEncounter.onclick = () => {
-  //   restEncounter()
-  // }
+  player.experiencePoints += 6
+  btnRestEncounter.style.display = "block"
+  btnRestEncounter.onclick = () => {
+    restEncounter()
+  }
+  //#endregion
+
+  //#region test VILLAGE
+  btnVillageEncounter.style.display = "block"
+  btnVillageEncounter.onclick = () => {
+    villageEncounter()
+  }
   //#endregion
 }
 //#endregion
@@ -1035,7 +1040,7 @@ function choosePlayerName(name) {
   gameMessage(`
         - Enfin, tirez une carte du deck. Vous recevrez une récompense en fonction de la carte.`);
 
-  isAllowedToDraw = true;
+  player.isAllowedToDraw = true;
 }
 
 //#region Draw
@@ -1045,13 +1050,13 @@ function drawReward(
   isSetUpReward = false,
   isStealSpellReward = false
 ) {
-  if (!isAllowedToDraw) return;
+  if (!player.isAllowedToDraw) return;
 
   if (!isStealSpellReward) {
     hideAllGenericButtons();
   }
 
-  isAllowedToDraw = false;
+  player.isAllowedToDraw = false;
 
   // Redirection if no more cards
   // TODO: improve this
@@ -1141,10 +1146,8 @@ function drawReward(
   if (isSetUpReward) {
     // Reset the deck button to be a normal reward one
     imgDeck.onclick = () => {
-      if (isAllowedToDraw) {
-        clearCardsDisplayZone();
-        drawReward(scopaDeck, false, false);
-      }
+      clearCardsDisplayZone();
+      drawReward(scopaDeck, false, false);
     };
 
     player.actionPoints += 2;
@@ -2322,17 +2325,17 @@ function visitShop(
   let cardsDrawn = [];
 
   imgDeck.onclick = () => {
-    if (isAllowedToDraw) {
-      clearCardsDisplayZone();
-      initialShopDraw(scopaDeck);
-      updateDeckVisual();
-    }
+    clearCardsDisplayZone();
+    initialShopDraw(scopaDeck);
+    updateDeckVisual();
   };
 
-  isAllowedToDraw = true;
+  player.isAllowedToDraw = true;
 
   function initialShopDraw(deck) {
-    isAllowedToDraw = false;
+    if (!player.isAllowedToDraw) return
+
+    player.isAllowedToDraw = false;
 
     if (deck.length <= 0) {
       gameMessage("La pioche est vide.");
@@ -2349,10 +2352,10 @@ function visitShop(
                 Tirez encore ${maxCards - cardsDrawn.length} ${cardsDrawn.length == maxCards - 1 ? "carte" : "cartes"
         }.`);
 
-      isAllowedToDraw = true;
+      player.isAllowedToDraw = true;
 
       imgDeck.onclick = () => {
-        if (isAllowedToDraw) {
+        if (player.isAllowedToDraw) {
           initialShopDraw(deck);
           updateDeckVisual();
         }
@@ -2375,7 +2378,7 @@ function visitShop(
                 Toutes les cartes sont de la suite 'Pièces'.
                 Tirez des cartes jusqu'à tomber sur une carte d'une autre suite.`);
 
-      isAllowedToDraw = true;
+      player.isAllowedToDraw = true;
       cardsDrawn = [];
 
       imgDeck.onclick = () => {
@@ -2404,7 +2407,7 @@ function visitShop(
   }
 
   function additionalShopDraw(deck) {
-    isAllowedToDraw = false;
+    player.isAllowedToDraw = false;
 
     if (deck.length <= 0) {
       gameMessage("La pioche est vide.");
@@ -2418,7 +2421,7 @@ function visitShop(
     if (cardDrawn.suit == "coins") {
       gameMessage(`${cardDrawn.description}.
                 Tirez à nouveau une carte.`);
-      isAllowedToDraw = true;
+      player.isAllowedToDraw = true;
       return;
     }
 
@@ -2437,7 +2440,7 @@ function visitShop(
     btn1.activate(
       "Partir",
       () => {
-        isAllowedToSellItems = false;
+        player.isAllowedToSellItems = false;
         stepCompleted();
         clearCardsDisplayZone();
         zoneShopButtons.innerHTML = ``;
@@ -2470,7 +2473,7 @@ function visitShop(
     });
 
     shop.updateDisplay();
-    isAllowedToSellItems = true;
+    player.isAllowedToSellItems = true;
   }
 }
 
@@ -2980,7 +2983,7 @@ function luckyEncounter() {
       drawReward(scopaDeck, false, false);
     };
 
-    isAllowedToDraw = true;
+    player.isAllowedToDraw = true;
     stepCompleted();
   }
 }
@@ -3500,7 +3503,7 @@ function regularRewardPhase(ctx) {
       gameMessage(`${roll} !
                         Vous pouvez tirer une carte du deck mais toutes les cartes comptent comme des cartes 'Pièces'.`);
 
-      isAllowedToDraw = true;
+      player.isAllowedToDraw = true;
 
       imgDeck.onclick = () => {
         saveCloverState();
@@ -3514,7 +3517,7 @@ function regularRewardPhase(ctx) {
       gameMessage(`${roll} !
                         Vous pouvez tirer une carte du deck. Vous gagnez immédiatement l'objet ou l'or correspondant.`);
 
-      isAllowedToDraw = true;
+      player.isAllowedToDraw = true;
 
       imgDeck.onclick = () => {
         saveCloverState();

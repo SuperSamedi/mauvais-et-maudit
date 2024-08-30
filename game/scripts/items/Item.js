@@ -63,7 +63,7 @@ class Item {
     }
 
     sell() {
-        if (!allowedToSellItems) return
+        if (!player.isAllowedToSellItems) return
 
         // if we manage to remove the item from the inventory
         if (player.inventory.remove(this)) {

@@ -25,7 +25,7 @@ async function loadJSONS() {
         }
 
         intelligentRacesTable = await responseIntelligentRaces.json()
-        console.log("Intelligent Table LOADED");
+        console.log("Intelligent Beings Table LOADED");
         // console.log(intelligentRacesTable);
 
 

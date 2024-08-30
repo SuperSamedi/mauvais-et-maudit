@@ -17,7 +17,7 @@ function saveCloverState(onLoadCallBack) {
     data.playerExperiencePoints = player.experiencePoints
 
     // Game state
-    data.isAllowedToDraw = isAllowedToDraw
+    data.isAllowedToDraw = player.isAllowedToDraw
     data.environmentRerolls = environmentRerolls
     data.gameMessage = currentGameMessage()
     if (currentCombatContext) {
@@ -64,7 +64,7 @@ function loadCloverState() {
 
     // Reset Game State
     environmentRerolls = data.environmentRerolls
-    isAllowedToDraw = data.isAllowedToDraw
+    player.isAllowedToDraw = data.isAllowedToDraw
     // Remove item we got from the deck (it means we used the clover after drawing a card reward. Otherwise, lastItemReceivedRandomly would be undefined)
     if (lastItemReceivedRandomly) player.inventory.remove(lastItemReceivedRandomly)
     // Reset opponent effect we would have applied and roll back damage we would have dealt
