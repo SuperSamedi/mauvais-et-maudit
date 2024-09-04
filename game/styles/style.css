@@ -107,10 +107,18 @@
   border-radius: 2px;
   font-size: 0.75rem;
   padding: 0.33rem;
+  text-decoration: underline;
 }
 .generic-button:hover {
   cursor: pointer;
   border: 2px solid black;
+  text-decoration: none;
+}
+.generic-button:disabled {
+  text-decoration: none;
+}
+.generic-button:disabled:hover {
+  cursor: default;
 }
 @media (pointer: none), (pointer: coarse) {
   .generic-button {

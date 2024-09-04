@@ -95,6 +95,22 @@
     }
   },
   {
+    "name": "Étangs Putrides",
+    "effects": [
+      {
+        "description": "Se reposer ne donne qu'un seul PA."
+      },
+      {
+        "description": "Le joueur gagne -10 MA pendant cette zone."
+      }
+    ],
+    "statsModifiers": {
+      "player": {
+        "magic": -10
+      }
+    }
+  },
+  {
     "name": "Canyon",
     "effects": [
       {

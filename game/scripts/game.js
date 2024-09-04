@@ -1190,15 +1190,20 @@ function drawReward(
 //#endregion
 
 function chooseNewEnvironment(customMessage) {
-  if (player.inventory.containsItemWithName("Compas des Anciens"))
-    environmentRerolls++;
-
-  gameMessage(`${customMessage}
-        
-        Vous arrivez dans un nouvel environnement.
-        - Lancez le D20 pour tirer celui-ci.`);
-
   hideAllGenericButtons();
+
+  if (player.inventory.containsItemWithName("Compas des Anciens")) environmentRerolls++;
+
+  let message = ``;
+
+  if (customMessage) {
+    message += `${customMessage}
+    
+    `;
+  }
+
+  gameMessage(`${message}Vous arrivez dans un nouvel environnement.
+        - Lancez le D20 pour tirer celui-ci.`);
 
   btn1.activate(
     "Lancer le D20",
@@ -1245,13 +1250,16 @@ function chooseNewEnvironment(customMessage) {
                 
                 Durant votre voyage vous avez gagné la possibilité d'annuler votre prochain jet d'environnement. Voulez-vous annuler ce jet et relancer le dé ? `);
 
-      btn1.activate("Garder ce lancé", () => {
-        environmentRerolls = 0;
-        updateAllEnvironmentVisuals();
-        player.updateStatsVisuals();
+      btn1.activate(
+        "Garder ce lancé",
+        () => {
+          environmentRerolls = 0;
+          updateAllEnvironmentVisuals();
+          player.updateStatsVisuals();
 
-        nextAdventure();
-      });
+          nextAdventure();
+        }
+      );
       btn2.activate(
         "Relancer",
         () => {
@@ -1271,9 +1279,7 @@ function chooseNewEnvironment(customMessage) {
 
     gameMessage(message);
 
-    btn1.activate("Continuer", () => {
-      nextAdventure();
-    });
+    btn1.activate("Continuer", () => { nextAdventure(); });
   }
 }
 
@@ -1540,29 +1546,45 @@ function nextAdventure(customMessage = "") {
 
   // Mini-boss time !
   if (currentStep.isMiniBoss) {
-    gameMessage(customMessage);
-    btn1.activate("Continuer", () => {
-      clearCardsDisplayZone();
-      miniBossAdventure();
-    });
-    return;
+    if (customMessage) {
+      gameMessage(customMessage);
+      btn1.activate("Continuer", () => {
+        clearCardsDisplayZone();
+        miniBossAdventure();
+      });
+      return;
+    }
+
+    clearCardsDisplayZone()
+    miniBossAdventure()
+    return
   }
 
   // Final Boss time !
   if (currentStep.isFinalBoss) {
-    gameMessage(customMessage);
-    btn1.activate("Continuer", () => {
-      clearCardsDisplayZone();
-      finalAdventure();
-    });
-
-    return;
+    if (customMessage) {
+      gameMessage(customMessage);
+      btn1.activate("Continuer", () => {
+        clearCardsDisplayZone();
+        finalAdventure();
+      });
+      return;
+    }
+    clearCardsDisplayZone();
+    finalAdventure();
+    return
   }
 
-  gameMessage(`${customMessage}
-        
-        Une nouvelle étape de votre voyage commence.
-        - Lancez un D100 pour voir quelles péripéties vous attendent.`);
+  if (customMessage) {
+    gameMessage(`${customMessage}
+          
+          Une nouvelle étape de votre voyage commence.
+          - Lancez un D100 pour voir quelles péripéties vous attendent.`);
+  }
+  else {
+    gameMessage(`Une nouvelle étape de votre voyage commence.
+          - Lancez un D100 pour voir quelles péripéties vous attendent.`);
+  }
 
   btn1.activate(
     "Lancer le D100",
@@ -2305,12 +2327,18 @@ function visitShop(
   leaveMessage = "Vous sortez du magasin et continuez votre route.",
   noCardsMessage = "Vous arrivez devant le magasin mais réalisez avec déception que celui-ci est fermé",
   noCardsLeaveMessage = "Vous sortez du village avec déception.Mais vous repensez à votre quête et retrouvez du baume au cœur car seul vous pouvez arrêter le Mal et ce dernier n'attend pas.",
-  maxCards = 4
+  maxCards = 4,
+  additionalItemsAvailable = []
 ) {
   hideAllGenericButtons();
   player.isAllowedToUseLuckyClover = false;
 
+  // There is no cards left in the deck
   if (scopaDeck.length <= 0) {
+    if (additionalItemsAvailable.length > 0) {
+      deployShop()
+      return
+    }
     gameMessage(`${noCardsMessage} (il n'y a plus de carte dans la pioche).`);
     btn1.activate("Partir", () => {
       stepCompleted();
@@ -2327,7 +2355,6 @@ function visitShop(
   imgDeck.onclick = () => {
     clearCardsDisplayZone();
     initialShopDraw(scopaDeck);
-    updateDeckVisual();
   };
 
   player.isAllowedToDraw = true;
@@ -2339,41 +2366,29 @@ function visitShop(
 
     if (deck.length <= 0) {
       gameMessage("La pioche est vide.");
-      // TODO : manage situation
+      btn1.activate("Continuer", () => { deployShop() })
       return;
     }
 
     const cardDrawn = structuredClone(deck.shift());
     cardsDrawn.push(cardDrawn);
+    updateDeckVisual()
     addCardToDisplayZone(cardDrawn);
 
+    // Loop this function while we still need to draw cards.
     if (isAllowedToDrawMore()) {
       gameMessage(`${cardDrawn.description}.
-                Tirez encore ${maxCards - cardsDrawn.length} ${cardsDrawn.length == maxCards - 1 ? "carte" : "cartes"
-        }.`);
+                Tirez encore ${maxCards - cardsDrawn.length} ${cardsDrawn.length == maxCards - 1 ? "carte" : "cartes"}.`)
 
-      player.isAllowedToDraw = true;
+      player.isAllowedToDraw = true
+      imgDeck.onclick = () => { initialShopDraw(deck) }
 
-      imgDeck.onclick = () => {
-        if (player.isAllowedToDraw) {
-          initialShopDraw(deck);
-          updateDeckVisual();
-        }
-      };
-
-      return;
+      return
     }
 
-    // check if all cards are coins
-    let isAllCoins = true;
-    cardsDrawn.forEach((card) => {
-      if (card.suit == "coins") {
-        return;
-      }
-      isAllCoins = false;
-    });
-
-    if (isAllCoins) {
+    // We drew the last card allowed
+    // If all coins cards -> run the additional card draw sequence
+    if (isAllCoins()) {
       gameMessage(`${cardDrawn.description}.
                 Toutes les cartes sont de la suite 'Pièces'.
                 Tirez des cartes jusqu'à tomber sur une carte d'une autre suite.`);
@@ -2384,12 +2399,11 @@ function visitShop(
       imgDeck.onclick = () => {
         clearCardsDisplayZone();
         additionalShopDraw(scopaDeck);
-        updateDeckVisual();
       };
       return;
     }
 
-    // Deploy shop
+    // Otherwise, deploy shop
     gameMessage(`${cardDrawn.description}.
             C'est bon. Appuyez sur continuer pour voir l'objet, ou les objets, disponible(s).`);
 
@@ -2404,6 +2418,19 @@ function visitShop(
 
       return true;
     }
+
+    function isAllCoins() {
+      let check = true;
+
+      cardsDrawn.forEach((card) => {
+        if (card.suit == "coins") {
+          return;
+        }
+        check = false;
+      })
+
+      return check
+    }
   }
 
   function additionalShopDraw(deck) {
@@ -2412,11 +2439,13 @@ function visitShop(
     if (deck.length <= 0) {
       gameMessage("La pioche est vide.");
       // TODO : manage situation
+      btn1.activate("Continuer", () => { deployShop() })
       return;
     }
 
-    const cardDrawn = structuredClone(deck.shift());
-    addCardToDisplayZone(cardDrawn);
+    const cardDrawn = structuredClone(deck.shift())
+    updateDeckVisual()
+    addCardToDisplayZone(cardDrawn)
 
     if (cardDrawn.suit == "coins") {
       gameMessage(`${cardDrawn.description}.
@@ -2472,6 +2501,10 @@ function visitShop(
       }
     });
 
+    additionalItemsAvailable.forEach(item => {
+      shop.add(item)
+    });
+
     shop.updateDisplay();
     player.isAllowedToSellItems = true;
   }
@@ -2490,13 +2523,10 @@ function visitInn(price) {
 }
 
 function rest(introMessage, outroMessage, continueButtonText) {
-  gameMessage(`${introMessage}
-        
-        - Vous gagnez 2PA.
-        - Vous pouvez dépenser vos points d'expérience(XP) pour améliorer vos caractéristiques de manière permanente (1XP = 5 points de caractéristique).
-        - Vous pouvez également utiliser vos points d'expérience(XP) pour acquérir d'avantage de points d'action(PA) (1XP = 1PA).`);
-
   hideAllGenericButtons();
+
+  let message = `${introMessage}`
+
   btn1.activate("Améliorer les Points de Vie (PV)", () => {
     player.levelUpHitPoints();
     checkButtonsValidity();
@@ -2523,9 +2553,38 @@ function rest(introMessage, outroMessage, continueButtonText) {
     nextAdventure(outroMessage);
   });
 
-  player.actionPoints += 2;
+  // Putrid Lake special rule
+  if (currentEnvironment.name == "Étangs Putrides") {
+    // Vision Lantern special rule
+    if (player.inventory.containsItemWithName("Lanterne de Vision")) {
+      player.actionPoints += 2
+
+      message += `
+      
+      - Vous gagnez 2PA.`
+    }
+    else {
+      player.actionPoints += 1;
+
+      message += `
+      
+      - Vous gagnez 1PA.`
+    }
+  }
+  else {
+    player.actionPoints += 2
+
+    message += `
+      
+    - Vous gagnez 2PA.`
+  }
+
   checkButtonsValidity();
   player.isAllowedToLevelUp = true;
+
+  gameMessage(`${message}
+      - Vous pouvez dépenser vos points d'expérience(XP) pour améliorer vos caractéristiques de manière permanente (1XP = 5 points de caractéristique).
+      - Vous pouvez également utiliser vos points d'expérience(XP) pour acquérir d'avantage de points d'action(PA) (1XP = 1PA).`)
 
   function checkButtonsValidity() {
     if (player.experiencePoints <= 0) {
@@ -2541,34 +2600,25 @@ function rest(introMessage, outroMessage, continueButtonText) {
 function specialEncounter() {
   hideAllGenericButtons();
   player.isAllowedToUseLuckyClover = false;
-  const specialEncounters = [event01, event02, event03];
+  const specialEncounters = [event01, event02, event03, event04];
   specialEncounters[getRandomInt(specialEncounters.length)]();
 
   // Sick Child Traveler
   function event01() {
     gameMessage(`Vous rencontrez un voyageur dont l'enfant est gravement malade. Il vous supplie de l'aider.
-        --- Si vous avez une potion ou un ether, vous pouvez lui donner.
-        --- Si vous avez 200PO vous pouvez lui donner pour qu'il achète un remède.
-        --- Vous pouvez vous battre contre le voyageur.
-        --- Vous pouvez ne rien faire et passer votre chemin.
         
-        Que choisissez-vous de faire ?`);
+      --- Si vous avez une potion ou un ether, vous pouvez lui donner.
+      --- Si vous avez 200PO vous pouvez lui donner pour qu'il achète un remède.
+      --- Vous pouvez vous battre contre le voyageur.
+      --- Vous pouvez ne rien faire et passer votre chemin.
+        
+      - Que choisissez-vous de faire ?`);
 
-    btn1.activate("Donner une potion", () => {
-      givePotion();
-    });
-    btn2.activate("Donner un ether", () => {
-      giveEther();
-    });
-    btn3.activate("Donner 200PO", () => {
-      giveGold();
-    });
-    btn4.activate("Se battre", () => {
-      fightTraveler();
-    });
-    btn5.activate("Passer mon chemin", () => {
-      leave();
-    });
+    btn1.activate("Donner une potion", () => { givePotion(); });
+    btn2.activate("Donner un ether", () => { giveEther(); });
+    btn3.activate("Donner 200PO", () => { giveGold(); });
+    btn4.activate("Se battre", () => { fightTraveler(); });
+    btn5.activate("Passer mon chemin", () => { leave(); });
     if (!player.inventory.containsItemWithName("Potion")) btn1.isDisabled = true;
     if (!player.inventory.containsItemWithName("Éther")) btn2.isDisabled = true;
     if (player.goldCoins < 200) btn3.isDisabled = true;
@@ -2716,21 +2766,16 @@ function specialEncounter() {
   // Cursed Mirror
   function event02() {
     gameMessage(`Vous découvrez un miroir magique posé sur le sol. Il vous appelle par votre nom : "${player.name}... ${player.name}...". Vous vous approchez et découvrez un démon emprisonné à l'intérieur du miroir. Il vous demande de l'aider à le libérer.
-        --- Si vous avez 60+ MA vous pouvez le libérer.
-        --- Vous pouvez décider de briser le miroir.
-        --- Vous pouvez décider d'ignorer le démon et de passer votre chemin.
         
-        Que choisissez-vous de faire ?`);
+      --- Si vous avez 60+ MA vous pouvez le libérer.
+      --- Vous pouvez décider de briser le miroir.
+      --- Vous pouvez décider d'ignorer le démon et de passer votre chemin.
+        
+      - Que choisissez-vous de faire ?`);
 
-    btn1.activate("Libérer le démon", () => {
-      freeDemon();
-    });
-    btn2.activate("Briser le miroir", () => {
-      breakMirror();
-    });
-    btn3.activate("Passer mon chemin", () => {
-      leave();
-    });
+    btn1.activate("Libérer le démon", () => { freeDemon(); });
+    btn2.activate("Briser le miroir", () => { breakMirror(); });
+    btn3.activate("Passer mon chemin", () => { leave(); });
     if (player.magic < 60) btn1.isDisabled = true;
 
     // Generate the demon
@@ -2747,33 +2792,23 @@ function specialEncounter() {
       // Player is stronger than the demon or is a demon
       if (player.magic >= 80 || player.hasARaceInCommonWith(demon)) {
         gameMessage(
-          `Vous utilisez un simple sort de désenchantement pour libérer le démon enfermé dans le miroir. Ce dernier vol en éclats et une fumée sombre et épaisse s'en répand avant de se matérialiser en une créature cornue à la peau rouge sang. Le démon se dresse devant vous, vous dépassant de plusieurs têtes. Il vous toise du regard pendant un instant avant de s'agenouiller et de s'adresser à vous d'une voix aiguë et sifflante : "Vouuus mm'aveeez libérééé ô ${player.gender == "F" ? "maîîîtresssse" : `maîîître`
-          } ${player.hasARaceInCommonWith(demon)
-            ? player.gender == "F"
-              ? "inffffernale"
-              : "inffffernal"
-            : ""
-          } ! Preneeez ceccci en guise de ma reconnaissssssance éternelle...".
-                    Le démon tend sa main vers vous et un parchemin y apparaît dans un petit tourbillon de flammes. Vous prenez le parchemin qui vous brûle légèrement les doigts. Le démon disparaît alors dans un craquement ne laissant derrière lui qu'un petit nuage de fumée noire et un son de ricanement satisfait qui résonne dans l'air pendant quelques secondes. 
+          `Vous utilisez un simple sort de désenchantement pour libérer le démon enfermé dans le miroir. Ce dernier vol en éclats et une fumée sombre et épaisse s'en répand avant de se matérialiser en une créature cornue à la peau rouge sang. Le démon se dresse devant vous, vous dépassant de plusieurs têtes. Il vous toise du regard pendant un instant avant de s'agenouiller et de s'adresser à vous d'une voix aiguë et sifflante : "Vouuus mm'aveeez libérééé ô ${player.gender == "F" ? "maîîîtresssse" : `maîîître`} ${player.hasARaceInCommonWith(demon) ? player.gender == "F" ? "inffffernale" : "inffffernal" : ""} ! Preneeez ceccci en guise de ma reconnaissssssance éternelle...".
+          Le démon tend sa main vers vous et un parchemin y apparaît dans un petit tourbillon de flammes. Vous prenez le parchemin qui vous brûle légèrement les doigts. Le démon disparaît alors dans un craquement ne laissant derrière lui qu'un petit nuage de fumée noire et un son de ricanement satisfait qui résonne dans l'air pendant quelques secondes. 
                     
-                    Vous recevez le parchemin de sort 'Sphère Infernale'.
-                    Vous gagnez également 1XP.`
+          Vous recevez le parchemin de sort 'Sphère Infernale'.
+          Vous gagnez également 1XP.`
         );
 
         player.inventory.add(getClubsItem(8));
         player.experiencePoints++;
-        btn1.activate("Continuer", () => {
-          nextAdventure();
-        });
+        stepCompleted()
+        btn1.activate("Continuer", () => { nextAdventure(); });
 
         return;
       }
 
       // Fight against 'démon rusé'
-      const introMessage = `Vous utilisez un simple sort de désenchantement pour libérer le démon enfermé dans le miroir. Ce dernier vol en éclats et une fumée sombre et lourde commence à s'en répandre. Une créature cornue à la peau rouge sang s'extirpe de cette flaque noire sans surface et se dresse devant vous, vous dépassant de plusieurs têtes. Le démon vous fixe intensément de ses yeux perçants aux iris ressemblants à des flammes. D'une voix aiguë et sifflante il vous adresse la parole, révélant une rangée de dents fines et aiguisées : "Heeeheeeheee pauvvvre ${player.gender == "F"
-        ? "petiiite avvventurièèèère stupiiiide"
-        : "petiiit aventuriiier stupiiiide"
-        }... Prépareeez-vous à mourirrr !".`;
+      const introMessage = `Vous utilisez un simple sort de désenchantement pour libérer le démon enfermé dans le miroir. Ce dernier vol en éclats et une fumée sombre et lourde commence à s'en répandre. Une créature cornue à la peau rouge sang s'extirpe de cette flaque noire sans surface et se dresse devant vous, vous dépassant de plusieurs têtes. Le démon vous fixe intensément de ses yeux perçants aux iris ressemblants à des flammes. D'une voix aiguë et sifflante il vous adresse la parole, révélant une rangée de dents fines et aiguisées : "Heeeheeeheee pauvvvre ${player.gender == "F" ? "petiiite avvventurièèèère stupiiiide" : "petiiit aventuriiier stupiiiide"}... Prépareeez-vous à mourirrr !".`;
 
       const contextData = {
         opponent: demon,
@@ -2845,12 +2880,13 @@ function specialEncounter() {
   // Ogre bridge
   function event03() {
     gameMessage(`Vous arrivez à un pont. Malheureusement, ce dernier est gardé par un ogre de fort mauvaise humeur. Il exige 1000PO pour passer.
-          --- Si vous êtes ${player.gender == "F" ? "une ogresse ou une gnome" : "un ogre ou un gnome"}, il vous laisse passer gratuitement.
-          --- Vous pouvez décider de payer 1000PO.
-          --- Si vous possédez le sort 'Téléportation', vous pouvez l'utiliser pour outrepasser l'ogre (cela vous coûtera tout de même le coût de lancement habituel(1PA)).
-          --- Vous pouvez tenter de forcer le passage.
+         
+      --- Si vous êtes ${player.gender == "F" ? "une ogresse ou une gnome" : "un ogre ou un gnome"}, il vous laisse passer gratuitement.
+      --- Vous pouvez décider de payer 1000PO.
+      --- Si vous possédez le sort 'Téléportation', vous pouvez l'utiliser pour outrepasser l'ogre (cela vous coûtera tout de même le coût de lancement habituel(1PA)).
+      --- Vous pouvez tenter de forcer le passage.
           
-          Que choisissez-vous de faire ?`);
+      - Que choisissez-vous de faire ?`);
 
     // Buttons set up
     btn1.activate("Passer gratuitement", () => { freePassage(); });
@@ -2933,6 +2969,215 @@ function specialEncounter() {
       fight(contextData);
     }
   }
+
+  // Three moons
+  function event04() {
+    gameMessage(`Un mystérieux brouillard se lève. Une lune argentée, une lune dorée et une lune rouge sont visibles dans trois directions différentes.
+      
+      --- Si vous possédez la 'Lanterne de Vision', vous pouvez l'utiliser pour sortir du brouillard sans avoir à faire de choix.
+      --- Vous pouvez suivre la lune argentée.
+      --- Vous pouvez suivre la lune dorée.
+      --- Vous pouvez suivre la lune rouge.
+      
+      - Que choisissez-vous de faire ?`)
+
+    btn1.activate("Utiliser la Lanterne de Vision", () => { useLantern() })
+    btn2.activate("Suivre la lune argentée", () => { silverMoon() })
+    btn3.activate("Suivre la lune dorée", () => { goldenMoon() })
+    btn4.activate("Suivre la lune rouge", () => { redMoon() })
+
+    if (!player.inventory.containsItemWithName("Lanterne de Vision")) btn1.isDisabled = true
+
+    function useLantern() {
+      hideAllGenericButtons()
+
+      gameMessage(`Vous brandissez la Lanterne de Vision qui éclaire les environs d'une douce lumière dorée et dissipe le brouillard et l'illusion des trois lunes. Votre chemin est à nouveau claire, vous pouvez continuer votre route.
+        
+        Vous gagnez 1XP.`)
+
+      player.experiencePoints++
+      stepCompleted()
+
+      btn1.activate("Continuer", () => { nextAdventure() })
+    }
+
+    function silverMoon() {
+      hideAllGenericButtons()
+
+      const phantom = generateIntelligentBeing(8, [])
+      phantom.gender = "M"
+      const skeleton = generateIntelligentBeing(10, [])
+
+      let message = `Vous commencez à marcher résolument en direction de la mystérieuse lune argentée. Plus vous avancez, plus le brouillard semble s'épaissir jusqu'à ce que vous ne parveniez plus à distinguer quoi que ce soit de vos alentours à part une faible lueur blanche dans la direction de la lune argentée. Vous continuez tout de même à avancer avec méfiance. Après quelques mètres, vous distinguez une forme vaporeuse se former sous la lueur argentée. Vous vous en approchez et vous trouvez soudain nez à nez avec un fantôme.`
+
+      // If player is at least part phantom or skeleton -> +10PV & Free passage
+      if (player.hasARaceInCommonWith(phantom) || player.hasARaceInCommonWith(skeleton)) {
+        gameMessage(`${message} Ce dernier semble vous observer avec beaucoup d'attention pendant plusieurs secondes, puis, s'approche lentement de vous et vous enlace dans une étreinte éthérée avant de disparaître, dissipant avec lui le brouillard mystérieux et ses trois lunes.
+          Vous observez vos alentour et réalisez que vous vous trouvez exactement à l'endroit où vous étiez au moment où le brouillard mystérieux était apparu.
+          
+          Vous gagnez un bonus de +10PV définitif.
+          Vous gagnez également 1XP.`)
+
+        player.levelUpStats.hitPoints += 10
+        player.restoreHitPoints()
+        player.experiencePoints++
+        stepCompleted()
+
+        btn1.activate("Continuer", () => { nextAdventure() })
+
+        return
+      }
+
+      // Otherwise -> Intelligent being negotiation roll
+      gameMessage(`${message}
+        
+        - Lancez le D20 pour voir ce qu'il se passe.`)
+
+      // Intelligent being negociation roll
+      const toll = 50 * (environments.indexOf(currentEnvironment) + 1);
+
+      const contextData = {
+        intelligentBeing: phantom,
+        pacifistIntroText: `Le brouillard se dissipe et les trois lunes disparaissent. Le fantôme semble vous observer attentivement. Vous remarquez que vous vous trouvez à l'endroit exacte où vous étiez au moment où le brouillard mystérieux s'était levé.
+        
+        --- Vous pouvez choisir de continuer votre route.
+        --- Vous pouvez choisir d'attaquer le fantôme.
+        
+        - Que choisissez-vous de faire ?`,
+        strengthTollFreePassageIntroText: `Le brouillard se dissipe et les trois lunes disparaissent. Le fantôme semble vous observer attentivement d'un regard frustré. Vous remarquez que vous vous trouvez à l'endroit exacte où vous étiez au moment où le brouillard mystérieux s'était levé.
+        
+        --- Vous pouvez choisir de continuer votre route.
+        --- Vous pouvez choisir d'attaquer le fantôme.
+        
+        - Que choisissez-vous de faire ?`,
+        strengthTollRacketPassageIntroText: `Le brouillard se dissipe et les trois lunes disparaissent. Le fantôme se met à parler et d'une voix légère mais menaçante vous demande un dû de ${toll} pièces d'or(PO) sans quoi il vous assure un trépas certain.
+        
+        --- Vous pouvez choisir de payer les ${toll} pièces d'or(PO).
+        --- Vous pouvez choisir d'attaquer le fantôme.
+        
+        - Que choisissez-vous de faire ?`,
+        magicTollFreePassageIntroText: `Le brouillard se dissipe et les trois lunes disparaissent. Le fantôme semble vous observer attentivement d'un regard frustré. Vous remarquez que vous vous trouvez à l'endroit exacte où vous étiez au moment où le brouillard mystérieux s'était levé.
+        
+        --- Vous pouvez choisir de continuer votre route.
+        --- Vous pouvez choisir d'attaquer le fantôme.
+        
+        - Que choisissez-vous de faire ?`,
+        magicTollRacketPassageIntroText: `Le brouillard se dissipe et les trois lunes disparaissent. Le fantôme se met à parler et d'une voix légère mais menaçante vous demande un dû de ${toll} pièces d'or(PO) sans quoi il vous assure un trépas certain.
+        
+        --- Vous pouvez choisir de payer les ${toll} pièces d'or(PO).
+        --- Vous pouvez choisir d'attaquer le fantôme.
+        
+        - Que choisissez-vous de faire ?`,
+        fightIntroText: `Le brouillard se dissipe et les trois lunes disparaissent. Le fantôme vous observe un instant puis soudainement, se rue vers vous en poussant un cri lugubre.`,
+        enragedFightIntroText: `Le brouillard se dissipe et les trois lunes disparaissent. Le fantôme se met à crier d'une voix lugubre en vous pointant du doigt. Vous l'avez clairement dérangé et mis en colère. Le fantôme se rue soudainement vers vous. Le combat semble inévitable.
+        
+        Le fantôme gagne un trait 'fort'.`,
+        environmentRerollIntroText: `Le brouillard se dissipe et les trois lunes disparaissent. D'une voix lugubre mais calme, le fantôme récite un poème qui semble décrire les directions à suivre pour déjouer les pièges d'un passage particulièrement ardu du chemin que vous êtes en train de suivre. Vous prenez bonnes notes de ces précieuses informations.
+                
+        Vous gagnez 1XP et la possibilité d'annuler votre prochain lancé de dé d'environnement et de le relancer.`,
+        merchantIntroText: `Le brouillard se dissipe et les trois lunes disparaissent. D'une voix lugubre mais calme, le fantôme vous annonce qu'il possède quelques objets à échanger contre des pièces d'or si vous le désirez.
+        
+        --- Vous pouvez choisir de faire affaire avec le fantôme.
+        --- Vous pouvez choisir d'attaquer le fantôme.
+        
+        - Que choisissez-vous de faire ?`,
+        visitShopIntroText: `Vous faites signe au fantôme de vous montrer ce qu'il a à offrir.`,
+        visitShopLeaveText: `Vous remerciez le fantôme et continuez votre route.`,
+        visitShopNoCardText: undefined, // There will always be at least 1 item so we don't need this
+        visitShopNoCardLeaveText: undefined, // There will always be at least 1 item so we don't need this
+        attackMerchantIntroText: `Sans aucune sommation, vous dégainez et brandissez votre arme dans la direction du fantôme.`,
+        additionalItemsAvailable: [getCupsItem(11)]
+      }
+
+      btn1.activate(
+        "Lancer le D20",
+        () => {
+          saveCloverState()
+          checkAttitude(contextData)
+        },
+        "d20"
+      )
+    }
+
+    function goldenMoon() {
+      hideAllGenericButtons()
+
+      const sphinx = generateMonster(1, [])
+
+      let message = `Vous commencez à marcher résolument en direction de la mystérieuse lune dorée. Plus vous avancez, plus le brouillard semble s'épaissir jusqu'à ce que vous ne parveniez plus à distinguer quoi que ce soit de vos alentours à part une faible lueur chaude provenant de la direction de la lune. Vous continuez tout de même à avancer avec méfiance. Après quelques mètres, le brouillard se dissipe soudainement et vous découvrez avec stupeur une vaste mer de nuages d'un blanc pur, s'étalant à vos pied jusqu'à l'horizon. Droit devant vous, suspendue dans un ciel de nuit étoilé, trône la mystérieuse lune couleur or. Vous contemplez ce spectacle cosmique pendant quelques instants et vous remarquer que la surface de la lune semble légèrement trembler comme si son image était un reflet dans une flaque d'eau. Puis, cette distortion s'accentue de plus en plus jusqu'au moment où la lune disparaît complètement, laissant place à une créature majestueuse : un sphinx !
+      Le sphinx atterrit devant vous, à quelques enjambées, ses ailes largement déployées et pousse un rugissement qui vous glace le sang. Son corps de lion s'arche dans une position qui ne veut dire qu'une chose : son attaque est imminente.`
+
+      const contextData = {
+        opponent: sphinx,
+        introMessage: message,
+      }
+
+      fight(contextData)
+    }
+
+    function redMoon() {
+      hideAllGenericButtons()
+
+      const traits = [getStrongTrait(19)]
+      const werewolf = generateIntelligentBeing(16, traits)
+      werewolf.gender = "F"
+
+      let message = `Vous commencez à marcher résolument en direction de la mystérieuse lune rouge. Plus vous avancez, plus le brouillard semble s'épaissir jusqu'à ce que vous ne parveniez plus à distinguer quoi que ce soit de vos alentours à part une faible lueur rougeâtre provenant de la direction de la lune. Vous continuez tout de même à avancer avec méfiance. Après quelques mètres, le brouillard se dissipe soudainement et vous découvrez une clairière brumeuse entourée d'une forêt dense. Vous levez la tête et vous apercevez la lune complètement ronde et rouge, trônant dans un ciel de nuit étoilé complètement dégagé. Vous pouvez distinguer au centre de la clairière la silhouette d'une créature gigantesque recroquevillée sur elle-même. Vous vous approchez avec curiosité et méfiance. Une odeur familière émane de la créature démesurée qui semble dormir. Vous faites un pas de plus en direction de la créature mais vous marchez sur une brindille qui se casse. La créature se réveille et se redresse vivement, révélant dans la lumière pourpre de la lune sa vrai nature : une louve-garou !`
+
+      // If player is werewolf -> free passage + 10MA bonus
+      if (player.hasARaceInCommonWith(werewolf)) {
+        gameMessage(`${message} Vous lancez un petit grognement apaisant pour signaler vos intentions pacifistes à la bête. Vous vous approchez encore un peu et tendez votre main vers la louve-garou. Cette dernière tend son énorme tête à la rencontre de vos doigts. Son museau touche le votre et une lumière rouge aveuglante vient soudainement interrompre ce moment, vous étourdissant complètement. Vous retrouvez lentement vos sens et réalisez que la louve-garou, la clairière et la lune rouge ont disparus. Vous vous trouvez à l'exacte endroit où vous étiez au moment où le brouillard mystérieux était apparu.
+          
+          Vous gagnez un bonus de +10MA définitif.
+          Vous gagnez également 1XP.`)
+
+        player.levelUpStats.magic += 10
+        player.updateMagicVisuals()
+        player.experiencePoints++
+
+        btn1.activate("Continuer", () => { nextAdventure() })
+
+        return
+      }
+
+      // Otherwise, fight a Gigantic Werewolf
+      const contextData = {
+        opponent: werewolf,
+        introMessage: `${message} La créature bondit et s'apprête à vous attaquer.`,
+        rewardPhaseCallBack: redMoonRewardPhase
+      }
+
+      // Regular reward phase but with 1 extra PA
+      function redMoonRewardPhase(ctx) {
+        player.isAllowedToUseLuckyClover = false;
+        hideAllGenericButtons();
+        displayState(false);
+        stepCompleted();
+        player.experiencePoints++;
+        player.actionPoints++;
+        player.resetSpellEffects();
+
+        gameMessage(`${beingNameWithDeterminantDefini(ctx.opponent, false)} est ${ctx.opponent.gender == "F" ? "terrassée" : "terrassé"} ! Vous reprenez votre souffle et regardez autour de vous. Vous réalisez avec étonnement que la clairière, la lune rouge et la louve-garou ont disparus. Vous vous trouvez à l'endroit exacte ou vous étiez au moment où le brouillard mystérieux et ses trois lunes étaient apparus.
+          
+          ${player.hitPoints < player.maxHitPoints ? "Vous vous soignez et" : "Vous"} gagnez 1 point d'expérience(XP) ainsi que 1 point d'action(PA).
+          - Vous pouvez aussi lancer le D20 pour acquérir une récompense potentielle.`);
+
+        player.restoreHitPoints();
+        isInCombat = false;
+
+        btn1.activate(
+          "Lancer le D20",
+          () => {
+            saveCloverState();
+            fightReward(d20.roll());
+          },
+          "d20"
+        );
+      }
+
+      fight(contextData);
+    }
+  }
 }
 
 function luckyEncounter() {
@@ -2985,6 +3230,230 @@ function luckyEncounter() {
 
     player.isAllowedToDraw = true;
     stepCompleted();
+  }
+}
+
+function checkAttitude(ctx) {
+  const roll = d20.roll()
+  player.isAllowedToUseLuckyClover = true;
+
+  // Roll 1-3 -> Pacifist
+  if (roll <= 3) {
+    gameMessage(`${roll} !
+                ${ctx.pacifistIntroText}`);
+
+    btn1.activate("Continuer", () => {
+      letBeingGo();
+    });
+    btn2.activate("Attaquer", () => {
+      const contextData = {
+        opponent: ctx.intelligentBeing,
+        introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(ctx.intelligentBeing, true)} et adoptez une position de combat.`,
+        opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
+        rewardPhaseCallBack: regularRewardPhase,
+      };
+      fight(contextData);
+    });
+    return;
+  }
+  // Roll 4-6 -> Strength toll
+  if (roll <= 6) {
+    // If race in common or as strong as the being - Free passage
+    if (
+      player.hasARaceInCommonWith(ctx.intelligentBeing) ||
+      player.strength >= ctx.intelligentBeing.strength
+    ) {
+      gameMessage(`${roll} !
+                    ${ctx.strengthTollFreePassageIntroText}`);
+
+      btn1.activate("Continuer", () => { letBeingGo(); });
+      btn2.activate("Attaquer", () => {
+        const contextData = {
+          opponent: ctx.intelligentBeing,
+          introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(ctx.intelligentBeing, false)} et adoptez une position de combat.`,
+          opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
+          rewardPhaseCallBack: regularRewardPhase,
+        };
+        fight(contextData);
+      });
+      return;
+    }
+
+    // Otherwise, asks for toll
+    const toll = 50 * (environments.indexOf(currentEnvironment) + 1);
+
+    gameMessage(`${roll} !
+                ${ctx.strengthTollRacketPassageIntroText}`);
+
+    btn1.activate(`Donner ${toll}PO`, () => { giveGold(toll); });
+    if (player.goldCoins < toll) btn1.isDisabled = true;
+
+    btn2.activate(`Attaquer`, () => {
+      const contextData = {
+        opponent: ctx.intelligentBeing,
+        introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(ctx.intelligentBeing, false)} et adoptez une position de combat.`,
+        opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
+        rewardPhaseCallBack: regularRewardPhase,
+      };
+      fight(contextData);
+    });
+    return;
+  }
+  // Roll 7-9 -> Magic toll
+  if (roll <= 9) {
+    // If race in common or as strong magically as the being - Free passage
+    if (
+      player.hasARaceInCommonWith(ctx.intelligentBeing) ||
+      player.magic >= ctx.intelligentBeing.magic
+    ) {
+      gameMessage(`${roll} !
+                  ${ctx.magicTollFreePassageIntroText}`)
+
+      btn1.activate("Continuer", () => { letBeingGo() });
+      btn2.activate("Attaquer", () => {
+        const contextData = {
+          opponent: ctx.intelligentBeing,
+          introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(ctx.intelligentBeing, false)} et adoptez une position de combat.`,
+          opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
+          rewardPhaseCallBack: regularRewardPhase,
+        };
+        fight(contextData);
+      });
+      return;
+    }
+
+    // Otherwise, asks for toll
+    const toll = 50 * (environments.indexOf(currentEnvironment) + 1);
+
+    gameMessage(`${roll} !
+                ${ctx.magicTollRacketPassageIntroText}`);
+
+    btn1.activate(`Donner ${toll}PO`, () => { giveGold(toll); });
+    btn1.isDisabled = player.goldCoins < toll;
+
+    btn2.activate(`Attaquer`, () => {
+      const contextData = {
+        opponent: ctx.intelligentBeing,
+        introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(ctx.intelligentBeing, false)} et adoptez une position de combat.`,
+        opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
+        rewardPhaseCallBack: regularRewardPhase,
+      };
+      fight(contextData);
+    });
+    return;
+  }
+  // Roll 10-12 -> Fight
+  if (roll <= 12) {
+    gameMessage(`${roll} !
+                ${ctx.fightIntroText}`)
+
+    btn1.activate("Continuer", () => {
+      const contextData = {
+        opponent: ctx.intelligentBeing,
+        introMessage: currentGameMessage(),
+        opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
+        rewardPhaseCallBack: regularRewardPhase,
+      };
+
+      fight(contextData);
+    });
+
+    return;
+  }
+  // Roll 13-15 -> Enraged fight
+  if (roll <= 15) {
+    gameMessage(`${roll} !
+                ${ctx.enragedFightIntroText}`)
+
+    btn1.activate("Continuer", () => {
+      ctx.intelligentBeing.traits.push(getStrongTrait(d20.roll()));
+      ctx.intelligentBeing.restoreHitPoints();
+
+      const contextData = {
+        opponent: ctx.intelligentBeing,
+        introMessage: currentGameMessage(),
+        opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
+        rewardPhaseCallBack: regularRewardPhase,
+      };
+
+      fight(contextData);
+    });
+
+    return;
+  }
+  // Roll 16-18 -> Environment reroll
+  if (roll <= 18) {
+    player.experiencePoints++;
+    environmentRerolls++;
+
+    gameMessage(`${roll}!
+                ${ctx.environmentRerollIntroText}`);
+
+    btn1.activate(
+      "Continuer",
+      () => {
+        stepCompleted();
+        nextAdventure();
+      }
+    );
+
+    return;
+  }
+  // Roll 19-20 -> Merchant
+  if (roll <= 20) {
+    gameMessage(`${roll}!
+                ${ctx.merchantIntroText}`);
+
+    btn1.activate(
+      "Voir la marchandise",
+      () => {
+        visitShop(
+          ctx.visitShopIntroText,
+          ctx.visitShopLeaveText,
+          ctx.visitShopNoCardText,
+          ctx.visitShopNoCardLeaveText,
+          2,
+          ctx.additionalItemsAvailable
+        )
+      }
+    )
+    btn2.activate("Attaquer", () => {
+      const contextData = {
+        opponent: ctx.intelligentBeing,
+        introMessage: ctx.attackMerchantIntroText,
+        opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
+        rewardPhaseCallBack: regularRewardPhase,
+      };
+      fight(contextData);
+    });
+  }
+
+  function letBeingGo() {
+    player.isAllowedToUseLuckyClover = false;
+    hideAllGenericButtons();
+
+    gameMessage(`Vous continuez votre route.
+            - Vous gagnez 1XP.`)
+
+    player.experiencePoints++;
+    stepCompleted();
+
+    btn1.activate("Continuer", () => { nextAdventure() })
+  }
+
+  function giveGold(amount) {
+    if (player.goldCoins < amount) return;
+
+    player.isAllowedToUseLuckyClover = false;
+    hideAllGenericButtons();
+
+    gameMessage(`Vous donnez ${amount}PO ${intelligentBeing.gender == "F" ? "à la racketteuse" : "au racketteur"}, qui vous laisse passer. Vous continuez votre route.
+                - Vous gagnez 1XP.`)
+
+    player.goldCoins -= amount;
+    player.experiencePoints++;
+    stepCompleted();
+    btn1.activate("Continuer", nextAdventure())
   }
 }
 //#endregion
@@ -3272,8 +3741,7 @@ function playerAttackPhase(ctx) {
       damage = clamp(damage + player.magic - ctx.opponent.magic, 0, Infinity);
       ctx.opponent.hitPoints -= damage;
       message += `
-            Vous infligez un total de ${damage} ${damage <= 1 ? "dégât magique" : "dégâts magiques"
-        } ${beingNameWithDeterminantDefiniContracte(ctx.opponent, "à")}.`;
+            Vous infligez un total de ${damage} ${damage <= 1 ? "dégât magique" : "dégâts magiques"} ${beingNameWithDeterminantDefiniContracte(ctx.opponent, "à")}.`;
     }
     // Physical Hit
     else {
@@ -3284,8 +3752,7 @@ function playerAttackPhase(ctx) {
       );
       ctx.opponent.hitPoints -= damage;
       message += `
-            Vous infligez un total de ${damage} ${damage <= 1 ? "dégât physique" : "dégâts physiques"
-        } ${beingNameWithDeterminantDefiniContracte(ctx.opponent, "à")}.`;
+            Vous infligez un total de ${damage} ${damage <= 1 ? "dégât physique" : "dégâts physiques"} ${beingNameWithDeterminantDefiniContracte(ctx.opponent, "à")}.`;
     }
 
     gameMessage(message);
@@ -3304,16 +3771,12 @@ function playerAttackPhase(ctx) {
 
     // If we attacked first , it's the opponent's turn
     if (playerHasInitiative(ctx.opponent)) {
-      btn1.activate("Continuer", () => {
-        opponentAttackPhase(ctx);
-      });
+      btn1.activate("Continuer", () => { opponentAttackPhase(ctx); });
       return;
     }
 
     // Otherwise we start a new turn
-    btn1.activate("Continuer", () => {
-      newTurn(ctx);
-    });
+    btn1.activate("Continuer", () => { newTurn(ctx); });
   }
 }
 
@@ -3449,12 +3912,8 @@ function regularRewardPhase(ctx) {
   player.experiencePoints++;
   player.resetSpellEffects();
 
-  gameMessage(`${beingNameWithDeterminantDefini(ctx.opponent, false)} est ${ctx.opponent.gender == "F" ? "terrassée" : "terrassé"
-    } !
-        ${player.hitPoints < player.maxHitPoints
-      ? "Vous vous soignez et"
-      : "Vous"
-    } gagnez 1 point d'expérience.
+  gameMessage(`${beingNameWithDeterminantDefini(ctx.opponent, false)} est ${ctx.opponent.gender == "F" ? "terrassée" : "terrassé"} !
+        ${player.hitPoints < player.maxHitPoints ? "Vous vous soignez et" : "Vous"} gagnez 1 point d'expérience.
         - Vous pouvez aussi lancer le D20 pour acquérir une récompense potentielle.`);
 
   player.restoreHitPoints();
@@ -3468,78 +3927,73 @@ function regularRewardPhase(ctx) {
     },
     "d20"
   );
+}
 
-  function fightReward(roll) {
-    player.isAllowedToUseLuckyClover = true;
-    currentCombatContext = undefined;
-    hideAllGenericButtons();
+function fightReward(roll) {
+  player.isAllowedToUseLuckyClover = true;
+  currentCombatContext = undefined;
+  hideAllGenericButtons();
 
-    // Roll 1-3
-    if (roll >= 1 && roll <= 3) {
-      gameMessage(`${roll} !
+  // Roll 1-3
+  if (roll >= 1 && roll <= 3) {
+    gameMessage(`${roll} !
                 Aucune récompense. Déso...`);
 
-      btn1.activate("Continuer", () => {
-        nextAdventure();
-      });
-      return;
-    }
+    btn1.activate("Continuer", () => {
+      nextAdventure();
+    });
+    return;
+  }
+  // Roll 4 - 9
+  if (roll <= 9) {
+    player.actionPoints++;
 
-    // Roll 4 - 9
-    if (roll <= 9) {
-      player.actionPoints++;
-
-      gameMessage(`${roll} !
+    gameMessage(`${roll} !
                     Vous gagnez 1 point d'action.`);
 
-      btn1.activate("Continuer", () => {
-        nextAdventure();
-      });
-      return;
-    }
-
-    // Roll 10-15
-    if (roll <= 15) {
-      gameMessage(`${roll} !
+    btn1.activate("Continuer", () => {
+      nextAdventure();
+    });
+    return;
+  }
+  // Roll 10-15
+  if (roll <= 15) {
+    gameMessage(`${roll} !
                         Vous pouvez tirer une carte du deck mais toutes les cartes comptent comme des cartes 'Pièces'.`);
 
-      player.isAllowedToDraw = true;
+    player.isAllowedToDraw = true;
 
-      imgDeck.onclick = () => {
-        saveCloverState();
-        drawReward(scopaDeck, true);
-      };
-      return;
-    }
-
-    // Roll 16-20
-    if (roll <= 20) {
-      gameMessage(`${roll} !
+    imgDeck.onclick = () => {
+      saveCloverState();
+      drawReward(scopaDeck, true);
+    };
+    return;
+  }
+  // Roll 16-20
+  if (roll <= 20) {
+    gameMessage(`${roll} !
                         Vous pouvez tirer une carte du deck. Vous gagnez immédiatement l'objet ou l'or correspondant.`);
 
-      player.isAllowedToDraw = true;
+    player.isAllowedToDraw = true;
 
-      imgDeck.onclick = () => {
-        saveCloverState();
-        drawReward(scopaDeck, false);
-      };
-      return;
-    }
-
-    // roll is not a number between 1 and 20
-    console.error("Unexpected reward roll : ");
-    console.error(roll);
+    imgDeck.onclick = () => {
+      saveCloverState();
+      drawReward(scopaDeck, false);
+    };
+    return;
   }
+
+  // roll is not a number between 1 and 20
+  console.error("Unexpected reward roll : ");
+  console.error(roll);
 }
 
 function regularDefeatPhase(ctx) {
   player.isAllowedToUseLuckyClover = false;
   hideAllGenericButtons();
   displayState(false);
-  gameMessage(`Vous êtes ${player.gender == "F" ? "morte" : "mort"
-    }, votre aventure s'achève ici.
-            Merci d'avoir joué ! On espère que vous vous êtes quand même bien ${player.gender == "F" ? "amusée" : "amusé"
-    }.
+  gameMessage(`Vous êtes ${player.gender == "F" ? "morte" : "mort"}, votre aventure s'achève ici.
+            Merci d'avoir joué ! On espère que vous vous êtes quand même bien ${player.gender == "F" ? "amusée" : "amusé"}.
             Rechargez la page si vous souhaitez recommencer une partie.`);
 }
 

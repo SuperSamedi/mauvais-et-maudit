@@ -185,15 +185,7 @@
         "type": "bonus"
       },
       {
-        "description": "Protège des effets négatifs de l’environnement 'Grotte'.",
-        "type": "bonus"
-      },
-      {
-        "description": "Protège des effets négatifs de l’environnement 'Marécage'.",
-        "type": "bonus"
-      },
-      {
-        "description": "Protège des effets négatifs de l’environnement 'Étangs Putrides'.",
+        "description": "Protège des effets négatifs des environnements 'Grotte', 'Marécage' et 'Étangs Putrides'.",
         "type": "bonus"
       }
     ],

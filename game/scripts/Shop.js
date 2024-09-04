@@ -21,8 +21,7 @@ class Shop {
     }
 
     updateDisplay() {
-        let message = `Magasin
-        Objets disponibles : 
+        let message = `Objets disponibles : 
             `;
 
         this.#items.forEach(item => {
@@ -31,6 +30,7 @@ class Shop {
         })
 
         message += `
+        
         Vous pouvez aussi revendre des objets depuis votre inventaire si vous en avez.`;
 
         gameMessage(message)

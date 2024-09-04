@@ -219,19 +219,15 @@ class Player {
     });
 
     // Environment modifiers
-    if (currentEnvironment.statsModifiers) {
-      if (currentEnvironment.statsModifiers.player) {
-        if (currentEnvironment.statsModifiers.player.strength) {
-          stat += currentEnvironment.statsModifiers.player.strength
-        }
-      }
+    if (currentEnvironment.statsModifiers?.player?.strength) {
+      stat += currentEnvironment.statsModifiers.player.strength
     }
 
     // Level up stats
     stat += this.levelUpStats.strength
 
     // Spell Effects
-    if (this.spellEffects.strength) stat += this.spellEffects.strength
+    stat += this.spellEffects.strength
 
     return stat;
   }
@@ -264,10 +260,14 @@ class Player {
     });
 
     // Environment modifiers
-    if (currentEnvironment.statsModifiers) {
-      if (currentEnvironment.statsModifiers.player) {
-        if (currentEnvironment.statsModifiers.player.speed) {
-          stat += currentEnvironment.statsModifiers.player.speed
+    if (currentEnvironment.statsModifiers?.player?.speed) {
+      stat += currentEnvironment.statsModifiers.player.speed
+
+      // Vision Lantern special rules
+      if (this.inventory.containsItemWithName("Lanterne de Vision")) {
+        if (currentEnvironment.name == "Grotte"
+          || currentEnvironment.name == "Marécage") {
+          stat -= currentEnvironment.statsModifiers.player.speed
         }
       }
     }
@@ -276,7 +276,7 @@ class Player {
     stat += this.levelUpStats.speed
 
     // Spell Effects
-    if (this.spellEffects.speed) stat += this.spellEffects.speed
+    stat += this.spellEffects.speed
 
     return stat;
   }
@@ -309,11 +309,13 @@ class Player {
     });
 
     // Environment modifiers
-    if (currentEnvironment.statsModifiers) {
-      if (currentEnvironment.statsModifiers.player) {
-        if (currentEnvironment.statsModifiers.player.magic) {
-          stat += currentEnvironment.statsModifiers.player.magic
-        }
+    if (currentEnvironment.statsModifiers?.player?.magic) {
+      stat += currentEnvironment.statsModifiers.player.magic
+
+      // Vision Lantern special rules
+      if (this.inventory.containsItemWithName("Lanterne de Vision")
+        && currentEnvironment.name == "Étangs Putrides") {
+        stat -= currentEnvironment.statsModifiers.player.speed
       }
     }
 
@@ -321,7 +323,7 @@ class Player {
     stat += this.levelUpStats.magic
 
     // Spell Effects
-    if (this.spellEffects.magic) stat += this.spellEffects.magic
+    stat += this.spellEffects.magic
 
     return stat;
   }
@@ -331,12 +333,7 @@ class Player {
   }
 
   set goldCoins(value) {
-    if (value <= 0) {
-      this.#goldCoins = 0;
-      this.updateGoldCoinsVisuals();
-      return;
-    }
-    this.#goldCoins = value;
+    this.#goldCoins = clamp(value, 0, Infinity);
     this.updateGoldCoinsVisuals();
   }
 
@@ -345,12 +342,7 @@ class Player {
   }
 
   set actionPoints(value) {
-    if (value <= 0) {
-      this.#actionPoints = 0;
-      this.updateActionPointsVisuals();
-      return;
-    }
-    this.#actionPoints = value;
+    this.#actionPoints = clamp(value, 0, Infinity);
     this.updateActionPointsVisuals()
   }
 
@@ -359,13 +351,7 @@ class Player {
   }
 
   set experiencePoints(value) {
-    if (value <= 0) {
-      this.#experiencePoints = 0;
-      this.updateExperiencePointsVisuals();
-      return
-    }
-
-    this.#experiencePoints = value;
+    this.#experiencePoints = clamp(value, 0, Infinity);
     this.updateExperiencePointsVisuals();
   }
 
@@ -439,6 +425,7 @@ class Player {
       speed: 0,
       magic: 0
     }
+
     this.updateStrengthVisuals()
     this.updateSpeedVisuals()
     this.updateMagicVisuals()

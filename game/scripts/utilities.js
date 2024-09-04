@@ -303,24 +303,24 @@ function getCupsItem(id) {
     case 10:
       // Bottomless Cup
       return new Item(structuredClone(cupsItemsTable[id - 1]))
+    case 11:
+      // Vision Lantern
+      return new Item(structuredClone(cupsItemsTable[id - 1]))
     case 12:
       // Compas of the Ancients
       return new Item(structuredClone(cupsItemsTable[id - 1]))
     case 15:
-      // Lucky Clover (test version)
+      // Lucky Clover (public test version)
       return new LuckyClover(structuredClone(cupsItemsTable[id - 1]))
 
     default:
-      break;
+      console.error("Can't find a Cups item with id: " + id);
+      return undefined
   }
 }
 
 function isBeingDead(being) {
-  if (being.hitPoints <= 0) {
-    return true
-  }
-
-  return false
+  return being.hitPoints <= 0
 }
 
 function hideAllGenericButtons() {
