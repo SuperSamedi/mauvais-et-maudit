@@ -22,8 +22,8 @@ class EquippableItem extends Item {
         if (player.inventory.isAnotherItemEquipped(this)) return false;
 
         this.isEquipped = true
-        console.log("Item equipped:");
-        console.log(this);
+        // console.log("Item equipped:");
+        // console.log(this);
         if (!isInCombat) player.restoreHitPoints()
         player.updateStatsVisuals();
         player.inventory.updateVisuals();

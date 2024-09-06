@@ -1,7 +1,16 @@
+/**
+ * Generates a random integer between 0 and max value (max value is excluded)
+ * @param {integer} max The non-inclusive integer value that defines the range of the random number. 
+ * @returns a random integer.
+ */
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
 
+/**
+ * Shuffles an array.
+ * @param {array} array The array that needs shuffling.
+ */
 function shuffle(array) {
   let currentIndex = array.length;
 
@@ -16,10 +25,25 @@ function shuffle(array) {
   }
 }
 
+/**
+ * Clamps a number between a min and a max value.
+ * @param {number} number The number that needs to not go below the min value or above the max value.
+ * @param {number} min The minimum value the number can have.
+ * @param {number} max The maximum value the number can have.
+ * @returns The number clamped between the min and max values.
+ */
 function clamp(number, min, max) {
+  if (min > max) {
+    // Swap
+    min = min + max;
+    max = min - max;
+    min = min - max;
+  }
+
   if (number <= min) {
     return min;
   }
+
   if (number >= max) {
     return max;
   }
@@ -27,6 +51,11 @@ function clamp(number, min, max) {
   return number;
 }
 
+/**
+ * Modifies the first character of a string into upper case.
+ * @param {string} string The string we want to capitalize.
+ * @returns The string argument with an upper case first character.
+ */
 function capitalize(string) {
   return `${string.charAt(0).toUpperCase()}${string.slice(1)}`
 }
@@ -118,8 +147,6 @@ function generateTraits() {
   }
 
   return traits
-
-
 }
 
 function getWeakTrait(roll = d20.roll()) {

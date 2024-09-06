@@ -56,10 +56,17 @@
 .step-mini-boss-fight {
   background-image: url(../assets/icons/icon-mini-boss.png);
 }
-.boss-fight-step {
+.step-final-boss-fight {
   background-image: url(../assets/icons/icon-boss.png);
 }
-.completed {
+.step-current {
+  border: 2px solid aquamarine;
+}
+.step-uncompleted {
+  border: 2px solid black;
+}
+.step-completed {
+  border: 2px solid black;
   background-color: aquamarine;
 }
 

@@ -3,17 +3,16 @@ class Button {
   #iconElement;
   #textElement;
 
-  constructor(buttonElement, iconElement, textElement) {
+  constructor(buttonElement) {
     this.#buttonElement = buttonElement;
-    this.#iconElement = iconElement;
-    this.#textElement = textElement;
+    this.#iconElement = this.#buttonElement?.querySelector(".btn-icon");
+    this.#textElement = this.#buttonElement?.querySelector(".btn-text");
   }
 
 
   get text() {
     return this.#textElement.innerText
   }
-
   set text(value) {
     this.#textElement.innerText = value
   }
@@ -21,7 +20,6 @@ class Button {
   get display() {
     return this.#buttonElement.style.display
   }
-
   set display(value) {
     this.#buttonElement.style.display = value
   }
@@ -29,7 +27,6 @@ class Button {
   get onclick() {
     return this.#buttonElement.onclick
   }
-
   set onclick(value) {
     this.#buttonElement.onclick = value
   }
@@ -37,7 +34,6 @@ class Button {
   get isDisabled() {
     return this.#buttonElement.disabled
   }
-
   set isDisabled(value) {
     this.#buttonElement.disabled = value
   }
@@ -45,7 +41,6 @@ class Button {
   get iconCode() {
     return this.#iconElement.alt.replace('icone-', '')
   }
-
   set iconCode(value) {
     this.#iconElement.setAttribute("alt", `icone-${value}`);
 
@@ -97,7 +92,6 @@ class Button {
     }
   }
 
-
   activate(text, clickFunction, iconCode) {
     // Show the button element
     this.display = "block";
@@ -119,42 +113,3 @@ class Button {
     this.#buttonElement.onclick = () => { };
   }
 }
-
-// Generic buttons
-const btn1Element = document.getElementById("btn1");
-const btn2Element = document.getElementById("btn2");
-const btn3Element = document.getElementById("btn3");
-const btn4Element = document.getElementById("btn4");
-const btn5Element = document.getElementById("btn5");
-const btn6Element = document.getElementById("btn6");
-
-const btn1 = new Button(
-  btn1Element,
-  btn1Element.querySelector(".btn-icon"),
-  btn1Element.querySelector(".btn-text")
-);
-const btn2 = new Button(
-  btn2Element,
-  btn2Element.querySelector(".btn-icon"),
-  btn2Element.querySelector(".btn-text")
-);
-const btn3 = new Button(
-  btn3Element,
-  btn3Element.querySelector(".btn-icon"),
-  btn3Element.querySelector(".btn-text")
-);
-const btn4 = new Button(
-  btn4Element,
-  btn4Element.querySelector(".btn-icon"),
-  btn4Element.querySelector(".btn-text")
-);
-const btn5 = new Button(
-  btn5Element,
-  btn5Element.querySelector(".btn-icon"),
-  btn5Element.querySelector(".btn-text")
-);
-const btn6 = new Button(
-  btn6Element,
-  btn6Element.querySelector(".btn-icon"),
-  btn6Element.querySelector(".btn-text")
-);

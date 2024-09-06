@@ -13,6 +13,14 @@ const btnConfirmPlayerName = document.getElementById("btn-confirm-player-name-in
 const imgDeck = document.getElementById("btn-deck");
 const zoneCardsDrawn = document.getElementById("cards-drawn")
 
+// Generic buttons
+const btn1Element = document.getElementById("btn1");
+const btn2Element = document.getElementById("btn2");
+const btn3Element = document.getElementById("btn3");
+const btn4Element = document.getElementById("btn4");
+const btn5Element = document.getElementById("btn5");
+const btn6Element = document.getElementById("btn6");
+
 // Stats adjustments Panel
 const panelStatsAdjustment = document.getElementById("stats-adjustment-panel");
 const txtStatsAdjustmentHitPoints = document.getElementById("stats-adjustment-hit-points");
@@ -38,6 +46,14 @@ const btnVillageEncounter = document.getElementById("btn-village-encounter")
 //#endregion
 
 // =====> START
+// Generic Buttons
+const btn1 = new Button(btn1Element);
+const btn2 = new Button(btn2Element);
+const btn3 = new Button(btn3Element);
+const btn4 = new Button(btn4Element);
+const btn5 = new Button(btn5Element);
+const btn6 = new Button(btn6Element);
+
 imgDeck.onclick = () => {
   clearCardsDisplayZone();
   drawReward(scopaDeck, false, true);
@@ -1218,32 +1234,33 @@ function chooseNewEnvironment(customMessage) {
   function newEnvironmentResult(roll) {
     hideAllGenericButtons();
     player.isAllowedToUseLuckyClover = true;
+
+    const newEnvironment = structuredClone(environmentsTable[roll - 1]);
     console.log("New Environment roll : " + roll);
-    const newEnvironment = environmentsTable[roll - 1];
     console.log(newEnvironment);
-    if (!newEnvironment) console.error("New Environment is undefined.");
+
+    // reset the effects in case we reroll the environment
+    currentEnvironment.clearEffects();
 
     // Pass data to the currentEnvironment of voyage.js
     currentEnvironment.name = newEnvironment.name;
-    // reset the effects in case we reroll the environment
-    currentEnvironment.effects = [];
     newEnvironment.effects.forEach((effect) => {
-      currentEnvironment.effects.push(effect);
+      currentEnvironment.addEffect(effect);
     });
-    if (newEnvironment.statsModifiers)
-      currentEnvironment.statsModifiers = newEnvironment.statsModifiers;
-    if (newEnvironment.shopModifiers)
-      currentEnvironment.shopModifiers = newEnvironment.shopModifiers;
-    if (newEnvironment.InnModifiers)
-      currentEnvironment.InnModifiers = newEnvironment.InnModifiers;
+    currentEnvironment.statsModifiers = newEnvironment.statsModifiers;
+    currentEnvironment.shopModifiers = newEnvironment.shopModifiers;
+    currentEnvironment.InnModifiers = newEnvironment.InnModifiers;
 
     let message = `${roll} ! ${newEnvironment.name}.
-        ${newEnvironment.effects.length > 1 ? "Effects" : "Effet"} :`;
+        ${newEnvironment.effects.length > 1 ? "Effets" : "Effet"} :`;
 
     for (let i = 0; i < newEnvironment.effects.length; i++) {
       message += `
             - ${newEnvironment.effects[i].description}`;
     }
+
+    player.restoreHitPoints();
+    player.updateStatsVisuals();
 
     if (isAllowedToRerollEnvironment()) {
       gameMessage(`${message}
@@ -1254,9 +1271,6 @@ function chooseNewEnvironment(customMessage) {
         "Garder ce lancé",
         () => {
           environmentRerolls = 0;
-          updateAllEnvironmentVisuals();
-          player.updateStatsVisuals();
-
           nextAdventure();
         }
       );
@@ -1264,6 +1278,7 @@ function chooseNewEnvironment(customMessage) {
         "Relancer",
         () => {
           environmentRerolls--;
+          btn1.isDisabled = true; // In case we use the lucky clover here.
           saveCloverState();
           newEnvironmentResult(getRandomInt(environmentsTable.length + 1));
         },
@@ -1272,10 +1287,6 @@ function chooseNewEnvironment(customMessage) {
 
       return;
     }
-
-    updateAllEnvironmentVisuals();
-    player.restoreHitPoints();
-    player.updateStatsVisuals();
 
     gameMessage(message);
 

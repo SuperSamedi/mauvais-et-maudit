@@ -27,9 +27,8 @@ class Being {
         // Add traits
         if (this.traits.length == 3) {
             // Special case strongissime trait 3x identical traits
-            if (this.traits[0].name.accordMasculin == this.traits[1].name.accordMasculin
-                && this.traits[0].name.accordMasculin == this.traits[2].name.accordMasculin) {
-                // return name += ` ultra ${this.gender == "F" ? this.traits[i].name.accordFeminin.toLowerCase() : this.traits[i].name.accordMasculin.toLowerCase()}`
+            if (this.traits[0].name.accordMasculin == this.traits[1].name.accordMasculin &&
+                this.traits[0].name.accordMasculin == this.traits[2].name.accordMasculin) {
                 return name += ` ${this.gender == "F" ? getStrongissimeVersion(this.traits[0]).name.accordFeminin.toLowercase() : getStrongissimeVersion(this.traits[0]).name.accordMasculin.toLowercase()}`
             }
         }
@@ -70,6 +69,7 @@ class Being {
         // console.log(duplicateNames);
         // console.log("uniques :");
         // console.log(uniqueNames);
+
         // if we have super traits
         if (duplicateNames.length > 0) {
             for (let i = 0; i < duplicateNames.length; i++) {
@@ -89,24 +89,19 @@ class Being {
                 name += `super ${duplicateNames[i].toLowerCase()}`
             }
         }
-        // if we have unique traits
-        if (uniqueNames.length > 0) {
-            for (let i = 0; i < uniqueNames.length; i++) {
-                // Check if first trait
-                if (i == 0 && duplicateNames.length == 0) {
-                    name += ` `
-                }
-                // check if it's not the first trait and there are still more
-                if (i > 0 && i + 1 < uniqueNames.length) {
-                    name += `, `
-                }
-                // check if it's not the first but is the last
-                if ((i > 0 || duplicateNames.length > 0) && i + 1 == uniqueNames.length) {
-                    name += ` et `
-                }
 
-                name += `${uniqueNames[i].toLowerCase()}`
+        // if we have unique traits
+        for (let i = 0; i < uniqueNames.length; i++) {
+            // check if it's not the first trait and there are still more
+            if (i > 0 && i + 1 < uniqueNames.length) {
+                name += `,`
             }
+            // check if it's not the first and is the last
+            if ((i > 0 || duplicateNames.length > 0) && i + 1 == uniqueNames.length) {
+                name += ` et`
+            }
+
+            name += ` ${uniqueNames[i].toLowerCase()}`
         }
 
         return name
@@ -210,28 +205,20 @@ class Being {
 
         // Environment modifiers
         if (this.type == "Monster") {
-            if (currentEnvironment.statsModifiers) {
-                if (currentEnvironment.statsModifiers.monsters) {
-                    if (currentEnvironment.statsModifiers.monsters.hitPoints) {
-                        stat += currentEnvironment.statsModifiers.monsters.hitPoints
-                    }
-                }
+            if (currentEnvironment.statsModifiers?.monsters?.hitPoints) {
+                stat += currentEnvironment.statsModifiers.monsters.hitPoints
             }
         }
         if (this.type == "Intelligent Being") {
-            if (currentEnvironment.statsModifiers) {
-                if (currentEnvironment.statsModifiers.intelligentBeings) {
-                    if (currentEnvironment.statsModifiers.intelligentBeings.hitPoints) {
-                        stat += currentEnvironment.statsModifiers.intelligentBeings.hitPoints
-                    }
-                }
+            if (currentEnvironment.statsModifiers?.intelligentBeings?.hitPoints) {
+                stat += currentEnvironment.statsModifiers.intelligentBeings.hitPoints
             }
         }
 
         // Spell Effects
-        if (this.spellEffects.hitPoints) stat += this.spellEffects.hitPoints
+        stat += this.spellEffects.hitPoints
 
-        return stat;
+        return clamp(stat, 0, Infinity);
     }
 
     get strength() {
@@ -257,28 +244,20 @@ class Being {
 
         // Environment modifiers
         if (this.type == "Monster") {
-            if (currentEnvironment.statsModifiers) {
-                if (currentEnvironment.statsModifiers.monsters) {
-                    if (currentEnvironment.statsModifiers.monsters.strength) {
-                        stat += currentEnvironment.statsModifiers.monsters.strength
-                    }
-                }
+            if (currentEnvironment.statsModifiers?.monsters?.strength) {
+                stat += currentEnvironment.statsModifiers.monsters.strength
             }
         }
         if (this.type == "Intelligent Being") {
-            if (currentEnvironment.statsModifiers) {
-                if (currentEnvironment.statsModifiers.intelligentBeings) {
-                    if (currentEnvironment.statsModifiers.intelligentBeings.strength) {
-                        stat += currentEnvironment.statsModifiers.intelligentBeings.strength
-                    }
-                }
+            if (currentEnvironment.statsModifiers?.intelligentBeings?.strength) {
+                stat += currentEnvironment.statsModifiers.intelligentBeings.strength
             }
         }
 
         // Spell Effects
-        if (this.spellEffects.strength) stat += this.spellEffects.strength
+        stat += this.spellEffects.strength
 
-        return stat;
+        return clamp(stat, 0, Infinity);
     }
 
     get speed() {
@@ -302,28 +281,20 @@ class Being {
 
         // Environment modifiers
         if (this.type == "Monster") {
-            if (currentEnvironment.statsModifiers) {
-                if (currentEnvironment.statsModifiers.monsters) {
-                    if (currentEnvironment.statsModifiers.monsters.speed) {
-                        stat += currentEnvironment.statsModifiers.monsters.speed
-                    }
-                }
+            if (currentEnvironment.statsModifiers?.monsters?.speed) {
+                stat += currentEnvironment.statsModifiers.monsters.speed
             }
         }
         if (this.type == "Intelligent Being") {
-            if (currentEnvironment.statsModifiers) {
-                if (currentEnvironment.statsModifiers.intelligentBeings) {
-                    if (currentEnvironment.statsModifiers.intelligentBeings.speed) {
-                        stat += currentEnvironment.statsModifiers.intelligentBeings.speed
-                    }
-                }
+            if (currentEnvironment.statsModifiers?.intelligentBeings?.speed) {
+                stat += currentEnvironment.statsModifiers.intelligentBeings.speed
             }
         }
 
         // Spell Effects
-        if (this.spellEffects.speed) stat += this.spellEffects.speed
+        stat += this.spellEffects.speed
 
-        return stat;
+        return clamp(stat, 0, Infinity);
     }
 
     get magic() {
@@ -347,28 +318,20 @@ class Being {
 
         // Environment modifiers
         if (this.type == "Monster") {
-            if (currentEnvironment.statsModifiers) {
-                if (currentEnvironment.statsModifiers.monsters) {
-                    if (currentEnvironment.statsModifiers.monsters.magic) {
-                        stat += currentEnvironment.statsModifiers.monsters.magic
-                    }
-                }
+            if (currentEnvironment.statsModifiers?.monsters?.magic) {
+                stat += currentEnvironment.statsModifiers.monsters.magic
             }
         }
         if (this.type == "Intelligent Being") {
-            if (currentEnvironment.statsModifiers) {
-                if (currentEnvironment.statsModifiers.intelligentBeings) {
-                    if (currentEnvironment.statsModifiers.intelligentBeings.magic) {
-                        stat += currentEnvironment.statsModifiers.intelligentBeings.magic
-                    }
-                }
+            if (currentEnvironment.statsModifiers?.intelligentBeings?.magic) {
+                stat += currentEnvironment.statsModifiers.intelligentBeings.magic
             }
         }
 
         // Spell Effects
-        if (this.spellEffects.magic) stat += this.spellEffects.magic
+        stat += this.spellEffects.magic
 
-        return stat;
+        return clamp(stat, 0, Infinity);
     }
 
     restoreHitPoints() {
@@ -378,5 +341,4 @@ class Being {
     addWeakTrait(roll) {
         this.traits.push(getWeakTrait(roll))
     }
-
 }

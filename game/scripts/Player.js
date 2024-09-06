@@ -188,7 +188,7 @@ class Player {
     // Spell Effects
     if (this.spellEffects.hitPoints) stat += this.spellEffects.hitPoints
 
-    return stat;
+    return clamp(stat, 0, Infinity);
   }
 
   get strength() {
@@ -229,7 +229,7 @@ class Player {
     // Spell Effects
     stat += this.spellEffects.strength
 
-    return stat;
+    return clamp(stat, 0, Infinity);
   }
 
   get speed() {
@@ -278,7 +278,7 @@ class Player {
     // Spell Effects
     stat += this.spellEffects.speed
 
-    return stat;
+    return clamp(stat, 0, Infinity);
   }
 
   get magic() {
@@ -325,7 +325,7 @@ class Player {
     // Spell Effects
     stat += this.spellEffects.magic
 
-    return stat;
+    return clamp(stat, 0, Infinity);
   }
 
   get goldCoins() {
@@ -430,6 +430,7 @@ class Player {
     this.updateSpeedVisuals()
     this.updateMagicVisuals()
 
+    // Reset Divination effect
     this.hasForcedInitiative = false
   }
 
