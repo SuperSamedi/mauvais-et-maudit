@@ -1,4 +1,6 @@
-class Dice {
+import { getRandomInt } from "./utilities.js";
+
+export default class Dice {
     #faces
 
     constructor(faces) {

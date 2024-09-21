@@ -1,4 +1,4 @@
-class Item {
+export default class Item {
     #type
     #name
     #isLegendary
@@ -51,35 +51,4 @@ class Item {
     get gender() {
         return this.#gender
     }
-
-    buy() {
-        if (player.goldCoins < this.buyValue) return
-        if (player.inventory.isFull() === true) return
-
-        player.goldCoins -= this.buyValue
-        shop.remove(this)
-        player.inventory.add(this)
-        shop.updateDisplay()
-    }
-
-    sell() {
-        if (!player.isAllowedToSellItems) return
-
-        // if we manage to remove the item from the inventory
-        if (player.inventory.remove(this)) {
-            player.updateStatsVisuals()
-            player.goldCoins += this.sellValue
-            shop.add(this)
-            shop.updateDisplay()
-        }
-    }
-
-    drop() {
-        if (player.inventory.remove(this)) {
-            player.updateStatsVisuals()
-            return true
-        }
-        return false
-    }
-
 }

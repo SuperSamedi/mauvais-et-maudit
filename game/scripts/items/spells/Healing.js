@@ -1,4 +1,6 @@
-class Healing extends Spell {
+import Spell from "../Spell.js";
+
+export default class Healing extends Spell {
   constructor(data = structuredClone(clubsItemsTable[3])) {
     super(data);
     this.healingAmount = data.healingAmount;

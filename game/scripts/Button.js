@@ -1,4 +1,4 @@
-class Button {
+export default class Button {
   #buttonElement;
   #iconElement;
   #textElement;
@@ -97,13 +97,8 @@ class Button {
     this.display = "block";
     this.isDisabled = false;
 
-    // Set up Click Event
     this.onclick = clickFunction;
-
-    // Set up Text
     this.text = text;
-
-    // Set up Icon
     this.iconCode = iconCode
   }
 

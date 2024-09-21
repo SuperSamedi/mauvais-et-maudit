@@ -1,67 +1,6 @@
-
-const btnOpenScreenCharacterSheet = document.getElementById("btn-open-screen-character-sheet")
-
-const screenCharacterSheetBackground = document.getElementById("character-sheet-background")
-const screenCharacterSheetContainer = document.getElementById("character-sheet-container")
-const screenCharacterSheet = document.getElementById("character-sheet")
-
-const txtPlayerName = document.getElementById("player-name");
-
-const txtPlayerRace = document.getElementById("player-race");
-const txtPlayerTrait = document.getElementById("player-trait");
-
-const txtPlayerHitPoints = document.getElementById("player-hit-points");
-const txtPlayerStrength = document.getElementById("player-strength");
-const txtPlayerSpeed = document.getElementById("player-speed");
-const txtPlayerMagic = document.getElementById("player-magic");
-
-const txtPlayerGoldCoins = document.getElementById("gold-pieces");
-const txtPlayerActionPoints = document.getElementById("action-points");
-const txtPlayerExperiencePoints = document.getElementById("experience-points")
-
-// Hover Trait for details/description
-txtPlayerTrait.addEventListener("mouseover", (e) => {
-  if (player.traits[0].description) {
-    txtPlayerTrait.innerText = `${player.gender == "F" ? player.traits[0].name.accordFeminin : player.traits[0].name.accordMasculin} (${player.traits[0].description})`;
-  }
-});
-txtPlayerTrait.addEventListener("mouseleave", (e) => {
-  if (player.traits[0].description) {
-    txtPlayerTrait.innerText = `${player.gender == "F" ? player.traits[0].name.accordFeminin : player.traits[0].name.accordMasculin}`;
-  }
-});
-
-// Character Sheet set up
-// Background
-screenCharacterSheetContainer.onclick = () => { closeCharacterSheet() }
-screenCharacterSheetBackground.onclick = () => { closeCharacterSheet() }
-
-// Side button
-btnOpenScreenCharacterSheet.onclick = () => {
-  if (screenCharacterSheetContainer.style.display == "none") {
-    // OPEN
-    closeVoyage()
-    openCharacterSheet()
-    return
-  }
-  // CLOSE
-  closeCharacterSheet()
-}
-
-function openCharacterSheet() {
-  screenCharacterSheetContainer.style.display = "block"
-  screenCharacterSheetBackground.style.display = "block"
-  updateGameDivHeight(screenCharacterSheetContainer)
-}
-function closeCharacterSheet() {
-  screenCharacterSheetContainer.style.display = "none"
-  screenCharacterSheetBackground.style.display = "none"
-  updateGameDivHeight(undefined)
-}
-
-// Blocks clicks on the character sheet to go through to the container and close it
-screenCharacterSheet.onclick = (event) => { event.stopPropagation(); }
-
+import { clamp } from "./utilities.js"
+import { voyage } from "./Voyage.js";
+import { inventory } from "./Inventory.js";
 
 class Player {
   #name;
@@ -70,9 +9,10 @@ class Player {
   #actionPoints;
   #experiencePoints;
   #gender;
+  #voyage;
 
   constructor() {
-    this.inventory = new Inventory();
+    this.inventory = inventory;
     this.type = "Intelligent Being"
     this.races = [{ name: { female: "aucune", male: "aucune" } }];
     this.traits = new Array({ name: { accordFeminin: "aucun", accordMasculin: "aucun" } });
@@ -81,6 +21,7 @@ class Player {
     this.#actionPoints = 0;
     this.#experiencePoints = 0;
     this.#gender = "M";
+    this.#voyage = voyage;
     this.levelUpStats = {
       hitPoints: 0,
       strength: 0,
@@ -107,6 +48,7 @@ class Player {
 
   set name(value) {
     this.#name = value
+    const txtPlayerName = document.getElementById("player-name");
     txtPlayerName.innerText = this.name
   }
 
@@ -141,6 +83,9 @@ class Player {
   }
 
   set hitPoints(value) {
+    if (typeof value !== "number") {
+      throw new Error("Unexpected argument type: ", typeof value);
+    }
     this.#hitPoints = clamp(value, 0, this.maxHitPoints);
     this.updateHitPointsVisuals();
   }
@@ -174,12 +119,8 @@ class Player {
     });
 
     // Environment modifiers
-    if (currentEnvironment.statsModifiers) {
-      if (currentEnvironment.statsModifiers.player) {
-        if (currentEnvironment.statsModifiers.player.hitPoints) {
-          stat += currentEnvironment.statsModifiers.player.hitPoints
-        }
-      }
+    if (this.#voyage.currentEnvironment?.statsModifiers?.player?.hitPoints) {
+      stat += currentEnvironment.statsModifiers.player.hitPoints
     }
 
     // Level up stats
@@ -219,7 +160,7 @@ class Player {
     });
 
     // Environment modifiers
-    if (currentEnvironment.statsModifiers?.player?.strength) {
+    if (this.#voyage.currentEnvironment.statsModifiers?.player?.strength) {
       stat += currentEnvironment.statsModifiers.player.strength
     }
 
@@ -260,7 +201,7 @@ class Player {
     });
 
     // Environment modifiers
-    if (currentEnvironment.statsModifiers?.player?.speed) {
+    if (this.#voyage.currentEnvironment.statsModifiers?.player?.speed) {
       stat += currentEnvironment.statsModifiers.player.speed
 
       // Vision Lantern special rules
@@ -309,7 +250,7 @@ class Player {
     });
 
     // Environment modifiers
-    if (currentEnvironment.statsModifiers?.player?.magic) {
+    if (this.#voyage.currentEnvironment.statsModifiers?.player?.magic) {
       stat += currentEnvironment.statsModifiers.player.magic
 
       // Vision Lantern special rules
@@ -353,6 +294,36 @@ class Player {
   set experiencePoints(value) {
     this.#experiencePoints = clamp(value, 0, Infinity);
     this.updateExperiencePointsVisuals();
+  }
+
+  buy(item, shop) {
+    if (this.goldCoins < item.buyValue) return
+    if (this.inventory.isFull() === true) return
+
+    this.goldCoins -= item.buyValue
+    shop.remove(item)
+    this.inventory.add(item)
+    shop.updateDisplay()
+  }
+
+  sell(item, shop) {
+    if (!this.isAllowedToSellItems) return
+
+    // if we manage to remove the item from the inventory
+    if (this.inventory.remove(item)) {
+      this.updateStatsVisuals()
+      this.goldCoins += item.sellValue
+      shop.add(item)
+      shop.updateDisplay()
+    }
+  }
+
+  drop(item) {
+    if (this.inventory.remove(item)) {
+      this.updateStatsVisuals()
+      return true
+    }
+    return false
   }
 
 
@@ -434,6 +405,15 @@ class Player {
     this.hasForcedInitiative = false
   }
 
+  resetSpellsCastLimits() {
+    this.inventory.slots.forEach(slot => {
+      if (slot?.type !== "parchemin de sort") return;
+      if (slot?.hasAlreadyBeenCast === undefined) return;
+
+      slot.hasAlreadyBeenCast = false;
+    });
+  }
+
   hasARaceInCommonWith(intelligentBeing) {
     // For each player race we check each of the being's race to see if one matches
     for (let i = 0; i < this.races.length; i++) {
@@ -468,10 +448,23 @@ class Player {
 
   //Race et Trait
   updateRaceVisuals() {
+    const txtPlayerRace = document.getElementById("player-race");
     txtPlayerRace.innerText = this.fullRaceName;
   }
   updateTraitVisuals() {
+    const txtPlayerTrait = document.getElementById("player-trait");
     txtPlayerTrait.innerText = this.gender == "F" ? this.traits[0].name.accordFeminin : this.traits[0].name.accordMasculin;
+    // Hover Trait for details/description
+    txtPlayerTrait.addEventListener("mouseover", (e) => {
+      if (player.traits[0].description) {
+        txtPlayerTrait.innerText = `${player.gender == "F" ? player.traits[0].name.accordFeminin : player.traits[0].name.accordMasculin} (${player.traits[0].description})`;
+      }
+    });
+    txtPlayerTrait.addEventListener("mouseleave", (e) => {
+      if (player.traits[0].description) {
+        txtPlayerTrait.innerText = `${player.gender == "F" ? player.traits[0].name.accordFeminin : player.traits[0].name.accordMasculin}`;
+      }
+    });
   }
 
   //Stats
@@ -482,27 +475,35 @@ class Player {
     this.updateMagicVisuals()
   }
   updateHitPointsVisuals() {
-    if (this.hitPoints > this.maxHitPoints) this.hitPoints = this.maxHitPoints
+    const txtPlayerHitPoints = document.getElementById("player-hit-points");
     txtPlayerHitPoints.innerText = `${this.hitPoints}/${this.maxHitPoints}`;
   }
   updateStrengthVisuals() {
+    const txtPlayerStrength = document.getElementById("player-strength");
     txtPlayerStrength.innerText = this.strength;
   }
   updateSpeedVisuals() {
+    const txtPlayerSpeed = document.getElementById("player-speed");
     txtPlayerSpeed.innerText = this.speed;
   }
   updateMagicVisuals() {
+    const txtPlayerMagic = document.getElementById("player-magic");
     txtPlayerMagic.innerText = this.magic;
   }
 
   //Ressources
   updateGoldCoinsVisuals() {
+    const txtPlayerGoldCoins = document.getElementById("gold-pieces");
     txtPlayerGoldCoins.innerText = this.goldCoins;
   }
   updateActionPointsVisuals() {
+    const txtPlayerActionPoints = document.getElementById("action-points");
     txtPlayerActionPoints.innerText = this.actionPoints;
   }
   updateExperiencePointsVisuals() {
+    const txtPlayerExperiencePoints = document.getElementById("experience-points")
     txtPlayerExperiencePoints.innerText = this.experiencePoints;
   }
 }
+
+export const player = new Player();

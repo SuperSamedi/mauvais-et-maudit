@@ -1,4 +1,6 @@
-class Teleport extends Spell {
+import Spell from "../Spell.js";
+
+export default class Teleport extends Spell {
 
     constructor(data = structuredClone(clubsItemsTable[5])) {
         super(data)

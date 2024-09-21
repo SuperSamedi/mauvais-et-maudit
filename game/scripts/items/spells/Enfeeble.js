@@ -1,4 +1,6 @@
-class Enfeeble extends Spell {
+import Spell from "../Spell.js";
+
+export default class Enfeeble extends Spell {
   constructor(data = structuredClone(clubsItemsTable[6])) {
     super(data);
     this.debuffAmount = -25;

@@ -1,11 +1,13 @@
-const zoneShopButtons = document.getElementById("shop-buttons");
+import { gameMessage } from "./utilities.js"
 
+export default class Shop {
+    #zoneShopButtons;
+    #items;
 
-class Shop {
-    #items
-
-    constructor() {
-        this.#items = []
+    constructor(player) {
+        this.#items = [];
+        this.#zoneShopButtons = document.getElementById("shop-buttons");
+        this.player = player;
     }
 
     add(item) {
@@ -36,14 +38,14 @@ class Shop {
         gameMessage(message)
 
         // Create Buttons
-        zoneShopButtons.innerHTML = ``
+        this.#zoneShopButtons.innerHTML = ``
         this.#items.forEach(item => {
             const button = document.createElement("button")
             button.innerText = `Acheter : ${item.name}`
             button.classList.add("shop-button")
-            if (player.goldCoins < item.buyValue) button.disabled = true
+            if (this.player.goldCoins < item.buyValue) button.disabled = true
             button.onclick = () => { item.buy() }
-            zoneShopButtons.appendChild(button)
+            this.#zoneShopButtons.appendChild(button)
         });
     }
 }

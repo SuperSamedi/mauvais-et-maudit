@@ -1,9 +1,33 @@
+import Dice from "./Dice.js";
+import Item from "./items/Item.js";
+import Button from "./Button.js"
+
+// Spells
+import DivineWind from "./items/spells/DivineWind.js";
+import MetalForm from "./items/spells/MetalForm.js";
+import InfiniteSpring from "./items/spells/InfiniteSpring.js";
+import Healing from "./items/spells/Healing.js";
+import Steal from "./items/spells/Steal.js";
+import Teleport from "./items/spells/Teleport.js";
+import Enfeeble from "./items/spells/Enfeeble.js";
+import InfernalSphere from "./items/spells/InfernalSphere.js";
+import Divination from "./items/spells/Divination.js";
+import AbsoluteRestoration from "./items/spells/AbsoluteRestoration.js";
+
+// Cups Items
+import EquippableItem from "./items/EquippableItem.js";
+import Potion from "./items/consumables/Potion.js";
+import Ether from "./items/consumables/Ether.js";
+import LuckyClover from "./items/consumables/LuckyClover.js";
+
+const d20 = new Dice(20);
+
 /**
  * Generates a random integer between 0 and max value (max value is excluded)
  * @param {integer} max The non-inclusive integer value that defines the range of the random number. 
  * @returns a random integer.
  */
-function getRandomInt(max) {
+export function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
 
@@ -11,7 +35,7 @@ function getRandomInt(max) {
  * Shuffles an array.
  * @param {array} array The array that needs shuffling.
  */
-function shuffle(array) {
+export function shuffle(array) {
   let currentIndex = array.length;
 
   while (currentIndex > 0) {
@@ -32,7 +56,7 @@ function shuffle(array) {
  * @param {number} max The maximum value the number can have.
  * @returns The number clamped between the min and max values.
  */
-function clamp(number, min, max) {
+export function clamp(number, min, max) {
   if (min > max) {
     // Swap
     min = min + max;
@@ -56,11 +80,11 @@ function clamp(number, min, max) {
  * @param {string} string The string we want to capitalize.
  * @returns The string argument with an upper case first character.
  */
-function capitalize(string) {
+export function capitalize(string) {
   return `${string.charAt(0).toUpperCase()}${string.slice(1)}`
 }
 
-function beingNameWithDeterminantDefini(being, toLowerCase) {
+export function beingNameWithDeterminantDefini(being, toLowerCase) {
   let name = being.name.toLowerCase()
 
   if (
@@ -93,7 +117,7 @@ function beingNameWithDeterminantDefini(being, toLowerCase) {
   return `Le ${being.name}`
 }
 
-function beingNameWithDeterminantDefiniContracte(being, preposition) {
+export function beingNameWithDeterminantDefiniContracte(being, preposition) {
   let name = being.name.toLowerCase()
 
   if (
@@ -120,11 +144,15 @@ function beingNameWithDeterminantDefiniContracte(being, preposition) {
   }
 }
 
-function currentGameMessage() {
+const txtDungeonMaster = document.getElementById("dungeon-master__main");
+export function gameMessage(text) {
+  txtDungeonMaster.innerText = text;
+}
+export function currentGameMessage() {
   return txtDungeonMaster.innerText;
 }
 
-function generateTraits() {
+export function generateTraits() {
   let traits = []
 
   switch (currentEnvironment.monstersLevel) {
@@ -149,12 +177,12 @@ function generateTraits() {
   return traits
 }
 
-function getWeakTrait(roll = d20.roll()) {
-  return structuredClone(weakTraitsTable[d20.reducedRoll(roll, 4) - 1])
+export function getWeakTrait(table, roll = d20.roll()) {
+  return structuredClone(table[d20.reducedRoll(roll, 4) - 1])
 }
 
-function getStrongTrait(roll = d20.roll()) {
-  let trait = structuredClone(strongTraitsTable[roll - 1])
+export function getStrongTrait(table, roll = d20.roll()) {
+  let trait = structuredClone(table[roll - 1])
 
   // Mutant special rule
   if (trait.name.accordMasculin == "Mutant") {
@@ -228,7 +256,7 @@ function getStrongTrait(roll = d20.roll()) {
   }
 }
 
-function generateDescription(trait) {
+export function generateDescription(trait) {
   let description = ""
   let isFirstStat = true
   let numberOfStats = 0
@@ -269,28 +297,28 @@ function generateDescription(trait) {
   return description
 }
 
-function getClubsItem(id) {
+export function getClubsItem(id, table) {
   switch (id) {
     case 1:
-      return new DivineWind()
+      return new DivineWind(structuredClone(table[id - 1]))
     case 2:
-      return new MetalForm()
+      return new MetalForm(structuredClone(table[id - 1]))
     case 3:
-      return new InfiniteSpring()
+      return new InfiniteSpring(structuredClone(table[id - 1]))
     case 4:
-      return new Healing()
+      return new Healing(structuredClone(table[id - 1]))
     case 5:
-      return new Steal()
+      return new Steal(structuredClone(table[id - 1]))
     case 6:
-      return new Teleport()
+      return new Teleport(structuredClone(table[id - 1]))
     case 7:
-      return new Enfeeble()
+      return new Enfeeble(structuredClone(table[id - 1]))
     case 8:
-      return new InfernalSphere()
+      return new InfernalSphere(structuredClone(table[id - 1]))
     case 9:
-      return new Divination()
+      return new Divination(structuredClone(table[id - 1]))
     case 10:
-      return new AbsoluteRestoration()
+      return new AbsoluteRestoration(structuredClone(table[id - 1]))
 
     default:
       console.error("Can't find a Clubs item with id: " + id);
@@ -298,47 +326,47 @@ function getClubsItem(id) {
   }
 }
 
-function getCupsItem(id) {
+export function getCupsItem(id, table) {
   switch (id) {
     case 1:
       // Potion
-      return new Potion()
+      return new Potion(structuredClone(table[id - 1]))
     case 2:
       // Ether
-      return new Ether()
+      return new Ether(structuredClone(table[id - 1]))
     case 3:
       // Moon Pendant
-      return new EquippableItem(structuredClone(cupsItemsTable[id - 1]))
+      return new EquippableItem(structuredClone(table[id - 1]))
     case 4:
       // Lucky Clover
-      return new LuckyClover()
+      return new LuckyClover(structuredClone(table[id - 1]))
     case 5:
       // Ligth Armor
-      return new EquippableItem(structuredClone(cupsItemsTable[id - 1]))
+      return new EquippableItem(structuredClone(table[id - 1]))
     case 6:
       // Heavy Armor
-      return new EquippableItem(structuredClone(cupsItemsTable[id - 1]))
+      return new EquippableItem(structuredClone(table[id - 1]))
     case 7:
       // Ring of Balance
-      return new EquippableItem(structuredClone(cupsItemsTable[id - 1]))
+      return new EquippableItem(structuredClone(table[id - 1]))
     case 8:
       // Elixir of Life
-      return new Potion(structuredClone(cupsItemsTable[id - 1]), Infinity)
+      return new Potion(structuredClone(table[id - 1]), Infinity)
     case 9:
       // Cloak of a Giant
-      return new EquippableItem(structuredClone(cupsItemsTable[id - 1]))
+      return new EquippableItem(structuredClone(table[id - 1]))
     case 10:
       // Bottomless Cup
-      return new Item(structuredClone(cupsItemsTable[id - 1]))
+      return new Item(structuredClone(table[id - 1]))
     case 11:
       // Vision Lantern
-      return new Item(structuredClone(cupsItemsTable[id - 1]))
+      return new Item(structuredClone(table[id - 1]))
     case 12:
       // Compas of the Ancients
-      return new Item(structuredClone(cupsItemsTable[id - 1]))
+      return new Item(structuredClone(table[id - 1]))
     case 15:
       // Lucky Clover (public test version)
-      return new LuckyClover(structuredClone(cupsItemsTable[id - 1]))
+      return new LuckyClover(structuredClone(table[id - 1]))
 
     default:
       console.error("Can't find a Cups item with id: " + id);
@@ -346,40 +374,47 @@ function getCupsItem(id) {
   }
 }
 
-function isBeingDead(being) {
+export function isBeingDead(being) {
   return being.hitPoints <= 0
 }
 
-function hideAllGenericButtons() {
-  btn1.hide();
-  btn2.hide();
-  btn3.hide();
-  btn4.hide();
-  btn5.hide();
-  btn6.hide();
+export function hideButton(btn) {
+  btn.style.display = "none";
+  btn.disabled = true;
+  btn.onclick = () => { };
 }
 
-function hideButton(btn) {
-  btn.onclick = () => { }
-  btn.disabled = true
-  btn.style.display = "none"
+export function hideAllButtons(buttons) {
+  buttons.forEach(button => {
+    if (!button instanceof Button)
+      return;
+
+    button.hide();
+  });
 }
 
-function updateGameDivHeight(element) {
+export function updateGameDivHeight(element) {
+  const containerGame = document.getElementById("game")
+
   if (element === undefined) {
     containerGame.removeAttribute("style")
     return
   }
+
   containerGame.style.height = `${element.offsetHeight}px`
 }
 
-function isAllowedToRerollEnvironment() {
+export function isAllowedToRerollEnvironment() {
   return environmentRerolls > 0
 }
 
-function displayState(isOn = false, text = "") {
+export function displayState(isOn = false, text = "") {
+  const txtDungeonMasterState = document.getElementById("dungeon-master__state")
+  const DungeonMasterLine = document.getElementById("dungeon-master__line");
+
   txtDungeonMasterState.style.display = "none"
   DungeonMasterLine.style.display = "none"
+
   if (isOn) {
     txtDungeonMasterState.style.display = "block"
     DungeonMasterLine.style.display = "block"

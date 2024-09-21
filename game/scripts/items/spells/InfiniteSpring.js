@@ -1,4 +1,6 @@
-class InfiniteSpring extends Spell {
+import Spell from "../Spell.js";
+
+export default class InfiniteSpring extends Spell {
 
     constructor(data = structuredClone(clubsItemsTable[2])) {
         super(data)

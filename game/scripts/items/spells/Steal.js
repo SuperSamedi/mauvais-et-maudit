@@ -1,4 +1,6 @@
-class Steal extends Spell {
+import Spell from "../Spell.js";
+
+export default class Steal extends Spell {
 
     constructor(data = structuredClone(clubsItemsTable[4])) {
         super(data)

@@ -1,4 +1,6 @@
-class Environment {
+import Step from "./Step.js";
+
+export default class Environment {
     #name
     #element
     #nameElement

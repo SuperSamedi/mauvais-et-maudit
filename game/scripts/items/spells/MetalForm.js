@@ -1,4 +1,6 @@
-class MetalForm extends Spell {
+import Spell from "../Spell.js";
+
+export default class MetalForm extends Spell {
 
     constructor(data = structuredClone(clubsItemsTable[1])) {
         super(data)

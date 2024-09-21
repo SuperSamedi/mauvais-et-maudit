@@ -1,11 +1,11 @@
 class Being {
     #hitPoints;
 
-    constructor(type, races, gender, traits) {
+    constructor({ type, races, gender, traits }) {
         this.type = type
-        this.races = races ? races : [{ name: { female: "aucune", male: "aucune" } }];
-        this.gender = gender ? gender : races[0].gender
-        this.traits = traits ? traits : []
+        this.races = races ?? [{ name: { female: "aucune", male: "aucune" } }];
+        this.gender = gender ?? this.races[0].gender
+        this.traits = traits ?? []
         this.#hitPoints = 0;
         this.spellEffects = {
             strength: 0,
@@ -181,6 +181,9 @@ class Being {
     }
 
     set hitPoints(value) {
+        if (typeof value !== "number") {
+            throw new Error("Unexpected argument type: ", typeof value);
+        }
         this.#hitPoints = clamp(value, 0, this.maxHitPoints);
     }
 
@@ -193,6 +196,8 @@ class Being {
                 racesStat += race.hitPoints;
             }
         })
+
+        // Hybrid special rule -> use the average value of the stats of both races.
         stat += Math.round(racesStat / this.races.length)
 
         if (this.traits) {
@@ -216,7 +221,7 @@ class Being {
         }
 
         // Spell Effects
-        stat += this.spellEffects.hitPoints
+        if (this.spellEffects.hitPoints) stat += this.spellEffects.hitPoints
 
         return clamp(stat, 0, Infinity);
     }

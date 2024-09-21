@@ -1,4 +1,6 @@
-class DivineWind extends Spell {
+import Spell from "../Spell.js";
+
+export default class DivineWind extends Spell {
   constructor(data = structuredClone(clubsItemsTable[0])) {
     super(data);
     this.buffAmount = data.buffAmount;

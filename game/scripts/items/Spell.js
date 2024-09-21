@@ -1,4 +1,6 @@
-class Spell extends Item {
+import Item from "./Item.js";
+
+export default class Spell extends Item {
     #cost
     #magicNeeded
     #amplification
@@ -23,10 +25,11 @@ class Spell extends Item {
         return this.#amplification
     }
 
-    get isAllowedToBeCast() {
-        if (player.isAllowedToCastSpell === false) return false
+    isAllowedToBeCastBy(caster) {
+        if (!Object.hasOwn(caster, "isAllowedToCastSpell")) return false;
+        if (caster.isAllowedToCastSpell === false) return false;
 
-        return true
+        return true;
     }
 
 }

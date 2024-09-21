@@ -3,7 +3,7 @@ let cloverState = {}
 let lastItemReceivedRandomly = undefined
 
 
-function saveCloverState(onLoadCallBack) {
+function saveCloverState(onLoadCallBack, currentCombatContext = undefined) {
     // if (!player.inventory.containsItemWithName("Trèfle à 4 Feuilles")) return
 
     const data = {}
@@ -92,9 +92,9 @@ function loadCloverState() {
         data.onLoadCallBack()
     }
 }
+import ConsumableItem from "../ConsumableItem.js"
 
-
-class LuckyClover extends ConsumableItem {
+export default class LuckyClover extends ConsumableItem {
     constructor(data = structuredClone(cupsItemsTable[3])) {
         super(data)
     }

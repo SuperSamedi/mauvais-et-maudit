@@ -1,5 +1,5 @@
 // Generated when a new Environment is instantiated.
-class Step {
+export default class Step {
     #isCompleted
     #isCurrent
 

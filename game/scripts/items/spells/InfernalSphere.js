@@ -1,4 +1,6 @@
-class InfernalSphere extends Spell {
+import Spell from "../Spell.js";
+
+export default class InfernalSphere extends Spell {
     constructor(data = structuredClone(clubsItemsTable[7])) {
         super(data);
     }

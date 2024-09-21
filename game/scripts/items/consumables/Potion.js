@@ -1,4 +1,6 @@
-class Potion extends ConsumableItem {
+import ConsumableItem from "../ConsumableItem.js"
+
+export default class Potion extends ConsumableItem {
     constructor(data = structuredClone(cupsItemsTable[0]), healingAmount = 20) {
         super(data)
         // Potion is always usable

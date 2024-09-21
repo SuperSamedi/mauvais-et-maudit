@@ -1,4 +1,6 @@
-class AbsoluteRestoration extends Spell {
+import Spell from "../Spell.js";
+
+export default class AbsoluteRestoration extends Spell {
 
     constructor(data = structuredClone(clubsItemsTable[9])) {
         super(data)

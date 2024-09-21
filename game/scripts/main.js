@@ -1,107 +1,230 @@
-//#region DOM links
-const containerGame = document.getElementById("game")
-const screenLoader = document.getElementById("loading-screen")
+import {
+  getRandomInt,
+  shuffle,
+  beingNameWithDeterminantDefini,
+  beingNameWithDeterminantDefiniContracte,
+  gameMessage,
+  currentGameMessage,
+  generateTraits,
+  getWeakTrait,
+  getStrongTrait,
+  generateDescription,
+  getClubsItem,
+  getCupsItem,
+  isBeingDead,
+  hideAllButtons,
+  isAllowedToRerollEnvironment,
+  updateGameDivHeight,
+  displayState
+} from "./utilities.js";
+import loadResources from "./data.js";
+import Dice from "./Dice.js";
+import { player } from "./Player.js";
+import { voyage } from "./Voyage.js";
+import Button from "./Button.js";
 
-const txtDungeonMasterState = document.getElementById("dungeon-master__state")
-const DungeonMasterLine = document.getElementById("dungeon-master__line");
-const txtDungeonMaster = document.getElementById("dungeon-master__main");
 
-const panelPlayerName = document.getElementById("player-name-panel")
-const inputPlayerName = document.getElementById("player-name-input-field")
-const btnConfirmPlayerName = document.getElementById("btn-confirm-player-name-input-field")
+// Data tables
+let encountersTable = [];
+let intelligentRacesTable = [];
+let monstersTable = [];
+let weakTraitsTable = []
+let strongTraitsTable = [];
+let strongissimeTraitsTable = [];
+let environmentsTable = [];
+let bossesTable = [];
+let scopaDeck = [];
+let coinsItemsTable = [];
+let swordsItemsTable = [];
+let clubsItemsTable = [];
+let cupsItemsTable = [];
 
-const imgDeck = document.getElementById("btn-deck");
-const zoneCardsDrawn = document.getElementById("cards-drawn")
+// Deck Button
+let imgDeck;
 
 // Generic buttons
-const btn1Element = document.getElementById("btn1");
-const btn2Element = document.getElementById("btn2");
-const btn3Element = document.getElementById("btn3");
-const btn4Element = document.getElementById("btn4");
-const btn5Element = document.getElementById("btn5");
-const btn6Element = document.getElementById("btn6");
+let btn1;
+let btn2;
+let btn3;
+let btn4;
+let btn5;
+let btn6;
+let genericButtons;
 
-// Stats adjustments Panel
-const panelStatsAdjustment = document.getElementById("stats-adjustment-panel");
-const txtStatsAdjustmentHitPoints = document.getElementById("stats-adjustment-hit-points");
-const txtStatsAdjustmentStrength = document.getElementById("stats-adjustment-strength");
-const txtStatsAdjustmentSpeed = document.getElementById("stats-adjustment-speed");
-const txtStatsAdjustmentMagic = document.getElementById("stats-adjustment-magic");
-const btnAddHitPoint = document.getElementById("btn-add-hit-point");
-const btnRemoveHitPoint = document.getElementById("btn-remove-hit-point");
-const btnAddStrength = document.getElementById("btn-add-strength");
-const btnRemoveStrength = document.getElementById("btn-remove-strength");
-const btnAddSpeed = document.getElementById("btn-add-speed");
-const btnRemoveSpeed = document.getElementById("btn-remove-speed");
-const btnAddMagic = document.getElementById("btn-add-magic");
-const btnRemoveMagic = document.getElementById("btn-remove-magic");
-const btnConfirmStatsAdjustment = document.getElementById("btn-confirm-stats-adjustment");
-
-// Test Buttons TOREMOVE
-const btnUnlockDeck = document.getElementById("btn-unlock-deck")
-const btnFightBoss = document.getElementById("btn-fight-boss");
-const btnSpecialEventEncounter = document.getElementById("btn-special-event-encounter")
-const btnRestEncounter = document.getElementById("btn-rest-encounter")
-const btnVillageEncounter = document.getElementById("btn-village-encounter")
-//#endregion
-
-// =====> START
-// Generic Buttons
-const btn1 = new Button(btn1Element);
-const btn2 = new Button(btn2Element);
-const btn3 = new Button(btn3Element);
-const btn4 = new Button(btn4Element);
-const btn5 = new Button(btn5Element);
-const btn6 = new Button(btn6Element);
-
-imgDeck.onclick = () => {
-  clearCardsDisplayZone();
-  drawReward(scopaDeck, false, true);
-};
-
-const player = new Player();
-// console.log(player);
 const d20 = new Dice(20);
 const d100 = new Dice(100);
-
-let shop = new Shop();
+let shop;
 
 let currentCombatContext = undefined
 let environmentRerolls = 0
 let isInCombat = false
-// Test Variable TOREMOVE
-let isDeckUnlocked = false
 
 const adventureBeginsMessage = `Vous contemplez les plaines de votre campagne natale. Savoir que vous ne reviendrai peut-être jamais chez vous vous fais un petit pincement au cœur mais votre détermination est sans faille, votre destin vous appelle.`
 const playerPreparationPhaseMessage = `Si vous le souhaitez, vous pouvez lancer un sort depuis votre inventaire.`
 
 
-loadJSONS();
+// == APP ENTRY POINT ==
+window.addEventListener('DOMContentLoaded', () => {
+  console.log("DOM loaded");
+  loadResources(
+    [
+      encountersTable,
+      intelligentRacesTable,
+      monstersTable,
+      weakTraitsTable,
+      strongTraitsTable,
+      strongissimeTraitsTable,
+      environmentsTable,
+      bossesTable,
+      scopaDeck,
+      coinsItemsTable,
+      swordsItemsTable,
+      clubsItemsTable,
+      cupsItemsTable
+    ],
+    [
+      "game/resources/data-tables/encounters.json",
+      "game/resources/data-tables/intelligent-races.json",
+      "game/resources/data-tables/monsters.json",
+      "game/resources/data-tables/weak-traits.json",
+      "game/resources/data-tables/strong-traits.json",
+      "game/resources/data-tables/strongissime-traits.json",
+      "game/resources/data-tables/environments.json",
+      "game/resources/data-tables/bosses.json",
+      "game/resources/data-tables/scopa-cards.json",
+      "game/resources/data-tables/coins-items.json",
+      "game/resources/data-tables/swords-items.json",
+      "game/resources/data-tables/clubs-items.json",
+      "game/resources/data-tables/cups-items.json"
+    ],
+    start
+  );
+});
+
 
 function start() {
-  console.log("Starting Game");
-  updateDeckVisual();
-  hideAllGenericButtons();
+  console.log("--Starting Game--");
+  setupScreenCharacterSheet();
+  setupScreenVoyage();
+  setupGenericButtons();
+  setupDeck();
+
   displayState(false);
-  panelPlayerName.style.display = "none";
-  panelStatsAdjustment.style.display = "none";
-  // btnCardDraw.style.display = "none"
-  closeCharacterSheet();
-  closeVoyage();
-  detailsViewOverlay.style.display = "none";
-  screenLoader.style.display = "none";
-  btnUnlockDeck.style.display = "none";
-  btnFightBoss.style.display = "none";
-  btnSpecialEventEncounter.style.display = "none";
-  btnRestEncounter.style.display = "none"
-  btnVillageEncounter.style.display = "none"
+  hideAllButtons(genericButtons);
+
+  // Hide loading screen
+  document.getElementById("loading-screen").style.display = "none";
+
+  // Start gameplay sequence
   presentation();
   // tests();
+
+
+  function setupScreenCharacterSheet() {
+    const screenCharacterSheet = document.getElementById("character-sheet")
+    const btnOpenScreenCharacterSheet = document.getElementById("btn-open-screen-character-sheet")
+    const screenCharacterSheetContainer = document.getElementById("character-sheet-container")
+    const screenCharacterSheetBackground = document.getElementById("character-sheet-background")
+
+    // Side button
+    btnOpenScreenCharacterSheet.onclick = () => {
+      if (screenCharacterSheetContainer.style.display == "none") {
+        closeVoyage()
+        openCharacterSheet()
+        return
+      }
+      closeCharacterSheet()
+    }
+
+    // Background "buttons"
+    screenCharacterSheetContainer.onclick = () => { closeCharacterSheet() }
+    screenCharacterSheetBackground.onclick = () => { closeCharacterSheet() }
+    screenCharacterSheet.onclick = (event) => { event.stopPropagation(); } // Blocks clicks on the character sheet to go through to the container and close it
+
+    closeCharacterSheet();
+
+    function openCharacterSheet() {
+      screenCharacterSheetContainer.style.display = "block"
+      screenCharacterSheetBackground.style.display = "block"
+      updateGameDivHeight(screenCharacterSheetContainer)
+    }
+  }
+  function closeCharacterSheet() {
+    document.getElementById("character-sheet-container").style.display = "none"
+    document.getElementById("character-sheet-background").style.display = "none"
+    updateGameDivHeight(undefined)
+  }
+
+  function setupScreenVoyage() {
+    const screenVoyage = document.getElementById("voyage")
+    const btnOpenScreenVoyage = document.getElementById("btn-open-screen-voyage")
+    const screenVoyageContainer = document.getElementById("voyage-container")
+    const screenVoyageBackground = document.getElementById("voyage-background")
+
+    btnOpenScreenVoyage.onclick = () => {
+      if (screenVoyageContainer.style.display == "none") {
+        closeCharacterSheet()
+        openVoyage()
+        return
+      }
+      closeVoyage()
+    }
+
+    screenVoyageBackground.onclick = () => { closeVoyage() }
+    screenVoyageContainer.onclick = () => { closeVoyage() }
+    screenVoyage.onclick = (event) => { event.stopPropagation(); }
+
+
+    closeVoyage();
+
+    function openVoyage() {
+      screenVoyageContainer.style.display = "block"
+      screenVoyageBackground.style.display = "block"
+      updateGameDivHeight(screenVoyageContainer)
+    }
+  }
+  function closeVoyage() {
+    document.getElementById("voyage-container").style.display = "none"
+    document.getElementById("voyage-background").style.display = "none"
+    updateGameDivHeight(undefined)
+  }
+
+  function setupGenericButtons() {
+    const btn1Element = document.getElementById("btn1");
+    const btn2Element = document.getElementById("btn2");
+    const btn3Element = document.getElementById("btn3");
+    const btn4Element = document.getElementById("btn4");
+    const btn5Element = document.getElementById("btn5");
+    const btn6Element = document.getElementById("btn6");
+    btn1 = new Button(btn1Element);
+    btn2 = new Button(btn2Element);
+    btn3 = new Button(btn3Element);
+    btn4 = new Button(btn4Element);
+    btn5 = new Button(btn5Element);
+    btn6 = new Button(btn6Element);
+    genericButtons = [btn1, btn2, btn3, btn4, btn5, btn6];
+  }
+
+  function setupDeck() {
+    shuffle(scopaDeck);
+    imgDeck = document.getElementById("btn-deck");
+    imgDeck.onclick = () => {
+      clearCardsDisplayZone();
+      drawReward(scopaDeck, false, true);
+    };
+    updateDeckVisual();
+  }
 }
 
 //#region TESTS
 function tests() {
   console.log("-- /!\\ TESTING ACTIVATED /!\\ --");
+  // Test Buttons
+  let btnUnlockDeck = document.getElementById("btn-unlock-deck")
+  let btnFightBoss = document.getElementById("btn-fight-boss");
+  let btnSpecialEventEncounter = document.getElementById("btn-special-event-encounter")
+  let btnRestEncounter = document.getElementById("btn-rest-encounter")
+  let btnVillageEncounter = document.getElementById("btn-village-encounter")
 
   //#region ReducedRoll Tests
   // Reduced roll algorithm test
@@ -169,10 +292,10 @@ function tests() {
   //#region Tests Strongissime trait
   // setTimeout(function () {
   //     // console.log(strongTraitsTable);
-  //     // const testTraits = [getStrongTrait(3), getStrongTrait(3), getStrongTrait(3)]
-  //     // const testTraits = [getStrongTrait(20), getStrongTrait(1), getStrongTrait(20), getStrongTrait(1), getStrongTrait(5)]
-  //     // const testTraits = [getStrongTrait(19), getStrongTrait(1), getStrongTrait(19)]
-  //     const testTraits = [getStrongTrait(15), getStrongTrait(15)]
+  //     // const testTraits = [getStrongTrait(strongTraitsTable, 3), getStrongTrait(strongTraitsTable, 3), getStrongTrait(strongTraitsTable, 3)]
+  //     // const testTraits = [getStrongTrait(strongTraitsTable, 20), getStrongTrait(strongTraitsTable, 1), getStrongTrait(strongTraitsTable, 20), getStrongTrait(strongTraitsTable, 1), getStrongTrait(strongTraitsTable, 5)]
+  //     // const testTraits = [getStrongTrait(strongTraitsTable, 19), getStrongTrait(strongTraitsTable, 1), getStrongTrait(strongTraitsTable, 19)]
+  //     const testTraits = [getStrongTrait(strongTraitsTable, 15), getStrongTrait(strongTraitsTable, 15)]
   //     const being = generateIntelligentBeing(20, testTraits)
   //     console.log(being.name);
   // }, 200);
@@ -232,21 +355,21 @@ function tests() {
   //#endregion
 
   //#region test SPELLS
-  // player.inventory.add(getClubsItem(1)) // Vent Divin
-  // player.inventory.add(getClubsItem(2)) // Corps de Métal
-  // player.inventory.add(getClubsItem(3)) // Source Infinie
-  // player.inventory.add(getClubsItem(4)) // Soin
-  player.inventory.add(getClubsItem(5)) // Vol
-  player.inventory.add(getClubsItem(6)) // Téléportation
-  // player.inventory.add(getClubsItem(7)) // Affaiblissement
-  // player.inventory.add(getClubsItem(8)) // Sphère Infernale
-  // player.inventory.add(getClubsItem(9)) // Divination
-  // player.inventory.add(getClubsItem(10)) // Guérison Absolue
+  // player.inventory.add(getClubsItem(1, clubsItemsTable)) // Vent Divin
+  // player.inventory.add(getClubsItem(2, clubsItemsTable)) // Corps de Métal
+  // player.inventory.add(getClubsItem(3, clubsItemsTable)) // Source Infinie
+  // player.inventory.add(getClubsItem(4, clubsItemsTable)) // Soin
+  player.inventory.add(getClubsItem(5, clubsItemsTable)) // Vol
+  player.inventory.add(getClubsItem(6, clubsItemsTable)) // Téléportation
+  // player.inventory.add(getClubsItem(7, clubsItemsTable)) // Affaiblissement
+  // player.inventory.add(getClubsItem(8, clubsItemsTable)) // Sphère Infernale
+  // player.inventory.add(getClubsItem(9, clubsItemsTable)) // Divination
+  // player.inventory.add(getClubsItem(10, clubsItemsTable)) // Guérison Absolue
   // player.actionPoints += 100
   //#endregion
 
   //#region Clover system
-  player.inventory.add(getCupsItem(4));
+  player.inventory.add(getCupsItem(4, cupsItemsTable));
   //#endregion
 
   //#region test SPECIAL EVENTS
@@ -292,14 +415,15 @@ function presentation() {
 }
 
 function choosePlayerRace(roll) {
-  hideAllGenericButtons()
+  hideAllButtons(genericButtons)
+  console.log("Race roll: ", roll);
 
   let hybridRaceA = {};
   let hybridRaceB = {};
   // const roll = getRandomInt(intelligentRacesTable.length) + 1;
 
+  console.log(intelligentRacesTable);
   player.races[0] = structuredClone(intelligentRacesTable[roll - 1]);
-  //console.log(intelligentRacesTable);
 
   // Non-Being special rule
   if (player.races[0].name.male == "Non-Être") {
@@ -411,7 +535,7 @@ function choosePlayerRace(roll) {
     }
 
     function checkNonBeingStability(being) {
-      hideAllGenericButtons();
+      hideAllButtons(genericButtons);
       const totalStats =
         being.hitPoints + being.strength + being.speed + being.magic;
       console.log(`Total Non-Être stats : ${totalStats}`);
@@ -467,6 +591,21 @@ function choosePlayerRace(roll) {
     }
 
     function adjustStats(being, amount, isAdding) {
+      const panelStatsAdjustment = document.getElementById("stats-adjustment-panel");
+      const txtStatsAdjustmentHitPoints = document.getElementById("stats-adjustment-hit-points");
+      const txtStatsAdjustmentStrength = document.getElementById("stats-adjustment-strength");
+      const txtStatsAdjustmentSpeed = document.getElementById("stats-adjustment-speed");
+      const txtStatsAdjustmentMagic = document.getElementById("stats-adjustment-magic");
+      const btnAddHitPoint = document.getElementById("btn-add-hit-point");
+      const btnRemoveHitPoint = document.getElementById("btn-remove-hit-point");
+      const btnAddStrength = document.getElementById("btn-add-strength");
+      const btnRemoveStrength = document.getElementById("btn-remove-strength");
+      const btnAddSpeed = document.getElementById("btn-add-speed");
+      const btnRemoveSpeed = document.getElementById("btn-remove-speed");
+      const btnAddMagic = document.getElementById("btn-add-magic");
+      const btnRemoveMagic = document.getElementById("btn-remove-magic");
+      const btnConfirmStatsAdjustment = document.getElementById("btn-confirm-stats-adjustment");
+
       panelStatsAdjustment.style.display = "block";
 
       const hitPoints = {
@@ -739,7 +878,7 @@ function choosePlayerRace(roll) {
 
   //#region Hybrid Player Generation
   function generateHybridPlayer() {
-    hideAllGenericButtons();
+    hideAllButtons(genericButtons);
 
     // First come around
     if (!hybridRaceA.name) {
@@ -856,8 +995,7 @@ function choosePlayerRace(roll) {
       }
 
       gameMessage(
-        `${roll} ! ${player.gender == "F" ? hybridRaceB.name.female : hybridRaceB.name.male
-        }.`
+        `${roll} ! ${player.gender == "F" ? hybridRaceB.name.female : hybridRaceB.name.male}.`
       );
       generateHybridPlayer();
     }
@@ -868,16 +1006,13 @@ function choosePlayerRace(roll) {
 
 function choosePlayerTrait(roll) {
   // TODO : Manage cases where PV go below 1
-  hideAllGenericButtons();
+  hideAllButtons(genericButtons);
 
   player.traits[0] = structuredClone(strongTraitsTable[roll - 1]);
 
   // Mutant special rule
   if (player.traits[0].name.accordMasculin == "Mutant") {
-    gameMessage(`${roll} ! - ${player.gender == "F"
-      ? player.traits[0].name.accordFeminin
-      : player.traits[0].name.accordMasculin
-      }
+    gameMessage(`${roll} ! - ${player.gender == "F" ? player.traits[0].name.accordFeminin : player.traits[0].name.accordMasculin}
             Votre mutation augmente grandement une de vos caractéristiques mais en diminue une autre.
             - Choisissez une caractéristique à augmenter de 40 points.`);
 
@@ -963,7 +1098,7 @@ function choosePlayerTrait(roll) {
             break;
         }
 
-        hideAllGenericButtons();
+        hideAllButtons(genericButtons);
 
         player.traits[0].description = generateDescription(player.traits[0]);
         player.restoreHitPoints();
@@ -981,10 +1116,8 @@ function choosePlayerTrait(roll) {
       }
     }
   }
-  gameMessage(`${roll} ! - ${player.gender == "F"
-    ? player.traits[0].name.accordFeminin
-    : player.traits[0].name.accordMasculin
-    } (${player.traits[0].description})
+
+  gameMessage(`${roll} ! - ${player.gender == "F" ? player.traits[0].name.accordFeminin : player.traits[0].name.accordMasculin} (${player.traits[0].description})
         
         - Ensuite, choisissez le genre de votre personnage.`);
 
@@ -1001,7 +1134,12 @@ function choosePlayerTrait(roll) {
 }
 
 function choosePlayerGender(gender) {
-  hideAllGenericButtons();
+  const panelPlayerName = document.getElementById("player-name-panel")
+  const inputPlayerName = document.getElementById("player-name-input-field")
+  const btnConfirmPlayerName = document.getElementById("btn-confirm-player-name-input-field")
+
+  hideAllButtons(genericButtons);
+
   player.gender = gender;
 
   let message = `- Maintenant, choisissez un nom pour votre personnage.`;
@@ -1034,6 +1172,7 @@ function choosePlayerGender(gender) {
       return;
     }
     choosePlayerName(inputName);
+    panelPlayerName.style.display = "none";
   };
 
   function isNameValid(name = "") {
@@ -1048,13 +1187,11 @@ function choosePlayerGender(gender) {
 }
 
 function choosePlayerName(name) {
-  hideAllGenericButtons();
-  panelPlayerName.style.display = "none";
+  hideAllButtons(genericButtons);
 
   player.name = name;
 
-  gameMessage(`
-        - Enfin, tirez une carte du deck. Vous recevrez une récompense en fonction de la carte.`);
+  gameMessage(`- Enfin, tirez une carte du deck. Vous recevrez une récompense en fonction de la carte.`);
 
   player.isAllowedToDraw = true;
 }
@@ -1069,7 +1206,7 @@ function drawReward(
   if (!player.isAllowedToDraw) return;
 
   if (!isStealSpellReward) {
-    hideAllGenericButtons();
+    hideAllButtons(genericButtons);
   }
 
   player.isAllowedToDraw = false;
@@ -1121,18 +1258,13 @@ function drawReward(
     // Tracker for the Lucky Clover
     lastItemReceivedRandomly = reward;
     feedbackMessage += ` 
-        Vous recevez ${reward.isLegendary
-        ? beingNameWithDeterminantDefini(reward, false)
-        : reward.gender == "F"
-          ? `une ${reward.name}`
-          : `un ${reward.name}`
-      } (${reward.description})`;
+        Vous recevez ${reward.isLegendary ? beingNameWithDeterminantDefini(reward, false) : reward.gender == "F" ? `une ${reward.name}` : `un ${reward.name}`} (${reward.description})`;
     //console.log(inventory);
   }
 
   // CLUBS cards
   if (cardDrawn.suit == "clubs" && allCardsCountAsCoins === false) {
-    reward = getClubsItem(cardDrawn.value);
+    reward = getClubsItem(cardDrawn.value, clubsItemsTable);
     player.inventory.add(reward);
     // Tracker for the Lucky Clover
     lastItemReceivedRandomly = reward;
@@ -1143,7 +1275,7 @@ function drawReward(
 
   // CUPS cards
   if (cardDrawn.suit == "cups" && allCardsCountAsCoins === false) {
-    reward = getCupsItem(cardDrawn.value);
+    reward = getCupsItem(cardDrawn.value, cupsItemsTable);
     player.inventory.add(reward);
     // Tracker for the Lucky Clover
     lastItemReceivedRandomly = reward;
@@ -1206,7 +1338,7 @@ function drawReward(
 //#endregion
 
 function chooseNewEnvironment(customMessage) {
-  hideAllGenericButtons();
+  hideAllButtons(genericButtons);
 
   if (player.inventory.containsItemWithName("Compas des Anciens")) environmentRerolls++;
 
@@ -1232,7 +1364,7 @@ function chooseNewEnvironment(customMessage) {
   );
 
   function newEnvironmentResult(roll) {
-    hideAllGenericButtons();
+    hideAllButtons(genericButtons);
     player.isAllowedToUseLuckyClover = true;
 
     const newEnvironment = structuredClone(environmentsTable[roll - 1]);
@@ -1297,12 +1429,12 @@ function chooseNewEnvironment(customMessage) {
 function generateIntelligentBeing(roll = d20.roll(), traits = []) {
   let gender = d20.reducedRoll(d20.roll(), 2) == 1 ? "F" : "M";
 
-  let being = new Being(
-    "Intelligent Being",
-    [structuredClone(intelligentRacesTable[roll - 1])],
-    gender,
-    traits
-  );
+  let being = new Being({
+    type: "Intelligent Being",
+    races: [structuredClone(intelligentRacesTable[roll - 1])],
+    gender: gender,
+    traits: traits
+  });
 
   // Momie special rule
   if (being.races[0].name.female == "Momie") {
@@ -1500,12 +1632,11 @@ function generateIntelligentBeing(roll = d20.roll(), traits = []) {
 }
 
 function generateMonster(roll = d20.roll(), traits = []) {
-  let monster = new Being(
-    "Monster",
-    [structuredClone(monstersTable[roll - 1])],
-    undefined,
-    traits
-  );
+  let monster = new Being({
+    type: "Monster",
+    races: [structuredClone(monstersTable[roll - 1])],
+    traits: traits
+  });
 
   if (monster.races[0].name.male == "Parasite") {
     monster = generateIntelligentBeing(d20.roll(), monster.traits);
@@ -1528,18 +1659,16 @@ function generateMonster(roll = d20.roll(), traits = []) {
 }
 
 function generateBoss(roll = d20.roll()) {
-  let boss = new Being(
-    "Boss",
-    [structuredClone(bossesTable[roll - 1])],
-    undefined,
-    undefined
-  );
+  let boss = new Being({
+    type: "Boss",
+    races: [structuredClone(bossesTable[roll - 1])],
+  });
   boss.restoreHitPoints();
   return boss;
 }
 
 function nextAdventure(customMessage = "") {
-  hideAllGenericButtons();
+  hideAllButtons(genericButtons);
 
   // Trackers for the Lucky Clover
   player.isAllowedToUseLuckyClover = false;
@@ -1547,16 +1676,16 @@ function nextAdventure(customMessage = "") {
 
   displayState(false);
   // console.log("current step: ");
-  // console.log(currentStep);
+  // console.log(voyage.currentStep);
 
   // If we start a new environment we choose it first
-  if (isFirstStep() && currentEnvironment.name == "") {
+  if (voyage.isFirstStep && currentEnvironment.name == "") {
     chooseNewEnvironment(customMessage);
     return;
   }
 
   // Mini-boss time !
-  if (currentStep.isMiniBoss) {
+  if (voyage.currentStep.isMiniBoss) {
     if (customMessage) {
       gameMessage(customMessage);
       btn1.activate("Continuer", () => {
@@ -1572,7 +1701,7 @@ function nextAdventure(customMessage = "") {
   }
 
   // Final Boss time !
-  if (currentStep.isFinalBoss) {
+  if (voyage.currentStep.isFinalBoss) {
     if (customMessage) {
       gameMessage(customMessage);
       btn1.activate("Continuer", () => {
@@ -1608,7 +1737,7 @@ function nextAdventure(customMessage = "") {
   );
 
   function chooseNextAdventure(roll) {
-    hideAllGenericButtons();
+    hideAllButtons(genericButtons);
     player.isAllowedToUseLuckyClover = true;
 
     let message = `${roll} !
@@ -1736,16 +1865,14 @@ function miniBossAdventure() {
     } à scruter la pénombre de part et d'autre du chemin, que vous ne remarquez pas une ombre imposante se dresser au milieu de celui-ci. Vous percutez la créature de plein fouet. Elle-même, n'ayant pas décelé votre présence jusque là, bondit et se prépare à vous attaquer.`;
 
   const traits = [];
-  traits.push(getStrongTrait());
-  traits.push(getStrongTrait());
+  traits.push(getStrongTrait(strongTraitsTable));
+  traits.push(getStrongTrait(strongTraitsTable));
 
   const monster = generateMonster(d20.roll(), traits);
 
   const contextData = {
     opponent: monster,
-    introMessage: introMessage,
-    opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
-    rewardPhaseCallBack: regularRewardPhase,
+    introMessage: introMessage
   };
 
   fight(contextData);
@@ -1789,48 +1916,36 @@ function finalAdventure() {
         message += `Vous êtes au pied d'une falaise au sommet de laquelle un château aux longues tours effilées est perché. Vous parvenez à gravir la falaise et trouver une entrée dérobée du château. Vous vous faufilez sans vous faire repérer par les gardes. Aux détours des couloirs et des escaliers vous parvenez enfin à trouver la salle d'incantation où se tisse l'origine du terrible maléfice qui s'est abattu sur l'ensemble des régions voisines. Une telle malédiction est certainement l'oeuvre d'une créature très puissante. Vous prenez tout votre courage à bras le corps et pénétrez dans l'antre du mal.`;
 
         const vcrakusaPreparationPhase = (ctx) => {
-          hideAllGenericButtons();
+          hideAllButtons(genericButtons);
           displayState(false);
           console.log("Vcrakusa preparation phase.");
           console.log("Combat turn: " + ctx.fightTurn);
 
-          // Check if odd fight turn
-          if (ctx.fightTurn % 2 != 0) {
-            // Vcrakusa does nothing
-            // If player already prepared we go to the player's attack phase
-            if (playerHasInitiative(ctx.opponent)) {
-              playerAttackPhase(ctx);
-              return;
-            }
-
-            // Otherwise, we go to its prepare phase
-            playerPreparationPhase(ctx);
+          // On odd fight turns -> Vcrakusa does nothing
+          if (ctx.fightTurn % 2 !== 0) {
+            endOfVcrakusaPreparationPhase();
             return;
           }
 
           // Vcrakusa casts 'Healing' amplified
           const amount = 20 + d100.roll();
           ctx.opponent.hitPoints += amount;
+
           displayState(
             true,
-            `-~ Combat contre : ${ctx.opponent.name} ~-
-                        -- Phase de préparation : adversaire --`
+            `-~ Combat contre : ${ctx.opponent.name} ~-
+                        -- Phase de préparation : adversaire --`
           );
+
           gameMessage(`
 
                     ${ctx.opponent.name}, repue de votre sang, régénère ${amount}PV.`);
 
-          if (playerHasInitiative(ctx.opponent)) {
-            btn1.activate("Continuer", () => {
-              playerAttackPhase(ctx);
-            });
-            return;
-          }
+          btn1.activate("Continuer", () => { endOfVcrakusaPreparationPhase(); });
 
-          // Otherwise, we go to its prepare phase
-          btn1.activate("Continuer", () => {
-            playerPreparationPhase(ctx);
-          });
+          function endOfVcrakusaPreparationPhase() {
+            regularOpponentPreparationPhase(ctx);
+          }
         };
 
         contextData.introMessage = `Vous découvrez une large pièce circulaire. En son centre, trône un être décharné assis sur une chaise disproportionnée en bois sombre aux sculptures élaborées. La créature, en remarquant votre entrée dans la pièce, commence à se lever lentement. Ses yeux, d'un noir sans reflet, vous regardent intensément pendant plusieurs secondes. Puis, soudain, la créature funeste ouvre grand la bouche, laissant apparaître deux fines canines d'une taille anormalement grande et se rue vers vous en poussant un cri glaçant.`;
@@ -1852,8 +1967,6 @@ function finalAdventure() {
         contextData.introMessage = `Allongé de tout son long sur une montagne d'ossements de diverses créatures, le dragon sans visage. D'une blancheur maladive, ses ailes sont repliées autour de son corps d'apparence visqueuse.
                     Alors que vous approchez, le dragon pousse un rugissement impressionnant, se lève et déplie ses ailes de chauve-souris, plus menaçant que jamais.
                     Le combat est imminent. Vous rassemblez vos esprits et votre courage.`;
-        contextData.opponentPreparationPhaseCallBack =
-          regularOpponentPreparationPhase;
         contextData.rewardPhaseCallBack = balneusRewardPhase;
         contextData.defeatPhaseCallBack = balneusDefeatPhase;
         break;
@@ -1873,7 +1986,7 @@ function finalAdventure() {
 function defaultBossRewardPhase(ctx) {
   player.isAllowedToUseLuckyClover = false;
   currentCombatContext = undefined;
-  hideAllGenericButtons();
+  hideAllButtons(genericButtons);
   stepCompleted();
   displayState(false);
   player.restoreHitPoints();
@@ -1892,7 +2005,7 @@ function defaultBossRewardPhase(ctx) {
 function balneusRewardPhase(ctx) {
   player.isAllowedToUseLuckyClover = false;
   currentCombatContext = undefined;
-  hideAllGenericButtons();
+  hideAllButtons(genericButtons);
   stepCompleted();
   displayState(false);
   player.restoreHitPoints();
@@ -1910,7 +2023,7 @@ function balneusRewardPhase(ctx) {
 
 function balneusDefeatPhase(ctx) {
   player.isAllowedToUseLuckyClover = false;
-  hideAllGenericButtons();
+  hideAllButtons(genericButtons);
   displayState(false);
   gameMessage(
     `Un genou à terre, vous tenter une contre-attaque pour reprendre l'avantage. Mais le dragon semble lire en vous comme dans un livre ouvert. D'un geste fluide, son aile atterrit dans votre ventre, vous envoyant plusieurs mètres plus loin inerte. ${player.gender == "F" ? "Satisfaite" : "Satisfait"} d'avoir pu voir vos derniers instants, votre âme s'envole vers la lumière... À moins que ce ne soit vers une autre aventure ?
@@ -1935,8 +2048,6 @@ function monsterEncounter() {
   const contextData = {
     opponent: monster,
     introMessage: introMessage,
-    opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
-    rewardPhaseCallBack: regularRewardPhase,
   };
 
   fight(contextData);
@@ -1944,7 +2055,7 @@ function monsterEncounter() {
 
 function intelligentBeingEncounter() {
   player.isAllowedToUseLuckyClover = false;
-  hideAllGenericButtons();
+  hideAllButtons(genericButtons);
 
   let traits = generateTraits();
   const intelligentBeing = generateIntelligentBeing(d20.roll(), traits);
@@ -1987,8 +2098,6 @@ function intelligentBeingEncounter() {
             intelligentBeing,
             true
           )} et adoptez une position de combat.`,
-          opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
-          rewardPhaseCallBack: regularRewardPhase,
         };
         fight(contextData);
       });
@@ -2018,9 +2127,7 @@ function intelligentBeingEncounter() {
             introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(
               intelligentBeing,
               false
-            )} et adoptez une position de combat.`,
-            opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
-            rewardPhaseCallBack: regularRewardPhase,
+            )} et adoptez une position de combat.`
           };
           fight(contextData);
         });
@@ -2043,20 +2150,13 @@ function intelligentBeingEncounter() {
         true
       )}.`);
 
-      btn1.activate(`Donner ${toll}PO`, () => {
-        giveGold(toll);
-      });
+      btn1.activate(`Donner ${toll}PO`, () => { giveGold(toll); });
       if (player.goldCoins < toll) btn1.isDisabled = true;
 
       btn2.activate(`Attaquer`, () => {
         const contextData = {
           opponent: intelligentBeing,
-          introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(
-            intelligentBeing,
-            false
-          )} et adoptez une position de combat.`,
-          opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
-          rewardPhaseCallBack: regularRewardPhase,
+          introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(intelligentBeing, false)} et adoptez une position de combat.`
         };
         fight(contextData);
       });
@@ -2086,9 +2186,7 @@ function intelligentBeingEncounter() {
             introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(
               intelligentBeing,
               false
-            )} et adoptez une position de combat.`,
-            opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
-            rewardPhaseCallBack: regularRewardPhase,
+            )} et adoptez une position de combat.`
           };
           fight(contextData);
         });
@@ -2122,9 +2220,7 @@ function intelligentBeingEncounter() {
           introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(
             intelligentBeing,
             false
-          )} et adoptez une position de combat.`,
-          opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
-          rewardPhaseCallBack: regularRewardPhase,
+          )} et adoptez une position de combat.`
         };
         fight(contextData);
       });
@@ -2143,9 +2239,7 @@ function intelligentBeingEncounter() {
       btn1.activate("Continuer", () => {
         const contextData = {
           opponent: intelligentBeing,
-          introMessage: currentGameMessage(),
-          opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
-          rewardPhaseCallBack: regularRewardPhase,
+          introMessage: currentGameMessage()
         };
 
         fight(contextData);
@@ -2155,12 +2249,12 @@ function intelligentBeingEncounter() {
     }
     // Roll 13-15
     if (roll <= 15) {
-      const unbuffedBeing = new Being(
-        intelligentBeing.type,
-        intelligentBeing.races,
-        intelligentBeing.gender,
-        intelligentBeing.traits
-      );
+      const unbuffedBeing = new Being({
+        type: intelligentBeing.type,
+        races: intelligentBeing.races,
+        gender: intelligentBeing.gender,
+        traits: intelligentBeing.traits
+      });
 
       gameMessage(`${roll} !
             Lorsque ${beingNameWithDeterminantDefini(
@@ -2176,14 +2270,12 @@ function intelligentBeingEncounter() {
             La créature gagne un trait fort.`);
 
       btn1.activate("Continuer", () => {
-        intelligentBeing.traits.push(getStrongTrait(d20.roll()));
+        intelligentBeing.traits.push(getStrongTrait(strongTraitsTable, d20.roll()));
         intelligentBeing.restoreHitPoints();
 
         const contextData = {
           opponent: intelligentBeing,
-          introMessage: currentGameMessage(),
-          opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
-          rewardPhaseCallBack: regularRewardPhase,
+          introMessage: currentGameMessage()
         };
 
         fight(contextData);
@@ -2249,9 +2341,7 @@ function intelligentBeingEncounter() {
           opponent: intelligentBeing,
           introMessage: `Sans aucune sommation, vous dégainez et brandissez votre arme dans la direction ${intelligentBeing.gender == "F" ? "de la marchande" : "du marchand"
             }. ${intelligentBeing.gender == "F" ? "Cette dernière" : "Ce dernier"
-            } lâche un cris d'effroi et sort une arme de son sac-à-dos.`,
-          opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
-          rewardPhaseCallBack: regularRewardPhase,
+            } lâche un cris d'effroi et sort une arme de son sac-à-dos.`
         };
         fight(contextData);
       });
@@ -2259,7 +2349,7 @@ function intelligentBeingEncounter() {
 
     function letBeingGo() {
       player.isAllowedToUseLuckyClover = false;
-      hideAllGenericButtons();
+      hideAllButtons(genericButtons);
 
       let outroMessage = `Vous continuez votre route.
             - Vous gagnez 1XP.`;
@@ -2273,7 +2363,7 @@ function intelligentBeingEncounter() {
       if (player.goldCoins < amount) return;
 
       player.isAllowedToUseLuckyClover = false;
-      hideAllGenericButtons();
+      hideAllButtons(genericButtons);
 
       let outroMessage = `Vous donnez ${amount}PO ${intelligentBeing.gender == "F" ? "à la racketteuse" : "au racketteur"
         }, qui vous laisse passer. Vous continuez votre route.
@@ -2322,7 +2412,7 @@ function villageEncounter() {
         - Se rendre au magasin. (possibilité d'acheter et de revendre des objets)
         - Se rendre à l'auberge. (coûte ${innPrice}PO, permet de se reposer)`);
 
-  hideAllGenericButtons();
+  hideAllButtons(genericButtons);
 
   btn1.activate("Aller au magasin", () => {
     visitShop();
@@ -2341,7 +2431,7 @@ function visitShop(
   maxCards = 4,
   additionalItemsAvailable = []
 ) {
-  hideAllGenericButtons();
+  hideAllButtons(genericButtons);
   player.isAllowedToUseLuckyClover = false;
 
   // There is no cards left in the deck
@@ -2475,7 +2565,7 @@ function visitShop(
   }
 
   function deployShop() {
-    shop = new Shop();
+    shop = new Shop(player);
 
     btn1.activate(
       "Partir",
@@ -2500,10 +2590,10 @@ function visitShop(
           );
           break;
         case "clubs":
-          shop.add(getClubsItem(card.value));
+          shop.add(getClubsItem(card.value, clubsItemsTable));
           break;
         case "cups":
-          shop.add(getCupsItem(card.value));
+          shop.add(getCupsItem(card.value, cupsItemsTable));
           break;
 
         default:
@@ -2534,7 +2624,7 @@ function visitInn(price) {
 }
 
 function rest(introMessage, outroMessage, continueButtonText) {
-  hideAllGenericButtons();
+  hideAllButtons(genericButtons);
 
   let message = `${introMessage}`
 
@@ -2609,7 +2699,7 @@ function rest(introMessage, outroMessage, continueButtonText) {
 }
 
 function specialEncounter() {
-  hideAllGenericButtons();
+  hideAllButtons(genericButtons);
   player.isAllowedToUseLuckyClover = false;
   const specialEncounters = [event01, event02, event03, event04];
   specialEncounters[getRandomInt(specialEncounters.length)]();
@@ -2639,7 +2729,7 @@ function specialEncounter() {
       if (!potion) return;
 
       player.inventory.remove(potion);
-      player.inventory.add(getCupsItem(3));
+      player.inventory.add(getCupsItem(3, cupsItemsTable));
       player.experiencePoints++;
       stepCompleted();
       nextAdventure(`Vous donnez une Potion au voyageur.
@@ -2654,7 +2744,7 @@ function specialEncounter() {
       if (!ether) return;
 
       player.inventory.remove(ether);
-      player.inventory.add(getCupsItem(3));
+      player.inventory.add(getCupsItem(3, cupsItemsTable));
       player.experiencePoints++;
       stepCompleted();
       nextAdventure(`Vous donnez un Éther au voyageur.
@@ -2680,57 +2770,47 @@ function specialEncounter() {
 
     function fightTraveler() {
       // Humain male costaud
-      const traveler = generateIntelligentBeing(1, [getStrongTrait(6)]);
+      const traveler = generateIntelligentBeing(1, [getStrongTrait(strongTraitsTable, 6)]);
       traveler.gender = "M";
 
       let introMessage = `Vous faites comprendre au voyageur vos intentions hostiles. Ce dernier vous regarde avec stupeur en se redressant, prêt à défendre sa peau.`;
 
       const travelerPreparationPhase = (ctx) => {
-        hideAllGenericButtons();
+        hideAllButtons(genericButtons);
         let message = ``;
         const roll = d20.roll();
 
         // Teleports away
         if (roll >= 11) {
           stepCompleted();
+          isInCombat = false;
+
           displayState(
             true,
-            `-~ Combat contre : ${ctx.opponent.name} ~-
-                        -- Phase de préparation : adversaire --`
+            `-~ Combat contre : ${ctx.opponent.name} ~-
+                        -- Phase de préparation : adversaire --`
           );
 
-          message += `Le voyageur lance le sort 'Téléportation' et disparaît avec sa fille, vous laissant ${player.gender == "F" ? "seule" : "seul"
-            } au milieu du chemin.
+          message += `Le voyageur lance le sort 'Téléportation' et disparaît avec sa fille, vous laissant ${player.gender == "F" ? "seule" : "seul"} au milieu du chemin.
                         
                         Le combat est terminé.`;
 
           if (player.hitPoints < player.maxHitPoints) {
             player.restoreHitPoints();
-            gameMessage(
-              `${message} Vous vous soignez et continuez votre route.`
-            );
-            btn1.activate("Continuer", () => {
-              nextAdventure();
-            });
+            message += ` Vous vous soignez et continuez votre route.`
             return;
           }
+          else {
+            message += ` Vous continuez votre route.`
+          }
 
-          gameMessage(`${message} Vous continuez votre route.`);
-          btn1.activate("Continuer", () => {
-            nextAdventure();
-          });
+          gameMessage(message);
+          btn1.activate("Continuer", () => { nextAdventure(); });
           return;
         }
 
         // Traveler does nothing
-        // If player has prepared before, we go to it's attack phase
-        if (playerHasInitiative(ctx.opponent)) {
-          playerAttackPhase(ctx);
-          return;
-        }
-
-        // Otherwise, we go to its prepare phase
-        playerPreparationPhase(ctx);
+        regularOpponentPreparationPhase(ctx);
       };
 
       const travelerRewardPhase = () => {
@@ -2791,14 +2871,14 @@ function specialEncounter() {
 
     // Generate the demon
     const traits = [];
-    traits.push(getStrongTrait(4));
+    traits.push(getStrongTrait(strongTraitsTable, 4));
     const demon = generateIntelligentBeing(12, traits);
     demon.gender = "M";
 
     function freeDemon() {
       if (player.magic < 60) return;
 
-      hideAllGenericButtons();
+      hideAllButtons(genericButtons);
 
       // Player is stronger than the demon or is a demon
       if (player.magic >= 80 || player.hasARaceInCommonWith(demon)) {
@@ -2810,7 +2890,7 @@ function specialEncounter() {
           Vous gagnez également 1XP.`
         );
 
-        player.inventory.add(getClubsItem(8));
+        player.inventory.add(getClubsItem(8, clubsItemsTable));
         player.experiencePoints++;
         stepCompleted()
         btn1.activate("Continuer", () => { nextAdventure(); });
@@ -2830,7 +2910,7 @@ function specialEncounter() {
     }
 
     function breakMirror() {
-      hideAllGenericButtons();
+      hideAllButtons(genericButtons);
 
       gameMessage(`Vous donnez un grand coup de talon dans le miroir ce qui le brise en multiple morceaux.
                 - Lancez le D20 pour voir ce qu'il se passe.`);
@@ -2845,7 +2925,7 @@ function specialEncounter() {
       );
 
       function mirrorBreakConsequences(roll) {
-        hideAllGenericButtons();
+        hideAllButtons(genericButtons);
         player.isAllowedToUseLuckyClover = true;
 
         // Result >= 11 -> Nothing happens
@@ -2871,7 +2951,7 @@ function specialEncounter() {
         );
 
         btn1.activate("Continuer", () => {
-          demon.traits.push(getStrongTrait(13));
+          demon.traits.push(getStrongTrait(strongTraitsTable, 13));
           const contextData = {
             opponent: demon,
           };
@@ -2907,7 +2987,7 @@ function specialEncounter() {
 
     // Generate Ogre
     const traits = []
-    traits.push(getWeakTrait(8))
+    traits.push(getWeakTrait(weakTraitsTable, 8))
     const ogre = generateIntelligentBeing(3, traits)
     ogre.gender = "M"
     const gnome = generateIntelligentBeing(5, traits) // just so we can check player's race
@@ -2921,7 +3001,7 @@ function specialEncounter() {
     function freePassage() {
       if (!player.hasARaceInCommonWith(ogre) && !player.hasARaceInCommonWith(gnome)) return;
 
-      hideAllGenericButtons();
+      hideAllButtons(genericButtons);
 
       const outroMessage = `Alors que l'ogre vous fixait intensément du regard, une main tendue dans l'attente de sa taxe de passage, l'autre fermement serrée autour d'une grosse branche de chêne, qui lui sert apparemment d'arme, il éclate soudainement d'un rire gras et hoquetant et s'exclame : "Hua-huahhuahuaaahua mais non ! Évidement que tu peux passer ${player.gender == "F" ? "ma vieille" : "mon vieux"} ! Huahhhhuaahhua !". Il vous donne une grande frappe amicale sur l'épaule tout en continuant de rire et vous fait signe de passer sur le pont. Vous vous exécutez et poursuivez votre chemin. Vous continuez d'entendre le rire de l'ogre, visiblement très satisfait de sa "blague", résonner dans la vallée pendant encore plusieurs centaines de mètres.
       
@@ -2936,7 +3016,7 @@ function specialEncounter() {
     function giveGold(amount) {
       if (player.goldCoins < amount) return;
 
-      hideAllGenericButtons();
+      hideAllButtons(genericButtons);
 
       let outroMessage = `Vous donnez ${amount}PO ${intelligentBeing.gender == "F" ? "à la racketteuse" : "au racketteur"}, qui vous laisse passer sur le pont. Vous continuez votre route.
       
@@ -2956,7 +3036,7 @@ function specialEncounter() {
         return
       }
 
-      hideAllGenericButtons()
+      hideAllButtons(genericButtons)
 
       let outroMessage = `Ne laissant aucune opportunité à l'ogre de réagir, vous lancez le sort 'Téléportation'. Vous disparaissez dans un tourbillon d'énergie invisible avant de réapparaître de l'autre côté de la rive sans que l'ogre, abasourdi et désemparé, ne s’aperçoive de quoi que ce soit.
       
@@ -3000,7 +3080,7 @@ function specialEncounter() {
     if (!player.inventory.containsItemWithName("Lanterne de Vision")) btn1.isDisabled = true
 
     function useLantern() {
-      hideAllGenericButtons()
+      hideAllButtons(genericButtons)
 
       gameMessage(`Vous brandissez la Lanterne de Vision qui éclaire les environs d'une douce lumière dorée et dissipe le brouillard et l'illusion des trois lunes. Votre chemin est à nouveau claire, vous pouvez continuer votre route.
         
@@ -3013,7 +3093,7 @@ function specialEncounter() {
     }
 
     function silverMoon() {
-      hideAllGenericButtons()
+      hideAllButtons(genericButtons)
 
       const phantom = generateIntelligentBeing(8, [])
       phantom.gender = "M"
@@ -3097,7 +3177,7 @@ function specialEncounter() {
         visitShopNoCardText: undefined, // There will always be at least 1 item so we don't need this
         visitShopNoCardLeaveText: undefined, // There will always be at least 1 item so we don't need this
         attackMerchantIntroText: `Sans aucune sommation, vous dégainez et brandissez votre arme dans la direction du fantôme.`,
-        additionalItemsAvailable: [getCupsItem(11)]
+        additionalItemsAvailable: [getCupsItem(11, cupsItemsTable)]
       }
 
       btn1.activate(
@@ -3111,7 +3191,7 @@ function specialEncounter() {
     }
 
     function goldenMoon() {
-      hideAllGenericButtons()
+      hideAllButtons(genericButtons)
 
       const sphinx = generateMonster(1, [])
 
@@ -3127,9 +3207,9 @@ function specialEncounter() {
     }
 
     function redMoon() {
-      hideAllGenericButtons()
+      hideAllButtons(genericButtons)
 
-      const traits = [getStrongTrait(19)]
+      const traits = [getStrongTrait(strongTraitsTable, 19)]
       const werewolf = generateIntelligentBeing(16, traits)
       werewolf.gender = "F"
 
@@ -3161,7 +3241,7 @@ function specialEncounter() {
       // Regular reward phase but with 1 extra PA
       function redMoonRewardPhase(ctx) {
         player.isAllowedToUseLuckyClover = false;
-        hideAllGenericButtons();
+        hideAllButtons(genericButtons);
         displayState(false);
         stepCompleted();
         player.experiencePoints++;
@@ -3193,7 +3273,7 @@ function specialEncounter() {
 
 function luckyEncounter() {
   player.isAllowedToUseLuckyClover = false;
-  hideAllGenericButtons();
+  hideAllButtons(genericButtons);
 
   const flavorTextVariations = [
     {
@@ -3228,7 +3308,7 @@ function luckyEncounter() {
   });
 
   function seekTreasure() {
-    hideAllGenericButtons();
+    hideAllButtons(genericButtons);
 
     gameMessage(`${flavorTextVariations[flavorRoll].seekTreasureIntro}
             
@@ -3259,9 +3339,7 @@ function checkAttitude(ctx) {
     btn2.activate("Attaquer", () => {
       const contextData = {
         opponent: ctx.intelligentBeing,
-        introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(ctx.intelligentBeing, true)} et adoptez une position de combat.`,
-        opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
-        rewardPhaseCallBack: regularRewardPhase,
+        introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(ctx.intelligentBeing, true)} et adoptez une position de combat.`
       };
       fight(contextData);
     });
@@ -3281,9 +3359,7 @@ function checkAttitude(ctx) {
       btn2.activate("Attaquer", () => {
         const contextData = {
           opponent: ctx.intelligentBeing,
-          introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(ctx.intelligentBeing, false)} et adoptez une position de combat.`,
-          opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
-          rewardPhaseCallBack: regularRewardPhase,
+          introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(ctx.intelligentBeing, false)} et adoptez une position de combat.`
         };
         fight(contextData);
       });
@@ -3302,9 +3378,7 @@ function checkAttitude(ctx) {
     btn2.activate(`Attaquer`, () => {
       const contextData = {
         opponent: ctx.intelligentBeing,
-        introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(ctx.intelligentBeing, false)} et adoptez une position de combat.`,
-        opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
-        rewardPhaseCallBack: regularRewardPhase,
+        introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(ctx.intelligentBeing, false)} et adoptez une position de combat.`
       };
       fight(contextData);
     });
@@ -3324,9 +3398,7 @@ function checkAttitude(ctx) {
       btn2.activate("Attaquer", () => {
         const contextData = {
           opponent: ctx.intelligentBeing,
-          introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(ctx.intelligentBeing, false)} et adoptez une position de combat.`,
-          opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
-          rewardPhaseCallBack: regularRewardPhase,
+          introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(ctx.intelligentBeing, false)} et adoptez une position de combat.`
         };
         fight(contextData);
       });
@@ -3345,9 +3417,7 @@ function checkAttitude(ctx) {
     btn2.activate(`Attaquer`, () => {
       const contextData = {
         opponent: ctx.intelligentBeing,
-        introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(ctx.intelligentBeing, false)} et adoptez une position de combat.`,
-        opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
-        rewardPhaseCallBack: regularRewardPhase,
+        introMessage: `Vous poussez agressivement ${beingNameWithDeterminantDefini(ctx.intelligentBeing, false)} et adoptez une position de combat.`
       };
       fight(contextData);
     });
@@ -3361,9 +3431,7 @@ function checkAttitude(ctx) {
     btn1.activate("Continuer", () => {
       const contextData = {
         opponent: ctx.intelligentBeing,
-        introMessage: currentGameMessage(),
-        opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
-        rewardPhaseCallBack: regularRewardPhase,
+        introMessage: currentGameMessage()
       };
 
       fight(contextData);
@@ -3377,14 +3445,12 @@ function checkAttitude(ctx) {
                 ${ctx.enragedFightIntroText}`)
 
     btn1.activate("Continuer", () => {
-      ctx.intelligentBeing.traits.push(getStrongTrait(d20.roll()));
+      ctx.intelligentBeing.traits.push(getStrongTrait(strongTraitsTable, d20.roll()));
       ctx.intelligentBeing.restoreHitPoints();
 
       const contextData = {
         opponent: ctx.intelligentBeing,
-        introMessage: currentGameMessage(),
-        opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
-        rewardPhaseCallBack: regularRewardPhase,
+        introMessage: currentGameMessage()
       };
 
       fight(contextData);
@@ -3431,9 +3497,7 @@ function checkAttitude(ctx) {
     btn2.activate("Attaquer", () => {
       const contextData = {
         opponent: ctx.intelligentBeing,
-        introMessage: ctx.attackMerchantIntroText,
-        opponentPreparationPhaseCallBack: regularOpponentPreparationPhase,
-        rewardPhaseCallBack: regularRewardPhase,
+        introMessage: ctx.attackMerchantIntroText
       };
       fight(contextData);
     });
@@ -3441,7 +3505,7 @@ function checkAttitude(ctx) {
 
   function letBeingGo() {
     player.isAllowedToUseLuckyClover = false;
-    hideAllGenericButtons();
+    hideAllButtons(genericButtons);
 
     gameMessage(`Vous continuez votre route.
             - Vous gagnez 1XP.`)
@@ -3456,7 +3520,7 @@ function checkAttitude(ctx) {
     if (player.goldCoins < amount) return;
 
     player.isAllowedToUseLuckyClover = false;
-    hideAllGenericButtons();
+    hideAllButtons(genericButtons);
 
     gameMessage(`Vous donnez ${amount}PO ${intelligentBeing.gender == "F" ? "à la racketteuse" : "au racketteur"}, qui vous laisse passer. Vous continuez votre route.
                 - Vous gagnez 1XP.`)
@@ -3471,70 +3535,34 @@ function checkAttitude(ctx) {
 
 //#region FIGHT
 /**
+ * Starts a fight sequence against an opponent. 
  * @param {object} ctx The Context data necessary for the fight.
- * @param {object} ctx.opponent The opponent the player is facing in this fight
- * @param {number} ctx.fightTurn The turn number of the fight.
+ * @param {Being} ctx.opponent The opponent the player is facing in this fight
  * @param {string} ctx.introMessage Message displayed when the fight is about to start.
- * @param {CallBackFn} ctx.opponentPreparationPhaseCallBack Run when the opponent is preparing for the turn.
- * @param {CallBackFn} ctx.rewardPhaseCallBack Run when the fight is won.
+ * @param {CallBackFn} ctx.opponentPreparationPhaseCallBack Run when the opponent is preparing for the turn. If none is present a default preparation phase is called instead.
+ * @param {CallBackFn} ctx.rewardPhaseCallBack Run when the fight is won. If none is present a default reward phase is called instead.
  */
 function fight(ctx) {
   isInCombat = true;
   player.isAllowedToUseLuckyClover = false;
-  console.log(`Fight:`);
+  hideAllButtons(genericButtons);
   ctx.fightTurn = 1;
-  console.log(ctx);
+
+  // Some variables set in case the speeds or initiative changes during phases so we can make sure that both have their preparation and attack phase.
+  ctx.hasPlayerPrepared = false;
+  ctx.hasOpponentPrepared = false;
+  ctx.hasPlayerAttacked = false;
+  ctx.hasOpponentAttacked = false;
+
   currentCombatContext = ctx;
-  // Message d'intro
-  let message = ``;
-  if (ctx.introMessage) message += ctx.introMessage;
+  player.resetSpellsCastLimits(); // Reset spells that can only be cast once per combat
+  applyBottomLessCupsEffects();
 
-  // Reset spells that can only be cast once per combat
-  for (let i = 0; i < 8; i++) {
-    if (!player.inventory.slots[i]) continue;
-    if (player.inventory.slots[i].type != "parchemin de sort") continue;
-    if (player.inventory.slots[i].hasAlreadyBeenCast === undefined) continue;
+  console.log(`Fight:`);
+  console.log(ctx);
 
-    player.inventory.slots[i].hasAlreadyBeenCast = false;
-  }
+  gameMessage(fightIntroMessage(ctx));
 
-  // Special effect : Coupe Invidable
-  // Count how many we have
-  const bottomlessCups = [];
-  for (let i = 0; i < 8; i++) {
-    if (!player.inventory.slots[i]) continue;
-    if (!player.inventory.slots[i].name) continue;
-    if (player.inventory.slots[i].name == "Coupe Invidable") {
-      bottomlessCups.push("Coupe Invidable");
-    }
-  }
-  // Apply effect
-  if (bottomlessCups.length > 0) {
-    player.actionPoints += bottomlessCups.length;
-    message += `
-        
-        Vous sortez ${bottomlessCups.length == 1 ? "la Coupe Invidable" : `les Coupes Invidables`} de votre sac et en buvez ${bottomlessCups.length == 1 ? "une gorgée" : `une gorgée à chacune`} pour galvaniser vos forces avant ce combat.
-        Vous gagnez ${bottomlessCups.length}PA.`;
-  }
-
-  // if fighting boss, put nothing in front of its name. Otherwise, put 'une' or 'un'
-  message += `
-    
-    ---- Un combat contre ${ctx.opponent.type == "Boss" ? "" : ctx.opponent.gender == "F" ? "une " : "un "}${ctx.opponent.name} commence !`;
-
-  // if fighting boss and boss has at least one effect to mention to the player
-  if (ctx.opponent.type == "Boss" && ctx.opponent.races[0].effects) {
-    message += `
-        ${ctx.opponent.races[0].effects.length == 1 ? "Effet" : "Effets"} du boss :`;
-    ctx.opponent.races[0].effects.forEach((effect) => {
-      message += `
-            • ${effect.description}`;
-    });
-  }
-
-  gameMessage(message);
-
-  hideAllGenericButtons();
   btn1.activate("Commencer le combat", () => { initiativePhase(ctx); });
 }
 
@@ -3555,23 +3583,19 @@ function initiativePhase(ctx) {
   regularOpponentPreparationPhase(ctx);
 }
 
-// Checks if we need to skip the player prep phase
-// TODO : fix this
+// The player preparation phase should be skipped if they can not cast any spell.
 function isPlayerPreparationPhaseSkipped() {
   let skip = true;
   const playerSpells = player.inventory.getItemsOfType("parchemin de sort");
-  console.log("Player spells: ");
-  console.log(playerSpells);
 
-  for (const spell of playerSpells) {
-    if (spell.isAllowedToBeCast === false) continue;
-    if (player.actionPoints < spell.cost) continue;
-    if (player.magic < spell.magicNeeded) continue;
+  playerSpells.forEach(spell => {
+    if (spell.isAllowedToBeCast === false) return;
+    if (player.actionPoints < spell.cost) return;
+    if (player.magic < spell.magicNeeded) return;
 
     // Player could cast the spell if they wanted
     skip = false;
-    break;
-  }
+  });
 
   return skip;
 }
@@ -3587,12 +3611,12 @@ function playerPreparationPhase(ctx) {
     return
   }
 
-  hideAllGenericButtons();
+  hideAllButtons(genericButtons);
 
   displayState(
     true,
-    `-~ Combat contre : ${ctx.opponent.name} ~-
-    -- Phase de préparation : ${player.name} --`
+    `-~ Combat contre : ${ctx.opponent.name} ~-
+    -- Phase de préparation : ${player.name} --`
   );
 
   const initiativeNotification = playerHasInitiative(ctx.opponent) ? `Vous avez l'Initiative.` : ``;
@@ -3606,8 +3630,11 @@ function playerPreparationPhase(ctx) {
   function endPlayerPreparationPhase() {
     player.isAllowedToCastSpell = false;
     player.isAllowedToUseLuckyClover = false;
+    ctx.hasPlayerPrepared = true;
     clearCardsDisplayZone();
-    if (playerHasInitiative(ctx.opponent)) {
+
+    // If the opponent has not yet prepared, it's their turn.
+    if (ctx.hasOpponentPrepared === false) {
       if (ctx.opponentPreparationPhaseCallBack) {
         ctx.opponentPreparationPhaseCallBack(ctx);
         return;
@@ -3615,7 +3642,9 @@ function playerPreparationPhase(ctx) {
       regularOpponentPreparationPhase(ctx);
       return;
     }
-    opponentAttackPhase(ctx);
+
+    // Otherwise, we start the attack phase.
+    attackPhase(ctx);
     return;
   }
 }
@@ -3623,15 +3652,25 @@ function playerPreparationPhase(ctx) {
 function regularOpponentPreparationPhase(ctx) {
   // Opponent usually do nothing during their preparation phase. We use custom call backs for opponents who do.
   // Here, we just skip to the next phase
+  ctx.hasOpponentPrepared = true;
 
-  // If the player has prepared before the opponent. We start the player attack phase.
+  // If the player has not prepared yet, it's their turn.
+  if (ctx.hasPlayerPrepared === false) {
+    playerPreparationPhase(ctx);
+    return;
+  }
+
+  // Otherwise, we start the attack phase
+  attackPhase(ctx);
+}
+
+function attackPhase(ctx) {
   if (playerHasInitiative(ctx.opponent)) {
     playerAttackPhase(ctx);
     return;
   }
 
-  // Otherwise, we start the player prepare phase
-  playerPreparationPhase(ctx);
+  opponentAttackPhase(ctx);
 }
 
 function playerAttackPhase(ctx) {
@@ -3639,8 +3678,8 @@ function playerAttackPhase(ctx) {
 
   displayState(
     true,
-    `-~ Combat contre : ${ctx.opponent.name} ~-
-        -- Phase d'attaque : ${player.name} --`
+    `-~ Combat contre : ${ctx.opponent.name} ~-
+        -- Phase d'attaque : ${player.name} --`
   );
 
   const initiativeNotification = playerHasInitiative(ctx.opponent) ? `Vous avez l'Initiative.` : `C'est à votre tour d'attaquer.`;
@@ -3648,20 +3687,8 @@ function playerAttackPhase(ctx) {
   gameMessage(`${initiativeNotification}
         - Voulez-vous faire une attaque physique ou une attaque magique ?`);
 
-  btn1.activate(
-    "Attaque physique",
-    () => {
-      decideIfPowerful(true);
-    },
-    "attaque-physique"
-  );
-  btn2.activate(
-    "Attaque magique",
-    () => {
-      decideIfPowerful(false);
-    },
-    "attaque-magique"
-  );
+  btn1.activate("Attaque physique", () => { decideIfPowerful(true); }, "attaque-physique");
+  btn2.activate("Attaque magique", () => { decideIfPowerful(false); }, "attaque-magique");
 
   function decideIfPowerful(isPhysical) {
     if (player.actionPoints > 0) {
@@ -3756,11 +3783,7 @@ function playerAttackPhase(ctx) {
     }
     // Physical Hit
     else {
-      damage = clamp(
-        damage + player.strength - ctx.opponent.speed,
-        0,
-        Infinity
-      );
+      damage = clamp(damage + player.strength - ctx.opponent.speed, 0, Infinity);
       ctx.opponent.hitPoints -= damage;
       message += `
             Vous infligez un total de ${damage} ${damage <= 1 ? "dégât physique" : "dégâts physiques"} ${beingNameWithDeterminantDefiniContracte(ctx.opponent, "à")}.`;
@@ -3768,26 +3791,26 @@ function playerAttackPhase(ctx) {
 
     gameMessage(message);
 
+    btn1.activate("Continuer", () => { endPlayerAttackPhase() });
+  }
+
+  function endPlayerAttackPhase() {
+    ctx.hasPlayerAttacked = true;
+
     // Check if opponent is KO
     if (isBeingDead(ctx.opponent)) {
-      btn1.activate("Continuer", () => {
-        if (ctx.rewardPhaseCallBack) {
-          ctx.rewardPhaseCallBack(ctx);
-          return;
-        }
-        regularRewardPhase(ctx);
-      });
+      rewardPhase(ctx);
       return;
     }
 
-    // If we attacked first , it's the opponent's turn
-    if (playerHasInitiative(ctx.opponent)) {
-      btn1.activate("Continuer", () => { opponentAttackPhase(ctx); });
+    // If opponent hasn't attacked yet, it's their turn.
+    if (ctx.hasOpponentAttacked === false) {
+      opponentAttackPhase(ctx);
       return;
     }
 
-    // Otherwise we start a new turn
-    btn1.activate("Continuer", () => { newTurn(ctx); });
+    // Otherwise, we start a new turn
+    newTurn(ctx);
   }
 }
 
@@ -3827,14 +3850,11 @@ function opponentAttackPhase(ctx) {
 
     displayState(
       true,
-      `-~ Combat contre : ${ctx.opponent.name} ~-
-            -- Phase d'attaque : adversaire --`
+      `-~ Combat contre : ${ctx.opponent.name} ~-
+            -- Phase d'attaque : adversaire --`
     );
 
-    let message = `C'est au tour ${beingNameWithDeterminantDefiniContracte(
-      ctx.opponent,
-      "de"
-    )} d'attaquer.
+    let message = `C'est au tour ${beingNameWithDeterminantDefiniContracte(ctx.opponent, "de")} d'attaquer.
         
         `;
 
@@ -3845,9 +3865,7 @@ function opponentAttackPhase(ctx) {
       damage = clamp(ctx.opponent.magic + roll - player.magic, 0, Infinity);
       player.hitPoints -= damage;
 
-      message += `${ctx.opponent.gender == "F" ? "Elle" : "Il"
-        } vous inflige ${damage} ${damage <= 1 ? "dégât magique" : "dégâts magiques"
-        }.`;
+      message += `${ctx.opponent.gender == "F" ? "Elle" : "Il"} vous inflige ${damage} ${damage <= 1 ? "dégât magique" : "dégâts magiques"}.`;
     }
     // Physical Hit
     else {
@@ -3856,38 +3874,31 @@ function opponentAttackPhase(ctx) {
       damage = clamp(ctx.opponent.strength + roll - player.speed, 0, Infinity);
       player.hitPoints -= damage;
 
-      message += `${ctx.opponent.gender == "F" ? "Elle" : "Il"
-        } vous inflige ${damage} ${damage <= 1 ? "dégât physique" : "dégâts physiques"
-        }.`;
+      message += `${ctx.opponent.gender == "F" ? "Elle" : "Il"} vous inflige ${damage} ${damage <= 1 ? "dégât physique" : "dégâts physiques"}.`;
     }
 
     gameMessage(message);
+    btn1.activate("Continuer", () => { endOpponentAttackPhase() });
+  }
 
-    // Check if the hit killed the player
-    // Display just the hit message and set up button to bring to the game over screen
+  function endOpponentAttackPhase() {
+    ctx.hasOpponentAttacked = true;
+
+    // TODO : add notification and possibility for player to make a clutch save.
+    // Check if the hit killed the player.
     if (isBeingDead(player)) {
-      btn1.activate("Continuer", () => {
-        if (!ctx.defeatPhaseCallBack) {
-          regularDefeatPhase(ctx);
-          return;
-        }
-        ctx.defeatPhaseCallBack(ctx);
-      });
+      defeatPhase(ctx);
       return;
     }
 
-    // If we attacked first it's time for a new turn
-    if (playerHasInitiative(ctx.opponent)) {
-      btn1.activate("Continuer", () => {
-        newTurn(ctx);
-      });
-      return;
-    }
-
-    // Otherwise, we start the player attack phase
-    btn1.activate("Continuer", () => {
+    // If the player has not attacked yet, it's their turn.
+    if (ctx.hasPlayerAttacked === false) {
       playerAttackPhase(ctx);
-    });
+      return;
+    }
+
+    // Otherwise, we start a new turn.
+    newTurn(ctx);
   }
 }
 
@@ -3895,40 +3906,44 @@ function newTurn(ctx) {
   console.log("New combat turn.");
   player.isAllowedToUseLuckyClover = false;
   ctx.fightTurn++;
+  ctx.hasPlayerPrepared = false;
+  ctx.hasOpponentPrepared = false;
+  ctx.hasPlayerAttacked = false;
+  ctx.hasOpponentAttacked = false;
+
   displayState(
     true,
-    `-~ Combat contre : ${ctx.opponent.name} ~-
-        -- Nouveau tour --`
+    `-~ Combat contre : ${ctx.opponent.name} ~-
+        -- Nouveau tour --`
   );
 
-  gameMessage(`Vous avez résisté à l'assault ${beingNameWithDeterminantDefiniContracte(
-    ctx.opponent,
-    "de"
-  )} mais ${ctx.opponent.gender == "F" ? "cette dernière" : "ce dernier"
-    } est toujours debout et prêt${ctx.opponent.gender == "F" ? "e" : ""
-    } à en découdre.
+  gameMessage(`Vous avez résisté à l'assault ${beingNameWithDeterminantDefiniContracte(ctx.opponent, "de")} mais ${ctx.opponent.gender == "F" ? "cette dernière" : "ce dernier"} est toujours debout et prêt${ctx.opponent.gender == "F" ? "e" : ""} à en découdre.
         
         -- Un nouveau tour de combat commence.`);
 
-  btn1.activate("Commencer", () => {
-    initiativePhase(ctx);
-  });
+  btn1.activate("Commencer", () => { initiativePhase(ctx); });
+}
+
+function rewardPhase(ctx) {
+  cleanUpEndOfCombat();
+  if (ctx.rewardPhaseCallBack) {
+    ctx.rewardPhaseCallBack(ctx);
+    return;
+  }
+  regularRewardPhase(ctx);
 }
 
 function regularRewardPhase(ctx) {
-  player.isAllowedToUseLuckyClover = false;
-  hideAllGenericButtons();
+  hideAllButtons(genericButtons);
   displayState(false);
   stepCompleted();
   player.experiencePoints++;
-  player.resetSpellEffects();
 
   gameMessage(`${beingNameWithDeterminantDefini(ctx.opponent, false)} est ${ctx.opponent.gender == "F" ? "terrassée" : "terrassé"} !
         ${player.hitPoints < player.maxHitPoints ? "Vous vous soignez et" : "Vous"} gagnez 1 point d'expérience.
         - Vous pouvez aussi lancer le D20 pour acquérir une récompense potentielle.`);
 
   player.restoreHitPoints();
-  isInCombat = false;
 
   btn1.activate(
     "Lancer le D20",
@@ -3943,7 +3958,7 @@ function regularRewardPhase(ctx) {
 function fightReward(roll) {
   player.isAllowedToUseLuckyClover = true;
   currentCombatContext = undefined;
-  hideAllGenericButtons();
+  hideAllButtons(genericButtons);
 
   // Roll 1-3
   if (roll >= 1 && roll <= 3) {
@@ -3999,9 +4014,17 @@ function fightReward(roll) {
   console.error(roll);
 }
 
+function defeatPhase(ctx) {
+  if (ctx.defeatPhaseCallBack) {
+    ctx.defeatPhaseCallBack(ctx);
+    return;
+  }
+  regularDefeatPhase(ctx);
+}
+
 function regularDefeatPhase(ctx) {
   player.isAllowedToUseLuckyClover = false;
-  hideAllGenericButtons();
+  hideAllButtons(genericButtons);
   displayState(false);
   gameMessage(`Vous êtes ${player.gender == "F" ? "morte" : "mort"}, votre aventure s'achève ici.
             Merci d'avoir joué ! On espère que vous vous êtes quand même bien ${player.gender == "F" ? "amusée" : "amusé"}.
@@ -4016,10 +4039,87 @@ function playerHasInitiative(opponent) {
 
   return false;
 }
+
+/**
+ * Applies the effect of each Bottomless Cup owned by the player.
+ */
+function applyBottomLessCupsEffects() {
+  player.inventory.slots.forEach(slot => {
+    if (slot?.name === "Coupe Invidable") {
+      player.actionPoints++;
+    }
+  });
+}
+
+/**
+ * Builds a string that we need to display at the beginning of a fight.
+ * @param {fightContext} ctx Context data for the current fight.
+ * @returns the intro message we need to display at the beginning of a fight.
+ */
+function fightIntroMessage(ctx) {
+  let message = ``;
+
+  // Display the base message that is passed through from the previous travel step.
+  if (ctx.introMessage) {
+    message += ctx.introMessage;
+  }
+
+  // Display the feedback of the effects of the Bottomless Cups held by the player.
+  let bottomlessCups = player.inventory.getItemsWithName("Coupe Invidable");
+  if (bottomlessCups.length > 0) {
+    message += `
+        
+        Vous sortez ${bottomlessCups.length == 1 ? "la Coupe Invidable" : `les Coupes Invidables`} de votre sac et en buvez ${bottomlessCups.length == 1 ? "une gorgée" : `une gorgée à chacune`} pour galvaniser vos forces avant ce combat.
+        Vous gagnez ${bottomlessCups.length}PA.`;
+  }
+
+  // Display the beginning of the fight announcement.
+  // if fighting boss, put nothing in front of its name. Otherwise, put 'une' or 'un'
+  message += `
+    
+    ---- Un combat contre ${ctx.opponent.type == "Boss" ? "" : ctx.opponent.gender == "F" ? "une " : "un "}${ctx.opponent.name} commence !`;
+
+  // Display the boss special effects.
+  if (ctx.opponent.type == "Boss") {
+    message += parseBossEffects(ctx.opponent);
+  }
+
+  return message;
+}
+
+/**
+ * Parses the effects of a boss in a formatted list so we can display them neatly.
+ * @param {opponent} boss The boss object we want to parse the effects of. Usually contained in the ctx object of the fight function.
+ * @returns a string with all effects of a boss listed. Returns an empty string if we test something else than a boss or if the boss has no special effect.
+ */
+function parseBossEffects(boss) {
+  if (boss?.type != "Boss") return ``;
+  let bossEffects = boss?.races[0]?.effects;
+  if (!bossEffects) return ``;
+
+  let message = `
+        ${bossEffects.length == 1 ? "Effet" : "Effets"} du boss :`;
+
+  bossEffects.forEach(effect => {
+    message += `
+            • ${effect.description}`;
+  });
+
+  return message;
+}
+
+function cleanUpEndOfCombat() {
+  player.isAllowedToUseLuckyClover = false;
+  player.resetSpellEffects();
+  isInCombat = false;
+  currentCombatContext = undefined;
+}
 //#endregion
 
 function addCardToDisplayZone(card) {
   if (!card) return;
+
+  const zoneCardsDrawn = document.getElementById("cards-drawn");
 
   const cardElement = document.createElement("img");
   cardElement.setAttribute("src", card.imageURL);
@@ -4091,15 +4191,12 @@ function updateDeckVisual() {
 }
 
 function clearCardsDisplayZone() {
-  zoneCardsDrawn.innerHTML = ``;
+  document.getElementById("cards-drawn").innerHTML = ``;
 }
 
-function gameMessage(text) {
-  txtDungeonMaster.innerText = text;
-}
 
 function gameOver() {
-  hideAllGenericButtons();
+  hideAllButtons(genericButtons);
   displayState(false);
   gameMessage(`Vous êtes ${player.gender == "F" ? "morte" : "mort"
     }, votre aventure s'achève ici.
@@ -4109,7 +4206,7 @@ function gameOver() {
 }
 
 function win() {
-  hideAllGenericButtons();
+  hideAllButtons(genericButtons);
   displayState(false);
   gameMessage(`Vous avez gagné ! Quelle aventure ! Bravo !
         Merci d'avoir joué ! On espère que vous vous êtes bien ${player.gender == "F" ? "amusée" : "amusé"

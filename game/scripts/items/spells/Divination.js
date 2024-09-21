@@ -1,4 +1,6 @@
-class Divination extends Spell {
+import Spell from "../Spell.js";
+
+export default class Divination extends Spell {
 
     constructor(data = structuredClone(clubsItemsTable[8])) {
         super(data)

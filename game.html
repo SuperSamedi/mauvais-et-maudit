@@ -9,6 +9,7 @@
     <link rel="icon" type="image/x-icon" href="game/assets/artworks/favicon.png">
     <link rel="stylesheet" href="game/styles/style.css">
     <link rel="stylesheet" href="game/styles/voyage.css">
+    <script src="game/scripts/main.js" type="module" defer></script>
 </head>
 
 <body>
@@ -68,7 +69,7 @@
                         <!-- <button type="button" id="btn-card-draw">Pioche une carte</button> -->
 
                         <!-- stats adjustment panel -->
-                        <div id="stats-adjustment-panel">
+                        <div id="stats-adjustment-panel" style="display: none;">
                             <div>
                                 <div class="align-right bold">PV : </div>
                                 <button type="button" id="btn-remove-hit-point">-</button>
@@ -90,7 +91,7 @@
                             <button type="button" id="btn-confirm-stats-adjustment" disabled>Confirmer</button>
                         </div>
 
-                        <div id="player-name-panel">
+                        <div id="player-name-panel" style="display: none;">
                             <input type="text" name="player-name-input-field" id="player-name-input-field">
                             <button type="button" id="btn-confirm-player-name-input-field">Confirmer</button>
                         </div>
@@ -105,11 +106,11 @@
                     </div>
 
                     <div id="test-buttons">
-                        <button id="btn-unlock-deck" type="button">Unlock Deck</button>
-                        <button id="btn-fight-boss" type="button">Fight Boss</button>
-                        <button id="btn-special-event-encounter" type="button">Événement spécial</button>
-                        <button id="btn-rest-encounter" type="button">Repos</button>
-                        <button id="btn-village-encounter" type="button">Village</button>
+                        <button id="btn-unlock-deck" type="button"  style="display: none;">Unlock Deck</button>
+                        <button id="btn-fight-boss" type="button" style="display: none;">Fight Boss</button>
+                        <button id="btn-special-event-encounter" type="button" style="display: none;">Événement spécial</button>
+                        <button id="btn-rest-encounter" type="button" style="display: none;">Repos</button>
+                        <button id="btn-village-encounter" type="button" style="display: none;">Village</button>
                     </div>
 
                 </div>
@@ -334,36 +335,6 @@
             </div>
         </div>
     </div>
-
-    <script src="game/scripts/Button.js"></script>
-    <script src="game/scripts/utilities.js"></script>
-    <script src="game/scripts/Dice.js"></script>
-    <script src="game/scripts/Inventory.js"></script>
-    <script src="game/scripts/items/Item.js"></script>
-    <script src="game/scripts/items/EquippableItem.js"></script>
-    <script src="game/scripts/items/ConsumableItem.js"></script>
-    <script src="game/scripts/items/consumables/Potion.js"></script>
-    <script src="game/scripts/items/consumables/Ether.js"></script>
-    <script src="game/scripts/items/consumables/LuckyClover.js"></script>
-    <script src="game/scripts/items/Spell.js"></script>
-    <script src="game/scripts/items/spells/DivineWind.js"></script>
-    <script src="game/scripts/items/spells/MetalForm.js"></script>
-    <script src="game/scripts/items/spells/InfiniteSpring.js"></script>
-    <script src="game/scripts/items/spells/Healing.js"></script>
-    <script src="game/scripts/items/spells/Steal.js"></script>
-    <script src="game/scripts/items/spells/Teleport.js"></script>
-    <script src="game/scripts/items/spells/Enfeeble.js"></script>
-    <script src="game/scripts/items/spells/InfernalSphere.js"></script>
-    <script src="game/scripts/items/spells/Divination.js"></script>
-    <script src="game/scripts/items/spells/AbsoluteRestoration.js"></script>
-    <script src="game/scripts/Shop.js"></script>
-    <script src="game/scripts/Being.js"></script>
-    <script src="game/scripts/Player.js"></script>
-    <script src="game/scripts/Step.js"></script>
-    <script src="game/scripts/Environment.js"></script>
-    <script src="game/scripts/voyage.js"></script>
-    <script src="game/scripts/data.js"></script>
-    <script src="game/scripts/game.js"></script>
 </body>
 
 </html>

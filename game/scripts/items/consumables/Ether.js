@@ -1,4 +1,6 @@
-class Ether extends ConsumableItem {
+import ConsumableItem from "../ConsumableItem.js"
+
+export default class Ether extends ConsumableItem {
     constructor() {
         const data = structuredClone(cupsItemsTable[1])
         super(data)

@@ -1,4 +1,7 @@
-class EquippableItem extends Item {
+import Item from "./Item.js"
+import { player } from "../Player.js"
+
+export default class EquippableItem extends Item {
     constructor(data) {
         super(data)
 
